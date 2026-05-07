@@ -2,8 +2,6 @@
 
 > Um quadro visual de investigação para tarefas, ideias e conexões — sem servidor, sem login, sem colunas.
 
-![Evidently screenshot](https://via.placeholder.com/1200x600/c8966c/1a1208?text=Evidently.)
-
 ---
 
 ## O que é?
