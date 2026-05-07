@@ -1,190 +1,211 @@
 # Evidently.
 
-> A visual investigation board for tasks, ideas and connections — no server, no login, no columns.
+> Um quadro visual de investigação para tarefas, ideias e conexões — sem servidor, sem login, sem colunas.
+
+![Evidently screenshot](https://via.placeholder.com/1200x600/c8966c/1a1208?text=Evidently.)
 
 ---
 
-## What is it?
+## O que é?
 
-**Evidently** is a single-file, offline-first kanban board inspired by detective investigation walls. Instead of fixed columns, you place cards freely on a cork board, connect them with colored strings, group them into colored zones, and navigate the whole thing with zoom and pan.
+**Evidently** é um quadro kanban offline, contido em um único arquivo, inspirado em murais de investigação de detetive. Em vez de colunas fixas, você posiciona cards livremente sobre um quadro de cortiça, conecta-os com fios coloridos, agrupa-os em zonas coloridas e navega por tudo com zoom e arrastar.
 
-Everything runs in a single `.html` file. No build step, no dependencies, no server. Open it in a browser and start pinning.
+Tudo roda em um único arquivo `.html`. Sem etapa de build, sem dependências, sem servidor. Abra no navegador e comece a fixar.
 
 ---
 
-## Features
+## Funcionalidades
 
 ### Cards
-- **Note cards** — title, description, checklist with progress bar, due date with overdue alert, and tag
-- **Photo cards** — attach images via URL or local file upload, with caption
-- **Status badge** — click to cycle between `A FAZER → FAZENDO → FEITO ✓`
+- **Cards de nota** — título, descrição, checklist com barra de progresso, prazo com alerta de atraso e tag
+- **Cards de foto** — anexe imagens via URL ou upload local, com legenda
+- **Badge de status** — clique para alternar entre `A FAZER → FAZENDO → FEITO →`
 - **5 tags** — `work`, `pessoal`, `urgente`, `ideia`, `meeting`
-- **4 pin colors** — red, blue, yellow, green
-- **4 card variants** — default, aged, note (yellow), red tint
-- **Drag freely** anywhere on the board
-- **Double-click** to edit, **single-click** on badge to cycle status
+- **4 cores de alfinete** — vermelho, azul, amarelo, verde
+- **8 cores de card** — Padrão, Mel, Rosa, Azul, Verde, Lilás, Âmbar, Branco
+- **4 variantes de card** — padrão, envelhecido, nota (amarelo), vermelho
+- **Cards redimensionáveis** — arraste o canto inferior direito para redimensionar largura e altura
+- **Links clicáveis** — URLs nas descrições são renderizados como links clicáveis
+- **Arraste livremente** para qualquer lugar do quadro
+- **Duplo clique** para editar, **clique simples** no badge para alternar status
 
-### Connections (String)
-- Click a card's pin to enter connection mode
-- Click a second card to draw a curved string between them
-- **8 string colors** configurable per card
-- **Typed relations** — label strings as: `bloqueia`, `depende de`, `relacionado`, `referência`
-- Labels appear inline over the string midpoint
+### Conexões (Fios)
+- Clique no alfinete de um card para entrar no modo de conexão
+- Clique em um segundo card para desenhar um fio curvo entre eles
+- **8 cores de fio** — Vermelho, Laranja, Amarelo, Verde, Azul, Roxo, Branco, Preto
+- **Relações tipadas** — rotule fios como: `bloqueia`, `depende de`, `relacionado`, `referência`
+- Rótulos aparecem sobre o ponto médio do fio
+- **Cortar/editar conexões** — gerencie conexões individuais por card
 
-### Zones
-- Create colored background areas to group cards visually
-- **Drag** by the header, **resize** from the bottom-right corner
-- **Double-click** the zone name to rename inline
-- 6 preset color themes
+### Zonas
+- Crie áreas coloridas de fundo para agrupar cards visualmente
+- **Arraste** pelo cabeçalho, **redimensione** pelo canto inferior direito
+- **Duplo clique** no nome da zona para renomear
+- 6 temas de cores predefinidos
 
-### Navigation
-- **Scroll** to zoom in/out, centered on cursor
-- **Middle mouse button** to pan the board
-- **Pinch-to-zoom** and **1-finger pan** on touch devices
-- **Minimap** — appears in the top-right corner during pan, showing all cards at a glance
-- **Zoom indicator** — click the `%` badge to reset the view
+### Temas
+- **3 temas de quadro** — Cork (quadro de cortiça, padrão), Night (modo escuro), Paper (claro/limpo)
+- Seletor de tema disponível nas propriedades do quadro (⚙)
+- Temas afetam toda a interface: quadro, cards, cabeçalho, barra de ferramentas e modais
 
-### Multi-select
-- **Drag on empty board** area to draw a lasso selection
-- **Shift+click** to add/remove cards from selection
-- **Drag any selected card** to move the whole group
+### Fontes dos Cards
+- **8 opções de fonte** — Caveat, Kalam, Indie Flower, Patrick Hand, DM Sans, Courier Prime, Playfair, Special Elite
+- Seletor de fonte disponível nas propriedades do quadro (⚙)
+- A escolha de fonte persiste entre sessões
 
-### Focus Mode
-- Click **"focar"** on any card to highlight it and its direct connections
-- All unrelated cards and strings fade to near-invisible
-- Click a dimmed card or the board background to exit, or press `Esc`
+### Navegação
+- **Scroll** para zoom in/out, centralizado no cursor
+- **Botão do meio do mouse** para arrastar o quadro
+- **Pinça para zoom** e **arrastar com 1 dedo** em dispositivos touch
+- **Minimapa** — aparece no canto superior direito durante o arraste, mostrando todos os cards
+- **Indicador de zoom** — clique no badge `%` para resetar a visualização
 
-### Search
-- Search bar in the header filters cards by title, description, tag, caption and checklist items
-- Supports multiple terms separated by spaces
-- Non-matching cards dim; matching cards stay highlighted with a result count
-- Press `Esc` or click outside to clear
+### Seleção múltipla
+- **Arraste em área vazia** do quadro para desenhar um laço de seleção
+- **Shift+clique** para adicionar/remover cards da seleção
+- **Arraste qualquer card selecionado** para mover o grupo todo
+
+### Modo Foco
+- Clique em **"focar"** em qualquer card para destacá-lo junto com suas conexões diretas
+- Todos os cards e fios não relacionados ficam quase invisíveis
+- Clique em um card esmaecido ou no fundo do quadro para sair, ou pressione `Esc`
+
+### Busca
+- Barra de busca no cabeçalho filtra cards por título, descrição, tag, legenda e itens de checklist
+- Suporta múltiplos termos separados por espaços
+- Cards não correspondentes ficam esmaecidos; cards encontrados ficam destacados com contagem de resultados
+- Pressione `Esc` ou clique fora para limpar
 
 ### Templates
-- Select a card, then click **📋 Templates** in the toolbar
-- Save its layout (title, description, checklist structure, tag, style) as a reusable template
-- Templates persist across sessions in `localStorage`
-- Instantiate a template card directly into the center of the current view
+- Selecione um card e clique em **📋 Templates** na barra de ferramentas
+- Salve seu layout (título, descrição, estrutura do checklist, tag, estilo) como template reutilizável
+- Templates persistem entre sessões no `localStorage`
+- Instancie um card a partir do template diretamente no centro da visualização atual
 
-### Multiple Boards
-- Create as many boards as you need using the `+` tab button
-- Each board has its own cards, zones and connections
-- The active board is reflected in the URL hash (`#boardId`) for bookmarking
-- Browser back/forward navigate between boards
+### Múltiplos Quadros
+- Crie quantos quadros precisar usando o botão `+` nas abas
+- Cada quadro tem seus próprios cards, zonas e conexões
+- O quadro ativo é refletido no hash da URL (`#boardId`) para favoritar
+- Navegação por histórico do navegador (voltar/avançar) entre quadros
 
-### Board Properties (⚙)
-- Rename the active board
-- **Export** — saves all boards as a single `.invboard` file (JSON)
-- **Import** — load an `.invboard` file; choose to add as new boards, replace the current board, or merge content
-- **Save as PNG** — captures the board as a high-resolution image
-- Reset session (clears all data)
+### Propriedades do Quadro (⚙)
+- Renomear o quadro ativo
+- **Seletor de tema** — alterne entre Cork, Night e Paper
+- **Seletor de fonte** — escolha a família de fonte dos cards
+- **Estatísticas do quadro** — visão geral de cards, conexões e zonas
+- **Exportar** — salva todos os quadros em um único arquivo `.invboard` (JSON)
+- **Importar** — carregue um arquivo `.invboard`; escolha adicionar como novos quadros, substituir o quadro atual ou mesclar conteúdo
+- **Salvar como PNG** — captura o quadro como imagem de alta resolução
+- Resetar sessão (limpa todos os dados)
 
-### History
-- **Ctrl+Z** — undo (up to 60 levels per board)
-- **Ctrl+Shift+Z** or **Ctrl+Y** — redo
-- History is independent per board and clears on board switch
-- Card position drags do not pollute the undo stack
+### Log de Atividades
+- Log de atividades por card rastreando edições e mudanças de status
+- Até 50 entradas por card com data e hora
+- Acessível pela aba Histórico no modal de edição do card
 
-### Mobile & Touch
-- Full touch support: drag cards, double-tap to edit, pinch to zoom, 1-finger pan
-- Floating **＋** action button (FAB) expands into add options
-- All modals open as bottom sheets on small screens
-- iOS safe-area insets respected
+### Histórico
+- **Ctrl+Z** — desfazer (até 60 níveis por quadro)
+- **Ctrl+Shift+Z** ou **Ctrl+Y** — refazer
+- Histórico é independente por quadro e limpa ao trocar de quadro
+- Arrastar cards não polui a pilha de desfazer
+
+### Mobile e Touch
+- Suporte completo a toque: arrastar cards, duplo toque para editar, pinça para zoom, arrastar com 1 dedo
+- Botão flutuante **+** (FAB) expande em opções de adição
+- Todos os modais abrem como bottom sheets em telas pequenas
+- Margens seguras do iOS respeitadas
 
 ---
 
-## Getting Started
+## Começando
 
-No installation required.
+Nenhuma instalação necessária.
 
-1. Download `evidently.html`
-2. Open it in any modern browser
-3. Start adding cards
+1. Baixe o `evidently.html`
+2. Abra em qualquer navegador moderno
+3. Comece a adicionar cards
 
 ```
 open evidently.html
 ```
 
-That's it.
+Pronto.
 
 ---
 
-## Keyboard Shortcuts
+## Atalhos de Teclado
 
-| Shortcut | Action |
+| Atalho | Ação |
 |---|---|
 | `Scroll` | Zoom in / out |
-| `Middle mouse` | Pan the board |
-| `Double-click card` | Edit card |
-| `Click pin` | Start / finish connection |
-| `Ctrl+Z` | Undo |
-| `Ctrl+Shift+Z` | Redo |
-| `Ctrl+Y` | Redo |
-| `Esc` | Cancel connect / close modal / exit focus |
-| `Shift+click` | Add card to selection |
+| `Botão do meio` | Arrastar o quadro |
+| `Duplo clique no card` | Editar card |
+| `Clique no alfinete` | Iniciar / finalizar conexão |
+| `Ctrl+Z` | Desfazer |
+| `Ctrl+Shift+Z` | Refazer |
+| `Ctrl+Y` | Refazer |
+| `Esc` | Cancelar conexão / fechar modal / sair do foco |
+| `Shift+clique` | Adicionar card à seleção |
 
 ---
 
-## File Format
+## Formato de Arquivo
 
-Boards are exported as `.invboard` files — plain JSON with a version field. You can inspect or edit them manually.
+Quadros são exportados como arquivos `.invboard` — JSON puro com campo de versão. Você pode inspecioná-los ou editá-los manualmente.
 
 ```json
 {
   "version": 1,
   "exported": "2025-01-01T00:00:00.000Z",
-  "boards": [{ "id": "abc123", "name": "My Board" }],
-  "cards":  { "abc123": [ ... ] },
-  "conns":  { "abc123": [ ... ] },
-  "zones":  { "abc123": [ ... ] }
+  "boards": [{ "id": "abc123", "name": "Meu Quadro" }],
+  "cards":  { "abc123": [ "..." ] },
+  "conns":  { "abc123": [ "..." ] },
+  "zones":  { "abc123": [ "..." ] }
 }
 ```
 
-Images uploaded locally are stored as base64 inside the card object. This makes the file self-contained but can grow large — export regularly to avoid hitting `localStorage` limits.
+Imagens carregadas localmente são armazenadas como base64 dentro do objeto do card. Isso torna o arquivo autocontido, mas pode crescer bastante — exporte regularmente para evitar atingir os limites do `localStorage`.
 
 ---
 
-## Data & Privacy
+## Dados e Privacidade
 
-- **Everything stays on your device.** No data is ever sent to a server.
-- Cards, zones and connections are saved automatically to `localStorage`.
-- Export `.invboard` files for backups or to share boards with others.
-- Clearing browser storage will erase your data — always keep an exported backup.
+- **Tudo fica no seu dispositivo.** Nenhum dado é enviado a um servidor.
+- Cards, zonas e conexões são salvos automaticamente no `localStorage`.
+- Exporte arquivos `.invboard` para backups ou para compartilhar quadros.
+- Limpar o armazenamento do navegador apagará seus dados — sempre mantenha um backup exportado.
 
 ---
 
-## Browser Support
+## Suporte a Navegadores
 
-Works in any modern browser that supports ES2020+:
+Funciona em qualquer navegador moderno com suporte a ES2020+:
 
-| Browser | Status |
+| Navegador | Status |
 |---|---|
-| Chrome / Edge 90+ | ✓ Full support |
-| Firefox 90+ | ✓ Full support |
-| Safari 15+ | ✓ Full support |
-| Mobile Chrome / Safari | ✓ Full touch support |
+| Chrome / Edge 90+ | Suporte completo |
+| Firefox 90+ | Suporte completo |
+| Safari 15+ | Suporte completo |
+| Mobile Chrome / Safari | Suporte completo a toque |
 
-The PNG export feature requires access to `esm.sh` (CDN) to load `html2canvas`. If your network blocks external CDNs, the export will fall back to a prompt suggesting a system screenshot instead.
-
----
-
-## Roadmap ideas
-
-- [ ] Collaborative real-time editing (WebSockets / CRDT)
-- [ ] Activity log per card (created by, edited at, comments)
-- [ ] Typed relation filtering (show only cards that "bloqueia" others)
-- [ ] Dark mode / alternate cork themes
-- [ ] Card color customization beyond the 4 variants
-- [ ] Keyboard-driven card creation
+A exportação como PNG requer acesso ao `esm.sh` (CDN) para carregar o `html2canvas`. Se sua rede bloqueia CDNs externos, a exportação sugere uma captura de tela do sistema.
 
 ---
 
-## License
+## Ideias para o Roadmap
 
-MIT — do whatever you want with it.
+- [ ] Edição colaborativa em tempo real (WebSockets / CRDT)
+- [ ] Filtragem por tipo de relação (mostrar apenas cards que "bloqueia" outros)
+- [ ] Criação de cards via teclado
+
+---
+
+## Licença
+
+MIT — faça o que quiser com isso.
 
 ---
 
 <p align="center">
-  <strong>Evidently.</strong> — connect the dots.
+  <strong>Evidently.</strong> — conecte os pontos.
 </p>

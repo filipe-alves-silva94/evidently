@@ -281,6 +281,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 .card-title{font-size:17px;font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:4px;word-break:break-word}
 .card-title.struck{text-decoration:line-through;opacity:.55}
 .card-desc{font-size:13px;color:var(--ink-faded);line-height:1.4;word-break:break-word;margin-bottom:4px}
+.card-link{color:var(--pin-blue);text-decoration:underline;text-decoration-style:dotted;word-break:break-all;cursor:pointer}
+.card-link:hover{text-decoration-style:solid}
 
 /* deadline */
 .card-deadline{
@@ -493,6 +495,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   font-family:'Caveat',cursive;font-size:14px;color:var(--ink-faded);
   text-align:center;padding:4px 0;
 }
+.cut-rel-sel{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.05em;
+  background:var(--props-input-bg);border:1px solid var(--props-sep);
+  border-radius:3px;color:var(--props-h);padding:2px 4px;cursor:pointer;
+  text-transform:uppercase;flex-shrink:0;max-width:80px;
+}
+
+/* activity log */
+.act-entry{
+  display:flex;gap:6px;align-items:flex-start;
+  padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06);
+}
+.act-entry:last-child{border-bottom:none}
+.act-time{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.04em;
+  color:var(--ink-faded);white-space:nowrap;padding-top:2px;flex-shrink:0;
+}
+.act-text{
+  font-family:var(--card-font);font-size:13px;color:var(--ink-faded);
+  line-height:1.3;
+}
 .card-resize{
   position:absolute;bottom:0;right:0;width:18px;height:18px;
   cursor:nwse-resize;z-index:25;opacity:0;transition:opacity .15s;
@@ -561,24 +584,151 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 #modal-overlay.open{display:flex}
 #modal{
   background:var(--card-paper);
-  background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(0,120,200,.12) 27px,rgba(0,120,200,.12) 28px);
-  border:1px solid rgba(0,0,0,.18);border-radius:2px;
-  padding:24px 24px 18px;width:360px;max-width:94vw;max-height:90vh;overflow-y:auto;
-  position:relative;box-shadow:0 8px 40px rgba(0,0,0,.6);font-family:var(--card-font);
+  border:1px solid rgba(0,0,0,.18);border-radius:3px;
+  width:560px;max-width:96vw;
+  height:min(88vh,640px);min-height:420px;
+  position:relative;box-shadow:0 8px 40px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;overflow:hidden;
+  font-family:var(--card-font);
 }
+
+/* lined paper on body only */
+#modal-body{
+  flex:1;overflow:hidden;
+  padding:0;
+  background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(0,120,200,.1) 27px,rgba(0,120,200,.1) 28px);
+  display:flex;flex-direction:row;min-width:0;min-height:0;
+}
+
+/* pane area — no scroll here, fills body */
+#modal-pane-area{
+  flex:1;min-width:0;min-height:0;
+  display:flex;flex-direction:column;
+  padding:20px 20px 0;
+  overflow:hidden;
+}
+
+/* vertical tab strip — right side */
+#modal-tabs{
+  display:flex;flex-direction:column;
+  width:34px;flex-shrink:0;
+  background:rgba(0,0,0,.05);
+  border-left:1px solid rgba(0,0,0,.1);
+  padding:6px 0;gap:1px;
+}
+.mtab{
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faded);padding:12px 7px;cursor:pointer;
+  border-right:3px solid transparent;
+  transition:color .15s,background .15s,border-color .15s;
+  white-space:nowrap;user-select:none;display:flex;align-items:center;gap:4px;
+}
+.mtab-icon{writing-mode:horizontal-tb;transform:none;font-size:11px;line-height:1}
+.mtab:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+.mtab.active{color:var(--ink);background:var(--card-paper);border-right-color:var(--pin-red);font-weight:600}
+.mtab.hidden{display:none}
+
+/* panes */
+.modal-pane{display:none;flex-direction:column;flex:1;padding-right:4px;min-height:0}
+.modal-pane.active{display:flex}
+#pane-style{padding-left:4px}
+
+/* non-card panes: scroll themselves */
+#pane-tasks,#pane-details,#pane-style,#pane-history{overflow-y:auto}
+
+/* textarea: stretches to fill, scrolls only when needed, styled scrollbar */
+.modal-pane textarea{
+  flex:1;
+  font-family:var(--card-font);font-size:16px;color:var(--ink);
+  background:transparent;border:none;
+  border-bottom:1.5px solid rgba(0,0,0,.18);
+  outline:none;padding:3px 2px 8px;
+  resize:none;width:100%;
+  line-height:1.6;
+  overflow-y:auto;
+  /* styled scrollbar */
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,0,0,.18) transparent;
+}
+.modal-pane textarea::-webkit-scrollbar{width:4px}
+.modal-pane textarea::-webkit-scrollbar-track{background:transparent}
+.modal-pane textarea::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.18);border-radius:99px;
+}
+.modal-pane textarea::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.32)}
+.modal-pane textarea:focus{border-bottom-color:rgba(0,0,0,.4)}
+
+/* styled scrollbar for other panes too */
+#pane-tasks::-webkit-scrollbar,
+#pane-details::-webkit-scrollbar,
+#pane-style::-webkit-scrollbar,
+#pane-history::-webkit-scrollbar{width:4px}
+#pane-tasks::-webkit-scrollbar-track,
+#pane-details::-webkit-scrollbar-track,
+#pane-style::-webkit-scrollbar-track,
+#pane-history::-webkit-scrollbar-track{background:transparent}
+#pane-tasks::-webkit-scrollbar-thumb,
+#pane-details::-webkit-scrollbar-thumb,
+#pane-style::-webkit-scrollbar-thumb,
+#pane-history::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.15);border-radius:99px;
+}
+#pane-tasks::-webkit-scrollbar-thumb:hover,
+#pane-details::-webkit-scrollbar-thumb:hover,
+#pane-style::-webkit-scrollbar-thumb:hover,
+#pane-history::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.28)}
+
+/* pane-card flex chain — must be unbroken from modal to textarea */
+#pane-card{min-height:0}
+#f-desc-wrap{flex:1;display:flex;flex-direction:column;min-height:0}
+#f-desc-wrap.hidden{display:none}
+#f-img-wrap{flex:1;display:flex;flex-direction:column;min-height:0}
+#f-img-wrap.hidden{display:none}
 #modal h2{
-  font-family:'Special Elite',serif;font-size:17px;margin-bottom:16px;color:var(--ink);
+  font-family:'Special Elite',serif;font-size:16px;margin-bottom:14px;color:var(--ink);
   border-bottom:2px solid rgba(0,0,0,.12);padding-bottom:8px;letter-spacing:.04em;
+  flex-shrink:0;
 }
-.fl{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faded);margin-bottom:3px;margin-top:12px}
-.fl:first-of-type{margin-top:0}
-#modal input,#modal textarea,#modal select{
+.fl{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faded);margin-bottom:3px;margin-top:12px;flex-shrink:0}
+.fl:first-child{margin-top:0}
+#modal input,#modal select{
   width:100%;font-family:var(--card-font);font-size:16px;
   background:transparent;border:none;border-bottom:1.5px solid rgba(0,0,0,.18);
-  outline:none;color:var(--ink);padding:3px 2px;resize:none;
+  outline:none;color:var(--ink);padding:3px 2px;
 }
 #modal select{font-family:'Oswald',sans-serif;font-size:12px;cursor:pointer}
-#modal input[type=date]{font-family:'Oswald',sans-serif;font-size:12px}
+#modal input[type=date],#modal input[type=time]{font-family:'Oswald',sans-serif;font-size:12px}
+
+/* fixed footer with action buttons */
+#modal-footer{
+  flex-shrink:0;
+  display:flex;gap:8px;justify-content:flex-end;
+  padding:12px 20px;
+  border-top:1px solid rgba(0,0,0,.1);
+  background:var(--card-paper);
+}
+.modal-btn{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 18px;border-radius:3px;border:1.5px solid;cursor:pointer;transition:background .15s;
+}
+.modal-btn.primary{background:var(--ink);color:var(--card-paper);border-color:var(--ink)}
+.modal-btn.primary:hover{opacity:.85}
+.modal-btn.secondary{background:transparent;color:var(--ink-faded);border-color:rgba(0,0,0,.18)}
+.modal-btn.secondary:hover{background:rgba(0,0,0,.06)}
+
+/* mobile: full-screen bottom sheet */
+@media(max-width:600px){
+  #modal{
+    width:100%!important;max-width:100%!important;
+    height:90vh!important;min-height:0!important;
+    border-radius:14px 14px 0 0;
+    margin-top:auto;align-self:flex-end;
+  }
+  #modal-overlay{align-items:flex-end}
+}
 
 /* tag pills */
 .tag-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
@@ -652,17 +802,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   transition:background .12s;
 }
 .cl-add-btn:hover{background:rgba(0,0,0,.12)}
-
-/* modal buttons */
-.modal-btns{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
-.modal-btn{
-  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-  padding:7px 16px;border-radius:3px;border:1.5px solid;cursor:pointer;transition:background .15s;
-}
-.modal-btn.primary{background:var(--ink);color:var(--card-paper);border-color:var(--ink)}
-.modal-btn.primary:hover{background:#000}
-.modal-btn.secondary{background:transparent;color:var(--ink-faded);border-color:rgba(0,0,0,.18)}
-.modal-btn.secondary:hover{background:rgba(0,0,0,.06)}
 
 /* zone modal */
 #zone-modal{
@@ -815,6 +954,46 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   #fab,#fab-drawer{ display:none!important; }
 }
 
+/* ── LANDSCAPE MOBILE (phone landscape) ── */
+@media (max-width:896px) and (orientation:landscape) and (max-height:500px){
+  /* header: ultra compact */
+  #board-header{ height:36px; }
+  .btab{ height:36px;font-size:10px;padding:0 8px; }
+  .btab-add,.btab-cfg{ padding:0 8px; }
+  #ev-wordmark{ padding:0 10px; }
+  #ev-word{ font-size:12px; }
+
+  /* search hidden in landscape phone — too cramped */
+  #search-wrap{ display:none; }
+
+  /* toolbar: horizontal scroll, smaller buttons */
+  #toolbar{
+    bottom:8px;padding:5px 8px;gap:4px;
+    max-width:calc(100vw - 16px);overflow-x:auto;
+    scrollbar-width:none;
+  }
+  #toolbar::-webkit-scrollbar{display:none}
+  .tb-btn{ padding:4px 8px;font-size:10px; }
+  .tb-sep{ margin:0 1px; }
+  .tb-label{ display:none; }
+
+  /* board: account for smaller header */
+  #board{ height:100vh; }
+
+  /* zoom indicator */
+  #zoom-indicator{ bottom:calc(8px + 38px);right:8px;font-size:9px;padding:3px 6px; }
+
+  /* modals: smaller max-height */
+  #modal{ max-height:85vh;padding:14px 16px 12px; }
+  #modal-overlay{ align-items:flex-end; }
+
+  /* board-props: bottom sheet */
+  #board-props{
+    top:auto;bottom:0;right:0;left:0;width:100%;
+    border-radius:12px 12px 0 0;max-height:75vh;
+  }
+}
+
 #export-flash{
   position:fixed;inset:0;background:#fff;z-index:9999;
   opacity:0;pointer-events:none;transition:opacity .15s;
@@ -924,14 +1103,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 
 /* === MINIMAP === */
 #minimap{
-  position:fixed;top:48px;right:0;z-index:299;
+  position:fixed;top:56px;right:12px;z-index:299;
   width:180px;height:100px;
   background:rgba(20,12,4,.82);
   border:1px solid rgba(255,200,100,.18);
-  border-top:none;border-right:none;
-  border-radius:0 0 0 8px;
+  border-radius:8px;
   overflow:hidden;pointer-events:none;
-  box-shadow:-2px 3px 14px rgba(0,0,0,.4);
+  box-shadow:0 4px 16px rgba(0,0,0,.45);
   opacity:0;transition:opacity .25s;
 }
 #minimap.pan-visible{opacity:.85}
@@ -1096,56 +1274,100 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 </div>
 <div id="modal-overlay">
 <div id="modal">
-  <h2 id="modal-h2">Nova Evid&#234;ncia</h2>
-  <div class="fl">T&#237;tulo</div>
-  <input id="f-title" type="text" placeholder="Nome da tarefa..." maxlength="70">
-  <div id="f-desc-wrap">
-    <div class="fl">Descri&#231;&#227;o</div>
-    <textarea id="f-desc" rows="2" placeholder="Detalhes..."></textarea>
-  </div>
-  <div id="f-img-wrap" style="display:none">
-    <div class="fl">Imagem &#8212; URL</div>
-    <input id="f-img" type="text" placeholder="https://..." oninput="previewImg()">
-    <div class="fl" style="margin-top:8px">ou upload local</div>
-    <div id="f-upload-area" onclick="document.getElementById('f-file').click()"
-      style="margin-top:5px;border:1.5px dashed rgba(0,0,0,.2);border-radius:4px;padding:10px;text-align:center;cursor:pointer;transition:background .15s;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faded)">
-      Clique para escolher arquivo
+
+  <!-- row: pane-area (scrollable) + tab strip -->
+  <div id="modal-body">
+    <div id="modal-pane-area">
+      <h2 id="modal-h2">Nova Evidência</h2>
+
+      <!-- PANE 1: Card -->
+      <div class="modal-pane active" id="pane-card">
+        <div class="fl">Título</div>
+        <input id="f-title" type="text" placeholder="Nome da tarefa..." maxlength="70">
+        <div id="f-desc-wrap" style="flex:1;display:flex;flex-direction:column;min-height:0">
+          <div class="fl">Descrição</div>
+          <textarea id="f-desc" placeholder="Detalhes..."></textarea>
+        </div>
+        <div id="f-img-wrap" style="display:none;flex:1;flex-direction:column;min-height:0">
+          <div class="fl">Imagem — URL</div>
+          <input id="f-img" type="text" placeholder="https://..." oninput="previewImg()">
+          <div class="fl" style="margin-top:8px">ou upload local</div>
+          <div id="f-upload-area" onclick="document.getElementById(&apos;f-file&apos;).click()" style="margin-top:5px;border:1.5px dashed rgba(0,0,0,.2);border-radius:4px;padding:10px;text-align:center;cursor:pointer;font-family:&apos;Oswald&apos;,sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faded)">
+            Clique para escolher arquivo
+          </div>
+          <input id="f-file" type="file" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+          <img id="f-img-preview" src="" alt="" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:3px;margin-top:6px;border:1px solid rgba(0,0,0,.1)">
+          <div class="fl" style="margin-top:8px">Legenda</div>
+          <input id="f-caption" type="text" placeholder="Legenda...">
+        </div>
+      </div>
+
+      <!-- PANE 2: Tarefas -->
+      <div class="modal-pane" id="pane-tasks">
+        <div class="fl">Checklist</div>
+        <div class="cl-editor" id="cl-editor"></div>
+        <button class="cl-add-btn" onclick="addClItem()">+ item</button>
+      </div>
+
+      <!-- PANE 3: Detalhes -->
+      <div class="modal-pane" id="pane-details">
+        <div class="fl">Prazo</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="f-deadline" type="date" style="flex:1">
+          <input id="f-deadline-time" type="time" style="flex:0 0 auto;width:90px">
+        </div>
+        <div class="fl">Tag</div>
+        <div class="tag-pills" id="tag-pills"></div>
+        <div class="fl">Status</div>
+        <select id="f-status">
+          <option value="todo">A fazer</option>
+          <option value="doing">Fazendo</option>
+          <option value="done">Feito</option>
+        </select>
+      </div>
+
+      <!-- PANE 4: Aparência -->
+      <div class="modal-pane" id="pane-style">
+        <div class="fl">Alfinete</div>
+        <div class="pin-opts">
+          <div class="pin-opt po-red    sel" data-pin="red"    onclick="selPin(this)"></div>
+          <div class="pin-opt po-blue"       data-pin="blue"   onclick="selPin(this)"></div>
+          <div class="pin-opt po-yellow"     data-pin="yellow" onclick="selPin(this)"></div>
+          <div class="pin-opt po-green"      data-pin="green"  onclick="selPin(this)"></div>
+        </div>
+        <div class="fl">Cor do barbante</div>
+        <div class="str-color-opts" id="str-color-opts"></div>
+        <div class="fl">Cor do card</div>
+        <div class="card-color-opts" id="card-color-opts"></div>
+      </div>
+
+      <!-- PANE 5: Histórico (editing only) -->
+      <div class="modal-pane" id="pane-history">
+        <div class="fl">Histórico de atividades</div>
+        <div id="activity-list" style="margin-top:6px;overflow-y:auto;flex:1"></div>
+      </div>
+
+    </div><!-- /modal-pane-area -->
+
+    <!-- vertical tab strip -->
+    <div id="modal-tabs">
+      <div class="mtab active" data-pane="pane-card"><span class="mtab-icon">📝</span>Card</div>
+      <div class="mtab" data-pane="pane-tasks"><span class="mtab-icon">✅</span>Tarefas</div>
+      <div class="mtab" data-pane="pane-details"><span class="mtab-icon">📅</span>Detalhes</div>
+      <div class="mtab" data-pane="pane-style"><span class="mtab-icon">🎨</span>Visual</div>
+      <div class="mtab hidden" id="mtab-history" data-pane="pane-history"><span class="mtab-icon">📋</span>Histórico</div>
     </div>
-    <input id="f-file" type="file" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
-    <img id="f-img-preview" src="" alt="" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:3px;margin-top:6px;border:1px solid rgba(0,0,0,.1)">
-    <div class="fl" style="margin-top:8px">Legenda</div>
-    <input id="f-caption" type="text" placeholder="Legenda...">
-  </div>
-  <div class="fl">Checklist (subtarefas)</div>
-  <div class="cl-editor" id="cl-editor"></div>
-  <button class="cl-add-btn" onclick="addClItem()">+ item</button>
-  <div class="fl">Prazo</div>
-  <input id="f-deadline" type="date">
-  <div class="fl">Tag</div>
-  <div class="tag-pills" id="tag-pills"></div>
-  <div class="fl">Status</div>
-  <select id="f-status">
-    <option value="todo">A fazer</option>
-    <option value="doing">Fazendo</option>
-    <option value="done">Feito</option>
-  </select>
-  <div class="fl">Alfinete</div>
-  <div class="pin-opts">
-    <div class="pin-opt po-red    sel" data-pin="red"    onclick="selPin(this)"></div>
-    <div class="pin-opt po-blue"       data-pin="blue"   onclick="selPin(this)"></div>
-    <div class="pin-opt po-yellow"     data-pin="yellow" onclick="selPin(this)"></div>
-    <div class="pin-opt po-green"      data-pin="green"  onclick="selPin(this)"></div>
-  </div>
-  <div class="fl">Cor do barbante</div>
-  <div class="str-color-opts" id="str-color-opts"></div>
-  <div class="fl">Cor do card</div>
-  <div class="card-color-opts" id="card-color-opts"></div>
-  <div class="modal-btns">
+
+  </div><!-- /modal-body -->
+
+  <!-- fixed footer -->
+  <div id="modal-footer">
     <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
     <button class="modal-btn primary"   onclick="saveCard()">Fixar</button>
   </div>
-</div>
-</div>
+
+</div><!-- /modal -->
+</div><!-- /modal-overlay -->
 
 <!-- Zone modal -->
 <div id="zone-modal">
@@ -1406,8 +1628,63 @@ function renderThemePicker() {
 }
 
 /* ========================================
-   CARD FONT
+   MODAL TABS
 ======================================== */
+function switchModalTab(paneId) {
+  document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
+  const pane = document.getElementById(paneId);
+  if (pane) pane.classList.add('active');
+  const tab  = document.querySelector(`.mtab[data-pane="${paneId}"]`);
+  if (tab)  tab.classList.add('active');
+  /* refocus first input in pane */
+  const inp = pane?.querySelector('input:not([type=hidden]),textarea,select');
+  if (inp && paneId === 'pane-card') setTimeout(()=>inp.focus(),60);
+}
+
+document.querySelectorAll('.mtab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if (tab.dataset.pane === 'pane-history') { toggleActivityLog(); return; }
+    switchModalTab(tab.dataset.pane);
+  });
+});
+function _addLog(cardId, text) {
+  const cs = curCards();
+  const c  = cs.find(c => c.id === cardId);
+  if (!c) return;
+  if (!c.log) c.log = [];
+  c.log.unshift({ t: Date.now(), text });
+  if (c.log.length > 50) c.log.length = 50; /* cap at 50 entries */
+  setCards(cs);
+}
+
+function _fmtTime(ts) {
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,'0');
+  const date = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+  const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${date} ${time}`;
+}
+
+function toggleActivityLog() {
+  const list = document.getElementById('activity-list');
+  list.innerHTML = '';
+  const c = editingId ? curCards().find(c=>c.id===editingId) : null;
+  const entries = c?.log || [];
+  if (!entries.length) {
+    list.innerHTML = `<div class="act-text" style="opacity:.5;font-family:var(--card-font);font-size:14px;color:var(--ink-faded);padding:8px 0">Nenhuma atividade registrada.</div>`;
+  } else {
+    entries.forEach(e => {
+      const row = document.createElement('div');
+      row.className = 'act-entry';
+      const time = document.createElement('span'); time.className='act-time'; time.textContent=_fmtTime(e.t);
+      const txt  = document.createElement('span'); txt.className='act-text';  txt.textContent=e.text;
+      row.appendChild(time); row.appendChild(txt);
+      list.appendChild(row);
+    });
+  }
+  switchModalTab('pane-history');
+}
 const CARD_FONTS = [
   { id:'caveat',    label:'Caveat',         family:"'Caveat',cursive",       sample:'Aa Bb' },
   { id:'kalam',     label:'Kalam',          family:"'Kalam',cursive",         sample:'Aa Bb' },
@@ -1749,7 +2026,8 @@ function openModal(type, id=null) {
       document.getElementById('f-img').value     = c.imgUrl&&!c.imgUrl.startsWith('data:') ? c.imgUrl : '';
       document.getElementById('f-caption').value = c.caption||'';
       document.getElementById('f-status').value  = c.status||'todo';
-      document.getElementById('f-deadline').value= c.deadline||'';
+      document.getElementById('f-deadline').value      = c.deadline ? c.deadline.split('T')[0] : '';
+      document.getElementById('f-deadline-time').value  = c.deadline && c.deadline.includes('T') ? c.deadline.split('T')[1].slice(0,5) : '';
       selTag=c.tag||null; selPinVal=c.pin||'red'; selStringColor=c.stringColor||'#cc2200'; selCardColor=c.cardColor||null;
       clItems=JSON.parse(JSON.stringify(c.checklist||[]));
       modalType=c.type;
@@ -1759,11 +2037,16 @@ function openModal(type, id=null) {
       if(c.imgUrl){ const pv=document.getElementById('f-img-preview'); pv.src=c.imgUrl; pv.style.display='block'; }
     }
   } else {
-    ['f-title','f-desc','f-img','f-caption','f-deadline'].forEach(id=>document.getElementById(id).value='');
+    ['f-title','f-desc','f-img','f-caption','f-deadline','f-deadline-time'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('f-status').value='todo';
   }
   buildTagPills(); buildClEditor(); buildStringColorPicker(); buildCardColorPicker();
   document.querySelectorAll('.pin-opt').forEach(el=>el.classList.toggle('sel',el.dataset.pin===selPinVal));
+  /* show/hide history tab — only available when editing existing card */
+  const htab = document.getElementById('mtab-history');
+  if (htab) htab.classList.toggle('hidden', !id);
+  /* always start on first tab */
+  switchModalTab('pane-card');
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(()=>document.getElementById('f-title').focus(),80);
 }
@@ -1778,21 +2061,32 @@ function saveCard() {
     imgUrl:  window._uploadedB64 || document.getElementById('f-img').value.trim(),
     caption: document.getElementById('f-caption').value.trim(),
     status:  document.getElementById('f-status').value,
-    deadline:document.getElementById('f-deadline').value,
+    deadline:(()=>{ const d=document.getElementById('f-deadline').value; const t=document.getElementById('f-deadline-time').value; return d?(t?`${d}T${t}`:d):''; })(),
     tag:selTag, pin:selPinVal, stringColor:selStringColor, cardColor:selCardColor,
     checklist: clItems.filter(i=>i.text.trim()),
     variant: VARIANTS[Math.floor(Math.random()*VARIANTS.length)],
   };
   const cs=curCards();
   _pushHistory();
-  if(editingId){ const c=cs.find(c=>c.id===editingId); if(c) Object.assign(c,data); }
-  else {
+  if(editingId){
+    const c=cs.find(c=>c.id===editingId);
+    if(c){
+      const changes=[];
+      if(data.title!==c.title)   changes.push(`título → "${data.title}"`);
+      if(data.status!==c.status) changes.push(`status → ${data.status}`);
+      if(data.deadline!==c.deadline) changes.push('prazo atualizado');
+      if(data.tag!==c.tag)       changes.push(`tag → ${data.tag||'nenhuma'}`);
+      Object.assign(c,data);
+      _addLog(c.id, changes.length ? changes.join(' · ') : 'card editado');
+    }
+  } else {
     const board=document.getElementById('board');
     data.id=uid();
     const vcx=(board.clientWidth /2-panX)/zoom;
     const vcy=(board.clientHeight/2-panY)/zoom;
     data.x=vcx-105+(Math.random()-.5)*200;
     data.y=vcy-70 +(Math.random()-.5)*160;
+    data.log=[{t:Date.now(),text:'card criado'}];
     cs.push(data);
   }
   setCards(cs); closeModal(); save(); renderAll();
@@ -1806,14 +2100,24 @@ function createCardEl(c) {
   const prev   = {fazendo:'backlog',feito:'fazendo'}[c.col]??null; // unused but kept
   const statusLabels={todo:'A FAZER',doing:'FAZENDO',done:'FEITO \u2713'};
   const statusClass ={todo:'status-todo',doing:'status-doing',done:'status-done'};
-  const today=new Date(); today.setHours(0,0,0,0);
+  const now   = new Date();
+  const today = new Date(); today.setHours(0,0,0,0);
   let deadlineStr='', isOverdue=false;
   if(c.deadline){
-    const d=new Date(c.deadline+'T00:00:00');
-    isOverdue = d<today && c.status!=='done';
-    const diff=Math.round((d-today)/(1000*60*60*24));
-    deadlineStr = diff===0?'hoje': diff===1?'amanhã': diff===-1?'ontem':
-      diff<0?`${Math.abs(diff)}d atrás`:`em ${diff}d`;
+    const hasTime = c.deadline.includes('T');
+    const d = hasTime ? new Date(c.deadline) : new Date(c.deadline+'T00:00:00');
+    isOverdue = d < (hasTime ? now : today) && c.status!=='done';
+    if(hasTime){
+      const diff=Math.round((d-now)/(1000*60*60*24));
+      const timeStr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      deadlineStr = diff===0?`hoje ${timeStr}`: diff===1?`amanhã ${timeStr}`:
+        diff===-1?`ontem ${timeStr}`:
+        diff<0?`${Math.abs(diff)}d atrás ${timeStr}`:`em ${diff}d ${timeStr}`;
+    } else {
+      const diff=Math.round((d-today)/(1000*60*60*24));
+      deadlineStr = diff===0?'hoje': diff===1?'amanhã': diff===-1?'ontem':
+        diff<0?`${Math.abs(diff)}d atrás`:`em ${diff}d`;
+    }
   }
 
   const el=document.createElement('div');
@@ -1847,7 +2151,19 @@ function createCardEl(c) {
     const t=document.createElement('div');
     t.className='card-title'+(isDone?' struck':''); t.textContent=c.title;
     inner.appendChild(t);
-    if(c.desc){ const d=document.createElement('div');d.className='card-desc';d.textContent=c.desc;inner.appendChild(d); }
+    if(c.desc){
+      const descEl=document.createElement('div');
+      descEl.className='card-desc';
+      /* detect URLs and make them clickable */
+      const urlRe=/(https?:\/\/[^\s]+)/g;
+      if(urlRe.test(c.desc)){
+        descEl.innerHTML=c.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener" class="card-link" onclick="event.stopPropagation()">$1</a>');
+      } else {
+        descEl.textContent=c.desc;
+      }
+      inner.appendChild(descEl);
+    }
   }
 
   /* checklist */
@@ -1962,7 +2278,9 @@ function toggleClItem(cardId, idx) {
 function cycleStatus(id){
   const cs=curCards();const c=cs.find(c=>c.id===id);if(!c)return;
   _pushHistory();
+  const prev=c.status;
   const ord=['todo','doing','done'];c.status=ord[(ord.indexOf(c.status)+1)%ord.length];
+  _addLog(id,`status: ${prev} → ${c.status}`);
   setCards(cs);save();renderAll();
 }
 
@@ -2012,7 +2330,7 @@ function cancelConnect(){
 function clearConnections(){_pushHistory();setConns([]);save();requestAnimationFrame(renderStrings);}
 
 /* ========================================
-   CUT INDIVIDUAL CONNECTIONS
+   CUT / EDIT INDIVIDUAL CONNECTIONS
 ======================================== */
 function openCutPopup(e, cardId) {
   e.stopPropagation();
@@ -2020,7 +2338,7 @@ function openCutPopup(e, cardId) {
   popup.innerHTML = '';
 
   const title = document.createElement('h4');
-  title.textContent = 'Cortar ligação';
+  title.textContent = 'Ligações';
   popup.appendChild(title);
 
   const conns = curConns().filter(c => c.from === cardId || c.to === cardId);
@@ -2036,20 +2354,42 @@ function openCutPopup(e, cardId) {
       const otherId = conn.from === cardId ? conn.to : conn.from;
       const other   = cards.find(c => c.id === otherId);
       const label   = other ? other.title : '(desconhecido)';
-      const relText = conn.rel ? ` · ${conn.rel}` : '';
 
       const row = document.createElement('div');
       row.className = 'cut-row';
 
+      /* color dot */
       const dot = document.createElement('span');
       dot.className = 'cut-dot';
       dot.style.background = conn.color || '#cc2200';
 
+      /* card name */
       const lbl = document.createElement('span');
       lbl.className = 'cut-label';
-      lbl.textContent = label + relText;
-      lbl.title = label + relText;
+      lbl.textContent = label;
+      lbl.title = label;
 
+      /* relation type select */
+      const relSel = document.createElement('select');
+      relSel.className = 'cut-rel-sel';
+      relSel.title = 'Tipo de relação';
+      ['','bloqueia','depende','relacionado','referencia'].forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v; opt.textContent = v || 'sem rótulo';
+        if ((conn.rel||'') === v) opt.selected = true;
+        relSel.appendChild(opt);
+      });
+      relSel.addEventListener('change', ev => {
+        ev.stopPropagation();
+        _pushHistory();
+        const cs = curConns();
+        const t  = cs.find(c =>
+          (c.from===conn.from&&c.to===conn.to)||(c.from===conn.to&&c.to===conn.from));
+        if (t) { t.rel = relSel.value; }
+        setConns(cs); save(); requestAnimationFrame(renderStrings);
+      });
+
+      /* cut button */
       const btn = document.createElement('button');
       btn.className = 'cut-btn';
       btn.textContent = '✂';
@@ -2058,30 +2398,25 @@ function openCutPopup(e, cardId) {
         ev.stopPropagation();
         _pushHistory();
         setConns(curConns().filter(c =>
-          !((c.from === conn.from && c.to === conn.to) ||
-            (c.from === conn.to   && c.to === conn.from))
+          !((c.from===conn.from&&c.to===conn.to)||(c.from===conn.to&&c.to===conn.from))
         ));
-        save();
-        requestAnimationFrame(renderStrings);
-        /* refresh popup — if no more connections, close it */
-        const remaining = curConns().filter(c => c.from === cardId || c.to === cardId);
+        save(); requestAnimationFrame(renderStrings);
+        const remaining = curConns().filter(c => c.from===cardId||c.to===cardId);
         if (!remaining.length) { closeCutPopup(); return; }
-        /* reopen anchored to the ✂ button that was just clicked */
         openCutPopup(ev, cardId);
       });
 
-      row.appendChild(dot);
-      row.appendChild(lbl);
-      row.appendChild(btn);
+      row.appendChild(dot); row.appendChild(lbl);
+      row.appendChild(relSel); row.appendChild(btn);
       popup.appendChild(row);
     });
   }
 
-  /* position near the clicked button, keeping inside viewport */
+  /* position */
   popup.classList.add('open');
   const anchor = e.target || e.currentTarget;
   const rect   = anchor?.getBoundingClientRect?.() || {bottom:100,left:100,top:90};
-  const PW = popup.offsetWidth  || 210;
+  const PW = popup.offsetWidth  || 240;
   const PH = popup.offsetHeight || 160;
   let left = rect.left;
   let top  = rect.bottom + 6;
@@ -2190,7 +2525,14 @@ function renderAll(){
   document.querySelectorAll('.card').forEach(el=>el.remove());
   document.querySelectorAll('.zone').forEach(el=>el.remove());
   const canvas=document.getElementById('board-canvas');
-  curZones().forEach(z=>canvas.appendChild(createZoneEl(z)));
+  curZones().forEach(z=>{
+    const el=createZoneEl(z);
+    canvas.appendChild(el);
+    if(window._bindZoneTouch){
+      const hdr=el.querySelector('.zone-header');
+      if(hdr) window._bindZoneTouch(hdr, z, el);
+    }
+  });
   curCards().forEach(c=>{
     const el=createCardEl(c);
     canvas.appendChild(el);
@@ -2984,6 +3326,8 @@ function closeFab(){
 
     el.addEventListener('touchstart', e => {
       if(e.touches.length > 1) return;
+      /* let resize handle take over when touched */
+      if(e.target.classList.contains('card-resize')) return;
       const t = e.touches[0];
       t0 = { x: t.clientX, y: t.clientY };
       moved = false;
@@ -2995,6 +3339,8 @@ function closeFab(){
 
     el.addEventListener('touchmove', e => {
       if(e.touches.length > 1) return;
+      /* abort if resize took over */
+      if(_resizeCard) return;
       const t = e.touches[0];
       if(!moved && Math.hypot(t.clientX-t0.x, t.clientY-t0.y) < 6) return;
       moved = true;
@@ -3014,7 +3360,7 @@ function closeFab(){
         if(tapTimer){
           clearTimeout(tapTimer); tapTimer = null;
           if(connectFrom){ finishConnect(c.id); return; }
-          openModal(c.type, c.id);   /* double-tap = edit */
+          openModal(c.type, c.id);
         } else {
           tapTimer = setTimeout(()=>{ tapTimer=null; }, 280);
         }
@@ -3025,7 +3371,46 @@ function closeFab(){
     }, { passive: true });
   }
 
-  /* ?? board touch: 1 finger = pan, 2 fingers = pinch zoom ?? */
+  /* ── bind touch drag to zone header ── */
+  function bindZoneHeaderTouch(headerEl, z, zoneEl){
+    let zt0 = null, zMoved = false;
+    let zOX = 0, zOY = 0;
+
+    headerEl.addEventListener('touchstart', e => {
+      if(e.touches.length > 1) return;
+      if(e.target.classList.contains('zone-del') || e.target.tagName === 'INPUT') return;
+      const t = e.touches[0];
+      zt0 = { x: t.clientX, y: t.clientY };
+      zMoved = false;
+      const cv = toCanvas(t.clientX, t.clientY);
+      zOX = cv.x - z.x;
+      zOY = cv.y - z.y;
+      e.stopPropagation();
+    }, { passive: true });
+
+    headerEl.addEventListener('touchmove', e => {
+      if(e.touches.length > 1) return;
+      const t = e.touches[0];
+      if(!zMoved && Math.hypot(t.clientX-zt0.x, t.clientY-zt0.y) < 6) return;
+      zMoved = true;
+      const cv = toCanvas(t.clientX, t.clientY);
+      z.x = cv.x - zOX;
+      z.y = cv.y - zOY;
+      zoneEl.style.left = z.x + 'px';
+      zoneEl.style.top  = z.y + 'px';
+      e.preventDefault();
+    }, { passive: false });
+
+    headerEl.addEventListener('touchend', e => {
+      if(zMoved){
+        _historyPaused = true; save(); _historyPaused = false;
+        zMoved = false;
+      }
+      e.stopPropagation();
+    }, { passive: true });
+  }
+
+  /* ── board touch: 1 finger = pan, 2 fingers = pinch zoom ── */
   let pinchDist0=0, pinchZoom0=1, pinchPanX0=0, pinchPanY0=0;
   let panTouchId=null;
 
@@ -3096,8 +3481,9 @@ function closeFab(){
     if(e.touches.length===0){ panTouchId=null; _hideMinimap(); }
   }, { passive:true });
 
-  /* expose so renderAll can attach touch to freshly created cards */
+  /* expose so renderAll can attach touch to freshly created elements */
   window._bindCardTouch = bindCardTouch;
+  window._bindZoneTouch = bindZoneHeaderTouch;
 })();
 
 document.addEventListener('keydown',e=>{
