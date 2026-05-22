@@ -1,0 +1,3929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Evidently</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Caveat:wght@400;600;700&family=Oswald:wght@300;400;500&family=Kalam:wght@400;700&family=Indie+Flower&family=Patrick+Hand&family=DM+Sans:wght@400;500&family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* ==== THEMES ==== */
+:root,[data-theme="cork"]{
+  /* board */
+  --board-bg:#c8966c;
+  --board-vignette:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.35) 100%);
+  --board-lines1:rgba(0,0,0,.03);
+  --board-lines2:rgba(0,0,0,.025);
+  --board-radial1:rgba(255,255,220,.18);
+  --board-radial2:rgba(80,40,0,.2);
+  /* cards */
+  --card-paper:#faf6e8;
+  --card-aged:#f0e6c8;
+  --card-note:#fffde7;
+  --card-red:#fff0f0;
+  --card-border:rgba(0,0,0,.12);
+  --ink:#1a1208;
+  --ink-faded:#3d2e18;
+  --tape:rgba(200,220,255,.55);
+  --deadline-color:#7a5500;
+  --tag-bg:rgba(0,0,0,.07);
+  --tag-border:rgba(0,0,0,.1);
+  --cl-box-border:rgba(0,0,0,.3);
+  --cl-bar-bg:rgba(0,0,0,.1);
+  /* status badges */
+  --status-todo-bg:#e8e0cc;   --status-todo-c:#5a4a2a;   --status-todo-b:#c8b890;
+  --status-doing-bg:#fff3cc;  --status-doing-c:#7a5500;  --status-doing-b:#e8c840;
+  --status-done-bg:#ccf0d0;   --status-done-c:#1a5a25;   --status-done-b:#88cc90;
+  /* pins */
+  --pin-red:#cc2200;--pin-blue:#1a4a8a;--pin-yellow:#d4aa00;--pin-green:#2a7a2a;
+  /* header / UI */
+  --header-bg:rgba(20,12,4,.85);
+  --header-border:rgba(255,200,100,.15);
+  --toolbar-bg:rgba(20,14,8,.9);
+  --toolbar-border:rgba(255,200,100,.2);
+  --tab-color:rgba(255,200,100,.4);
+  --tab-active:rgba(255,220,140,.95);
+  --wordmark-color:rgba(255,220,140,.55);
+  --ui-accent:rgba(255,200,100,.35);
+  --ui-accent-hover:rgba(255,200,100,.8);
+  --ui-text:rgba(255,220,140,.8);
+  --ui-text-dim:rgba(255,200,100,.4);
+  --search-bg:rgba(255,255,255,.07);
+  --search-border:rgba(255,200,100,.2);
+  --search-color:rgba(255,220,140,.9);
+  --search-placeholder:rgba(255,200,100,.3);
+  --props-bg:rgba(20,12,4,.97);
+  --props-border:rgba(255,200,100,.25);
+  --props-h:rgba(255,220,140,.9);
+  --props-label:rgba(255,200,100,.4);
+  --props-input-bg:rgba(255,255,255,.06);
+  --props-input-border:rgba(255,200,100,.2);
+  --props-input-color:rgba(255,220,140,.9);
+  --props-sep:rgba(255,200,100,.1);
+  --tb-btn-color:#e8d090;
+  --tb-btn-border:rgba(255,200,100,.3);
+  --tb-btn-bg:rgba(255,200,100,.07);
+  --card-font:'Caveat',cursive;
+}
+
+[data-theme="night"]{
+  /* board */
+  --board-bg:#1a1614;
+  --board-vignette:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,.6) 100%);
+  --board-lines1:rgba(255,255,255,.02);
+  --board-lines2:rgba(255,255,255,.015);
+  --board-radial1:rgba(80,60,40,.15);
+  --board-radial2:rgba(0,0,0,.4);
+  /* cards */
+  --card-paper:#2a2420;
+  --card-aged:#241e1a;
+  --card-note:#2c2818;
+  --card-red:#2a1e1e;
+  --card-border:rgba(255,255,255,.08);
+  --ink:#e8d8c0;
+  --ink-faded:#c8b090;
+  --tape:rgba(100,120,160,.3);
+  --deadline-color:#c8a060;
+  --tag-bg:rgba(255,255,255,.06);
+  --tag-border:rgba(255,255,255,.08);
+  --cl-box-border:rgba(255,255,255,.25);
+  --cl-bar-bg:rgba(255,255,255,.1);
+  /* status badges */
+  --status-todo-bg:#3a3020;   --status-todo-c:#c8a060;   --status-todo-b:#504020;
+  --status-doing-bg:#3a3010;  --status-doing-c:#d4a820;  --status-doing-b:#605010;
+  --status-done-bg:#1a3020;   --status-done-c:#60c080;   --status-done-b:#204030;
+  /* pins */
+  --pin-red:#cc3322;--pin-blue:#2255aa;--pin-yellow:#c09000;--pin-green:#228833;
+  /* header / UI */
+  --header-bg:rgba(10,8,6,.92);
+  --header-border:rgba(200,140,60,.15);
+  --toolbar-bg:rgba(10,8,6,.95);
+  --toolbar-border:rgba(200,140,60,.2);
+  --tab-color:rgba(200,140,60,.4);
+  --tab-active:rgba(220,170,100,.95);
+  --wordmark-color:rgba(220,170,100,.5);
+  --ui-accent:rgba(200,140,60,.35);
+  --ui-accent-hover:rgba(220,170,100,.8);
+  --ui-text:rgba(220,170,100,.8);
+  --ui-text-dim:rgba(200,140,60,.4);
+  --search-bg:rgba(255,255,255,.05);
+  --search-border:rgba(200,140,60,.2);
+  --search-color:rgba(220,170,100,.9);
+  --search-placeholder:rgba(200,140,60,.3);
+  --props-bg:rgba(8,6,4,.97);
+  --props-border:rgba(200,140,60,.25);
+  --props-h:rgba(220,170,100,.9);
+  --props-label:rgba(200,140,60,.4);
+  --props-input-bg:rgba(255,255,255,.04);
+  --props-input-border:rgba(200,140,60,.2);
+  --props-input-color:rgba(220,170,100,.9);
+  --props-sep:rgba(200,140,60,.1);
+  --tb-btn-color:#c8a060;
+  --tb-btn-border:rgba(200,140,60,.3);
+  --tb-btn-bg:rgba(200,140,60,.07);
+}
+
+[data-theme="paper"]{
+  /* board */
+  --board-bg:#f0ece4;
+  --board-vignette:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(0,0,0,.08) 100%);
+  --board-lines1:rgba(0,0,0,.04);
+  --board-lines2:rgba(0,0,0,.03);
+  --board-radial1:rgba(255,255,240,.6);
+  --board-radial2:rgba(180,160,120,.15);
+  /* cards */
+  --card-paper:#ffffff;
+  --card-aged:#fdf8ee;
+  --card-note:#fffef5;
+  --card-red:#fff5f5;
+  --card-border:rgba(0,0,0,.1);
+  --ink:#1a1208;
+  --ink-faded:#3d2e18;
+  --tape:rgba(180,200,240,.5);
+  --deadline-color:#7a5500;
+  --tag-bg:rgba(0,0,0,.06);
+  --tag-border:rgba(0,0,0,.09);
+  --cl-box-border:rgba(0,0,0,.25);
+  --cl-bar-bg:rgba(0,0,0,.08);
+  /* status badges */
+  --status-todo-bg:#ede8de;   --status-todo-c:#5a4a2a;   --status-todo-b:#c8b890;
+  --status-doing-bg:#fff8e0;  --status-doing-c:#7a5500;  --status-doing-b:#e8c840;
+  --status-done-bg:#e0f4e4;   --status-done-c:#1a5a25;   --status-done-b:#88cc90;
+  /* pins */
+  --pin-red:#cc2200;--pin-blue:#1a4a8a;--pin-yellow:#d4aa00;--pin-green:#2a7a2a;
+  /* header / UI — dark ink on light background */
+  --header-bg:rgba(255,252,248,.97);
+  --header-border:rgba(0,0,0,.1);
+  --toolbar-bg:rgba(245,240,232,.98);
+  --toolbar-border:rgba(0,0,0,.1);
+  --tab-color:rgba(60,40,20,.45);
+  --tab-active:rgba(30,18,6,.85);
+  --wordmark-color:rgba(60,40,20,.5);
+  --ui-accent:rgba(80,50,20,.25);
+  --ui-accent-hover:rgba(60,35,10,.7);
+  --ui-text:rgba(40,25,10,.75);
+  --ui-text-dim:rgba(60,40,20,.4);
+  --search-bg:rgba(0,0,0,.04);
+  --search-border:rgba(0,0,0,.15);
+  --search-color:rgba(30,18,6,.85);
+  --search-placeholder:rgba(0,0,0,.25);
+  --props-bg:rgba(255,252,248,.99);
+  --props-border:rgba(0,0,0,.12);
+  --props-h:rgba(30,18,6,.85);
+  --props-label:rgba(60,40,20,.45);
+  --props-input-bg:rgba(0,0,0,.03);
+  --props-input-border:rgba(0,0,0,.15);
+  --props-input-color:rgba(30,18,6,.9);
+  --props-sep:rgba(0,0,0,.08);
+  --tb-btn-color:rgba(40,25,10,.75);
+  --tb-btn-border:rgba(0,0,0,.15);
+  --tb-btn-bg:rgba(0,0,0,.04);
+}
+html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:none}
+
+/* === BOARD === */
+#board{
+  position:relative;width:100vw;height:100vh;overflow:hidden;cursor:default;
+  touch-action:none;
+  background-color:var(--board-bg);
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 3px,var(--board-lines1) 3px,var(--board-lines1) 4px),
+    repeating-linear-gradient(90deg,transparent,transparent 5px,var(--board-lines2) 5px,var(--board-lines2) 6px),
+    radial-gradient(ellipse at 20% 30%,var(--board-radial1) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 70%,var(--board-radial2) 0%,transparent 60%);
+  transition:background-color .4s;
+}
+#board::after{content:'';position:absolute;inset:0;background:var(--board-vignette);pointer-events:none;z-index:0}
+
+/* === SVG STRINGS - sibling of board-canvas, renders in screen space, always behind cards === */
+#strings{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible}
+
+/* === ZONES === */
+.zone{
+  position:absolute;border-radius:8px;border:2px dashed rgba(0,0,0,.2);
+  z-index:2;cursor:default;min-width:160px;min-height:100px;
+  display:flex;flex-direction:column;
+}
+.zone-header{
+  padding:6px 12px 4px;font-family:'Oswald',sans-serif;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px;
+  border-radius:6px 6px 0 0;cursor:move;
+}
+.zone-del{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  font-size:12px;opacity:.4;transition:opacity .15s;color:inherit;
+}
+.zone-del:hover{opacity:1}
+.zone-resize{
+  position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize;
+  background:rgba(0,0,0,.15);border-radius:0 0 6px 0;
+  display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(0,0,0,.4);
+}
+.zone-body{flex:1}
+
+/* === CARDS === */
+.card{position:absolute;z-index:10;cursor:grab;filter:drop-shadow(2px 4px 8px rgba(0,0,0,.45));transition:filter .15s;text-rendering:geometricPrecision}
+.card:active{cursor:grabbing;filter:drop-shadow(4px 8px 18px rgba(0,0,0,.6));z-index:100}
+.card.connecting{cursor:crosshair}
+.card-inner{
+  background:var(--card-paper);border:1px solid var(--card-border);
+  width:210px;min-height:130px;padding:28px 14px 10px;position:relative;
+  font-family:var(--card-font);
+}
+.card-inner::before{
+  content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:70px;height:22px;background:var(--tape);border:1px solid rgba(180,200,255,.4);z-index:2;
+}
+.card.aged .card-inner{background:var(--card-aged);transform:rotate(-1.5deg)}
+.card.note .card-inner{background:var(--card-note);transform:rotate(1.2deg);width:190px}
+.card.red  .card-inner{background:var(--card-red);transform:rotate(-.8deg)}
+
+/* pin */
+.pin{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  width:16px;height:16px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#ff6655,var(--pin-red));
+  box-shadow:0 2px 4px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);
+  z-index:20;cursor:pointer;transition:transform .12s;
+}
+.pin:hover{transform:translateX(-50%) scale(1.2)}
+.pin.blue  {background:radial-gradient(circle at 35% 35%,#5588cc,var(--pin-blue))}
+.pin.yellow{background:radial-gradient(circle at 35% 35%,#ffe066,var(--pin-yellow))}
+.pin.green {background:radial-gradient(circle at 35% 35%,#66cc66,var(--pin-green))}
+
+/* connect dot - REMOVED (connection via pin only) */
+
+/* === MULTI-SELECT === */
+#lasso{
+  position:absolute;border:1.5px dashed rgba(255,220,100,.8);
+  background:rgba(255,220,100,.08);border-radius:2px;
+  pointer-events:none;z-index:50;display:none;
+}
+.card.selected .card-inner{
+  outline:2px solid rgba(255,200,80,.9);
+  outline-offset:2px;
+}
+.zone.selected{
+  outline:2px solid rgba(255,200,80,.9);
+  outline-offset:2px;
+}
+
+/* status badge */
+.card-status{
+  position:absolute;top:4px;right:6px;
+  font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;padding:1px 5px;border-radius:2px;cursor:pointer;
+}
+.status-todo {background:var(--status-todo-bg);color:var(--status-todo-c);border:1px solid var(--status-todo-b)}
+.status-doing{background:var(--status-doing-bg);color:var(--status-doing-c);border:1px solid var(--status-doing-b)}
+.status-done {background:var(--status-done-bg);color:var(--status-done-c);border:1px solid var(--status-done-b)}
+
+.card-title{font-size:17px;font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:4px;word-break:break-word}
+.card-title.struck{text-decoration:line-through;opacity:.55}
+.card-desc{font-size:13px;color:var(--ink-faded);line-height:1.4;word-break:break-word;margin-bottom:4px}
+.card-link{color:var(--pin-blue);text-decoration:underline;text-decoration-style:dotted;word-break:break-all;cursor:pointer}
+.card-link:hover{text-decoration-style:solid}
+
+/* deadline */
+.card-deadline{
+  font-family:'Caveat',cursive;font-size:12px;color:var(--deadline-color);
+  margin-top:4px;display:flex;align-items:center;gap:3px;
+}
+.card-deadline.overdue{color:#cc2200;font-weight:700}
+
+/* tag */
+.card-tag{
+  display:inline-block;margin-top:6px;font-family:'Oswald',sans-serif;
+  font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 7px;border-radius:2px;background:var(--tag-bg);
+  color:var(--ink-faded);border:1px solid var(--tag-border);
+}
+
+/* checklist */
+.card-checklist{margin-top:8px;display:flex;flex-direction:column;gap:3px}
+.cl-item{display:flex;align-items:flex-start;gap:5px;cursor:pointer}
+.cl-box{
+  width:12px;height:12px;border:1.5px solid var(--cl-box-border);border-radius:2px;
+  flex-shrink:0;margin-top:2px;background:transparent;display:flex;align-items:center;justify-content:center;
+  transition:background .12s;
+}
+.cl-item.done .cl-box{background:var(--ink);border-color:var(--ink)}
+.cl-item.done .cl-box::after{content:'\2713';font-size:8px;color:#fff;line-height:1}
+.cl-text{font-size:13px;color:var(--ink-faded);line-height:1.3;word-break:break-word}
+.cl-item.done .cl-text{text-decoration:line-through;opacity:.5}
+.cl-progress{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.08em;
+  color:var(--ink-faded);margin-top:4px;
+}
+.cl-bar-wrap{height:2px;background:var(--cl-bar-bg);border-radius:99px;margin-top:2px;overflow:hidden}
+.cl-bar{height:100%;background:var(--ink);border-radius:99px;transition:width .25s}
+
+/* card actions - fluxo normal, sempre abaixo do conte&#250;do */
+.card-actions{
+  display:flex;gap:4px;justify-content:center;
+  padding:6px 0 2px;
+  max-height:0;overflow:hidden;
+  opacity:0;
+  transition:max-height .18s ease, opacity .15s ease;
+}
+.card:hover .card-actions{
+  max-height:40px;
+  opacity:1;
+}
+.ca-btn{
+  font-size:10px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);
+  border-radius:3px;padding:2px 5px;cursor:pointer;color:var(--ink-faded);
+  font-family:'Oswald',sans-serif;letter-spacing:.04em;transition:background .1s;
+}
+.ca-btn:hover{background:rgba(0,0,0,.18);color:var(--ink)}
+.ca-btn.del:hover{background:#cc2200;color:#fff;border-color:#cc2200}
+
+/* photo card */
+.card.photo .card-inner{background:#fff;padding:8px 8px 20px;width:168px;min-height:160px}
+.card.photo .card-inner::after{
+  content:attr(data-caption);position:absolute;bottom:6px;left:0;right:0;
+  text-align:center;font-family:var(--card-font);font-size:13px;color:var(--ink-faded);
+}
+.photo-img{width:100%;height:120px;object-fit:cover;display:block;background:#ddd;border:1px solid #ccc}
+.photo-placeholder{
+  width:100%;height:120px;
+  background:linear-gradient(135deg,#b0a090 0%,#d0c0a8 50%,#a09080 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;
+  color:rgba(255,255,255,.6);text-transform:uppercase;border:1px solid #c0b090;
+}
+
+/* === BOARD HEADER === */
+#board-header{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  display:flex;align-items:center;gap:0;
+  background:var(--header-bg);border-bottom:1px solid var(--header-border);
+  backdrop-filter:blur(4px);transition:background .4s,border-color .4s;
+}
+/* Evidently wordmark */
+#ev-wordmark{
+  display:flex;align-items:baseline;gap:0;
+  padding:0 18px;flex-shrink:0;user-select:none;
+  text-decoration:none;
+}
+#ev-word{
+  font-family:'Special Elite',serif;
+  font-size:15px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--wordmark-color);
+  transition:color .2s;
+}
+#ev-dot{
+  font-family:'Special Elite',serif;
+  font-size:15px;color:rgba(204,34,0,.7);
+  margin-left:1px;
+  transition:color .2s;
+}
+#ev-wordmark:hover #ev-word{color:rgba(255,220,140,.85)}
+#ev-wordmark:hover #ev-dot {color:rgba(230,60,0,.9)}
+/* board tabs */
+#board-tabs{display:flex;align-items:stretch;flex:1;overflow-x:auto;gap:0}
+#board-tabs::-webkit-scrollbar{height:2px}
+#board-tabs::-webkit-scrollbar-thumb{background:rgba(255,200,100,.3)}
+.btab{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:0 14px;height:40px;display:flex;align-items:center;gap:6px;
+  border:none;background:transparent;color:var(--tab-color);cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;
+}
+.btab:hover{color:var(--tab-active);opacity:.7}
+.btab.active{color:var(--tab-active);border-bottom-color:var(--tab-color)}
+.btab-del{
+  font-size:10px;opacity:.4;background:none;border:none;cursor:pointer;
+  color:inherit;padding:0 2px;transition:opacity .15s;
+}
+.btab-del:hover{opacity:1}
+.btab-add{
+  font-size:18px;padding:0 12px;background:none;border:none;
+  color:var(--ui-accent);cursor:pointer;transition:color .15s;line-height:1;
+}
+.btab-add:hover{color:var(--ui-accent-hover)}
+.btab-cfg{
+  font-size:13px;padding:0 10px;background:none;border:none;
+  color:var(--ui-accent);cursor:pointer;transition:color .15s;line-height:1;
+}
+.btab-cfg:hover{color:var(--ui-accent-hover)}
+.btab-cfg.open{color:var(--ui-accent-hover)}
+
+/* board properties panel */
+#board-props{
+  position:fixed;top:46px;right:12px;z-index:400;
+  background:var(--props-bg);border:1px solid var(--props-border);
+  border-radius:8px;padding:16px 18px 14px;width:270px;
+  box-shadow:0 6px 28px rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  display:none;flex-direction:column;gap:10px;
+}
+#board-props.open{display:flex}
+#board-props h3{
+  font-family:'Special Elite',serif;font-size:13px;letter-spacing:.08em;
+  color:var(--props-h);border-bottom:1px solid var(--props-sep);
+  padding-bottom:8px;margin-bottom:2px;
+}
+.bp-label{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--props-label);margin-bottom:3px;
+}
+#board-props input{
+  width:100%;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.06em;
+  background:var(--props-input-bg);border:1px solid var(--props-input-border);
+  border-radius:4px;outline:none;color:var(--props-input-color);padding:6px 8px;
+  transition:border-color .15s;
+}
+#board-props input:focus{border-color:var(--ui-accent-hover)}
+.bp-btn{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 12px;border-radius:4px;border:1px solid;cursor:pointer;transition:background .15s;width:100%;
+}
+.bp-btn-save{background:var(--ui-accent);color:var(--props-h);border-color:var(--ui-accent-hover)}
+.bp-btn-save:hover{background:var(--ui-accent-hover);color:var(--tab-active)}
+.bp-btn-del{background:rgba(204,34,0,.1);color:#ff8870;border-color:rgba(204,34,0,.35);margin-top:2px}
+.bp-btn-del:hover{background:rgba(204,34,0,.3);color:#fff}
+[data-theme="paper"] .bp-btn-del{color:#b80000;border-color:rgba(180,0,0,.5);background:rgba(180,0,0,.08)}
+[data-theme="paper"] .bp-btn-del:hover{background:rgba(180,0,0,.15);color:#8a0000}
+.bp-btn-file{background:var(--tb-btn-bg);color:var(--ui-text);border-color:var(--props-sep)}
+.bp-btn-file:hover{background:var(--ui-accent);color:var(--tab-active)}
+.bp-sep{height:1px;background:var(--props-sep);margin:2px 0}
+
+/* theme swatches */
+.bp-theme-grid{display:flex;gap:6px;margin-top:4px;}
+.bp-theme-opt{
+  flex:1;padding:8px 4px;border-radius:4px;cursor:pointer;
+  border:1.5px solid var(--props-sep);
+  text-align:center;transition:border-color .15s,transform .1s;
+}
+.bp-theme-opt:hover{transform:translateY(-1px)}
+.bp-theme-opt.active{border-color:var(--ui-accent-hover)}
+.bp-theme-dot{width:18px;height:18px;border-radius:50%;margin:0 auto 4px;border:1px solid rgba(0,0,0,.2)}
+.bp-theme-name{font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--props-label);display:block}
+
+/* ── CUT CONNECTIONS POPUP ── */
+#cut-popup{
+  position:fixed;z-index:600;
+  background:var(--props-bg);border:1px solid var(--props-border);
+  border-radius:7px;padding:10px 12px 8px;min-width:190px;max-width:240px;
+  box-shadow:0 6px 24px rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  display:none;flex-direction:column;gap:5px;
+}
+#cut-popup.open{display:flex}
+#cut-popup h4{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--props-h);
+  border-bottom:1px solid var(--props-sep);padding-bottom:6px;margin-bottom:2px;
+}
+.cut-row{
+  display:flex;align-items:center;gap:7px;
+  font-family:'Caveat',cursive;font-size:15px;color:var(--props-h);
+  padding:3px 4px;border-radius:4px;
+}
+.cut-row:hover{background:var(--ui-accent)}
+.cut-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+}
+.cut-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cut-btn{
+  background:none;border:1px solid rgba(204,34,0,.4);border-radius:3px;
+  color:rgba(204,34,0,.85);cursor:pointer;font-size:11px;padding:2px 7px;
+  font-family:'Oswald',sans-serif;letter-spacing:.06em;
+  transition:background .12s,color .12s;flex-shrink:0;
+}
+.cut-btn:hover{background:#cc2200;color:#fff;border-color:#cc2200}
+.cut-empty{
+  font-family:'Caveat',cursive;font-size:14px;color:var(--ink-faded);
+  text-align:center;padding:4px 0;
+}
+.cut-rel-sel{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.05em;
+  background:var(--props-input-bg);border:1px solid var(--props-sep);
+  border-radius:3px;color:var(--props-h);padding:2px 4px;cursor:pointer;
+  text-transform:uppercase;flex-shrink:0;max-width:80px;
+}
+
+/* activity log */
+.act-entry{
+  display:flex;gap:6px;align-items:flex-start;
+  padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06);
+}
+.act-entry:last-child{border-bottom:none}
+.act-time{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.04em;
+  color:var(--ink-faded);white-space:nowrap;padding-top:2px;flex-shrink:0;
+}
+.act-text{
+  font-family:var(--card-font);font-size:13px;color:var(--ink-faded);
+  line-height:1.3;
+}
+.card-resize{
+  position:absolute;bottom:0;right:0;width:18px;height:18px;
+  cursor:nwse-resize;z-index:25;opacity:0;transition:opacity .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.card:hover .card-resize{opacity:1}
+.card-resize::after{
+  content:'';display:block;
+  width:8px;height:8px;
+  border-right:2px solid rgba(0,0,0,.25);
+  border-bottom:2px solid rgba(0,0,0,.25);
+  border-radius:0 0 2px 0;
+}
+.bp-font-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px;
+}
+.bp-font-opt{
+  padding:7px 8px;border-radius:4px;cursor:pointer;
+  border:1.5px solid var(--props-sep);
+  background:var(--props-input-bg);
+  transition:border-color .15s,background .15s;
+  text-align:center;line-height:1.2;
+}
+.bp-font-opt:hover{background:var(--ui-accent);border-color:var(--ui-accent-hover)}
+.bp-font-opt.active{border-color:var(--ui-accent-hover);background:var(--ui-accent)}
+.bp-font-name{
+  font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--props-label);display:block;margin-top:2px;
+}
+.bp-font-sample{color:var(--props-h);font-size:14px;display:block}
+.bh-stats{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.12em;
+  color:var(--ui-text-dim);padding:0 14px;white-space:nowrap;
+}
+
+/* === TOOLBAR === */
+#toolbar{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  z-index:200;display:flex;gap:6px;
+  background:var(--toolbar-bg);border:1px solid var(--toolbar-border);
+  border-radius:8px;padding:8px 12px;backdrop-filter:blur(4px);
+  box-shadow:0 4px 20px rgba(0,0,0,.6);transition:background .4s,border-color .4s;
+}
+.tb-btn{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+  padding:6px 12px;border-radius:5px;border:1px solid var(--tb-btn-border);
+  background:var(--tb-btn-bg);color:var(--tb-btn-color);cursor:pointer;transition:background .15s,color .15s;
+  white-space:nowrap;
+}
+.tb-btn:hover{background:var(--ui-accent);color:var(--tab-active)}
+.tb-btn.danger{border-color:rgba(204,34,0,.4);color:#ff8870;background:rgba(204,34,0,.08)}
+.tb-btn.danger:hover{background:rgba(204,34,0,.3);color:#fff}
+[data-theme="paper"] .tb-btn.danger{border-color:rgba(180,0,0,.5);color:#b80000;background:rgba(180,0,0,.08)}
+[data-theme="paper"] .tb-btn.danger:hover{background:rgba(180,0,0,.15);color:#8a0000}
+.tb-sep{width:1px;background:var(--ui-accent);opacity:.3;margin:0 2px}
+.tb-label{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ui-text-dim);align-self:center;padding:0 2px;
+}
+
+/* === MODAL === */
+#modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px);
+}
+#modal-overlay.open{display:flex}
+#modal{
+  background:var(--card-paper);
+  border:1px solid rgba(0,0,0,.18);border-radius:3px;
+  width:560px;max-width:96vw;
+  height:min(88vh,640px);min-height:420px;
+  position:relative;box-shadow:0 8px 40px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;overflow:hidden;
+  font-family:var(--card-font);
+}
+
+/* lined paper on body only */
+#modal-body{
+  flex:1;overflow:hidden;
+  padding:0;
+  background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(0,120,200,.1) 27px,rgba(0,120,200,.1) 28px);
+  display:flex;flex-direction:row;min-width:0;min-height:0;
+}
+
+/* pane area — no scroll here, fills body */
+#modal-pane-area{
+  flex:1;min-width:0;min-height:0;
+  display:flex;flex-direction:column;
+  padding:20px 20px 0;
+  overflow:hidden;
+}
+
+/* vertical tab strip — right side */
+#modal-tabs{
+  display:flex;flex-direction:column;
+  width:34px;flex-shrink:0;
+  background:rgba(0,0,0,.05);
+  border-left:1px solid rgba(0,0,0,.1);
+  padding:6px 0;gap:1px;
+}
+.mtab{
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faded);padding:12px 7px;cursor:pointer;
+  border-right:3px solid transparent;
+  transition:color .15s,background .15s,border-color .15s;
+  white-space:nowrap;user-select:none;display:flex;align-items:center;gap:4px;
+}
+.mtab-icon{writing-mode:horizontal-tb;transform:none;font-size:11px;line-height:1}
+.mtab:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+.mtab.active{color:var(--ink);background:var(--card-paper);border-right-color:var(--pin-red);font-weight:600}
+.mtab.hidden{display:none}
+
+/* panes */
+.modal-pane{display:none;flex-direction:column;flex:1;padding-right:4px;min-height:0}
+.modal-pane.active{display:flex}
+#pane-style{padding-left:4px}
+
+/* non-card panes: scroll themselves */
+#pane-tasks,#pane-details,#pane-style,#pane-history{overflow-y:auto}
+
+/* textarea: stretches to fill, scrolls only when needed, styled scrollbar */
+.modal-pane textarea{
+  flex:1;
+  font-family:var(--card-font);font-size:16px;color:var(--ink);
+  background:transparent;border:none;
+  border-bottom:1.5px solid rgba(0,0,0,.18);
+  outline:none;padding:3px 2px 8px;
+  resize:none;width:100%;
+  line-height:1.6;
+  overflow-y:auto;
+  /* styled scrollbar */
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,0,0,.18) transparent;
+}
+.modal-pane textarea::-webkit-scrollbar{width:4px}
+.modal-pane textarea::-webkit-scrollbar-track{background:transparent}
+.modal-pane textarea::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.18);border-radius:99px;
+}
+.modal-pane textarea::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.32)}
+.modal-pane textarea:focus{border-bottom-color:rgba(0,0,0,.4)}
+
+/* styled scrollbar for other panes too */
+#pane-tasks::-webkit-scrollbar,
+#pane-details::-webkit-scrollbar,
+#pane-style::-webkit-scrollbar,
+#pane-history::-webkit-scrollbar{width:4px}
+#pane-tasks::-webkit-scrollbar-track,
+#pane-details::-webkit-scrollbar-track,
+#pane-style::-webkit-scrollbar-track,
+#pane-history::-webkit-scrollbar-track{background:transparent}
+#pane-tasks::-webkit-scrollbar-thumb,
+#pane-details::-webkit-scrollbar-thumb,
+#pane-style::-webkit-scrollbar-thumb,
+#pane-history::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.15);border-radius:99px;
+}
+#pane-tasks::-webkit-scrollbar-thumb:hover,
+#pane-details::-webkit-scrollbar-thumb:hover,
+#pane-style::-webkit-scrollbar-thumb:hover,
+#pane-history::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.28)}
+
+/* pane-card flex chain — must be unbroken from modal to textarea */
+#pane-card{min-height:0}
+#f-desc-wrap{flex:1;display:flex;flex-direction:column;min-height:0}
+#f-desc-wrap.hidden{display:none}
+#f-img-wrap{flex:1;display:flex;flex-direction:column;min-height:0}
+#f-img-wrap.hidden{display:none}
+#modal h2{
+  font-family:'Special Elite',serif;font-size:16px;margin-bottom:14px;color:var(--ink);
+  border-bottom:2px solid rgba(0,0,0,.12);padding-bottom:8px;letter-spacing:.04em;
+  flex-shrink:0;
+}
+.fl{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-faded);margin-bottom:3px;margin-top:12px;flex-shrink:0}
+.fl:first-child{margin-top:0}
+#modal input,#modal select{
+  width:100%;font-family:var(--card-font);font-size:16px;
+  background:transparent;border:none;border-bottom:1.5px solid rgba(0,0,0,.18);
+  outline:none;color:var(--ink);padding:3px 2px;
+}
+#modal select{font-family:'Oswald',sans-serif;font-size:12px;cursor:pointer}
+#modal input[type=date],#modal input[type=time]{font-family:'Oswald',sans-serif;font-size:12px}
+
+/* fixed footer with action buttons */
+#modal-footer{
+  flex-shrink:0;
+  display:flex;gap:8px;justify-content:flex-end;
+  padding:12px 20px;
+  border-top:1px solid rgba(0,0,0,.1);
+  background:var(--card-paper);
+}
+.modal-btn{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 18px;border-radius:3px;border:1.5px solid;cursor:pointer;transition:background .15s;
+}
+.modal-btn.primary{background:var(--ink);color:var(--card-paper);border-color:var(--ink)}
+.modal-btn.primary:hover{opacity:.85}
+.modal-btn.secondary{background:transparent;color:var(--ink-faded);border-color:rgba(0,0,0,.18)}
+.modal-btn.secondary:hover{background:rgba(0,0,0,.06)}
+
+/* mobile: full-screen bottom sheet */
+@media(max-width:600px){
+  #modal{
+    width:100%!important;max-width:100%!important;
+    height:90vh!important;min-height:0!important;
+    border-radius:14px 14px 0 0;
+    margin-top:auto;align-self:flex-end;
+  }
+  #modal-overlay{align-items:flex-end}
+}
+
+/* tag pills */
+.tag-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.tag-pill{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 9px;border-radius:3px;border:1.5px solid transparent;cursor:pointer;
+  opacity:.45;transition:opacity .12s,transform .1s;display:flex;align-items:center;gap:4px;
+}
+.tag-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.tag-pill:hover{opacity:.8}
+.tag-pill.sel{opacity:1;border-color:currentColor;transform:translateY(-1px)}
+.tp-work   {background:#e8eef8;color:#1a3a6b}
+.tp-pessoal{background:#f8eee8;color:#6b2d1a}
+.tp-urgente{background:#f8e8e8;color:#9a1a1a}
+.tp-ideia  {background:#f0e8f8;color:#4a1a6b}
+.tp-meeting{background:#e8f4e8;color:#1a5a1a}
+
+/* pin opts */
+.pin-opts{display:flex;gap:8px;margin-top:6px}
+.pin-opt{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .12s}
+.pin-opt:hover,.pin-opt.sel{transform:scale(1.2)}
+.pin-opt.sel{border-color:var(--ink)}
+.po-red   {background:radial-gradient(circle at 35% 35%,#ff6655,#cc2200)}
+.po-blue  {background:radial-gradient(circle at 35% 35%,#5588cc,#1a4a8a)}
+.po-yellow{background:radial-gradient(circle at 35% 35%,#ffe066,#d4aa00)}
+.po-green {background:radial-gradient(circle at 35% 35%,#66cc66,#2a7a2a)}
+
+/* card color swatches in modal */
+.card-color-opts{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
+.card-color-opt{
+  width:24px;height:24px;border-radius:5px;cursor:pointer;
+  border:2px solid transparent;
+  box-shadow:0 0 0 0 transparent;
+  transition:transform .12s, box-shadow .12s;
+  flex-shrink:0;outline:none;
+}
+.card-color-opt:hover{transform:scale(1.12)}
+.card-color-opt.sel{
+  transform:scale(1.18);
+  border-color:#fff;
+  box-shadow:0 0 0 2.5px var(--ink), 0 2px 8px rgba(0,0,0,.35);
+}
+.card-color-opt.is-default{
+  border-style:dashed;
+  border-color:rgba(0,0,0,.25)!important;
+}
+.card-color-opt.is-default.sel{
+  border-color:#fff!important;
+  box-shadow:0 0 0 2.5px var(--ink), 0 2px 8px rgba(0,0,0,.35);
+}
+
+/* string color swatches in modal */
+.str-color-opts{display:flex;gap:7px;margin-top:6px;flex-wrap:wrap}
+.str-color-opt{
+  width:22px;height:22px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:transform .12s;flex-shrink:0;
+}
+.str-color-opt:hover{transform:scale(1.15)}
+.str-color-opt.sel{border-color:var(--ink);transform:scale(1.2)}
+
+/* checklist editor */
+.cl-editor{margin-top:6px;display:flex;flex-direction:column;gap:4px}
+.cl-edit-row{display:flex;gap:5px;align-items:center}
+.cl-edit-row input{flex:1;font-size:14px;border-bottom:1px solid rgba(0,0,0,.15)!important}
+.cl-edit-del{background:none;border:none;cursor:pointer;color:rgba(204,34,0,.5);font-size:14px;flex-shrink:0;padding:0 2px}
+.cl-edit-del:hover{color:#cc2200}
+.cl-add-btn{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.14);border-radius:3px;
+  padding:4px 10px;cursor:pointer;color:var(--ink-faded);margin-top:2px;align-self:flex-start;
+  transition:background .12s;
+}
+.cl-add-btn:hover{background:rgba(0,0,0,.12)}
+
+/* zone modal */
+#zone-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;
+  display:none;align-items:center;justify-content:center;
+}
+#zone-modal.open{display:flex}
+#zone-modal-inner{
+  background:var(--card-paper);border-radius:4px;padding:20px;width:300px;
+  font-family:'Caveat',cursive;box-shadow:0 8px 32px rgba(0,0,0,.5);
+}
+#zone-modal-inner h3{font-family:'Special Elite',serif;font-size:15px;margin-bottom:14px;color:var(--ink)}
+
+/* mode indicator */
+#mode-indicator{
+  position:fixed;top:52px;left:50%;transform:translateX(-50%);z-index:300;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  background:rgba(204,34,0,.92);color:#fff;padding:6px 18px;border-radius:4px;
+  display:none;align-items:center;gap:8px;pointer-events:auto;
+  box-shadow:0 2px 12px rgba(204,34,0,.5);
+}
+#rel-type-sel{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.06em;
+  /* solid colours so the native dropdown dropdown is readable on every OS */
+  background:#4a0a00;color:#ffd0c0;
+  border:1px solid rgba(255,160,120,.5);border-radius:3px;
+  padding:3px 6px;cursor:pointer;outline:none;
+  text-transform:uppercase;
+}
+#rel-type-sel:focus{border-color:rgba(255,160,120,.9)}
+#rel-type-sel option{background:#3a0800;color:#ffd0c0;}
+
+/* hint */
+.hint{
+  position:fixed;bottom:74px;left:50%;transform:translateX(-50%);
+  font-family:'Caveat',cursive;font-size:13px;color:rgba(255,220,140,.45);
+  pointer-events:none;z-index:150;white-space:nowrap;transition:opacity 1s;
+}
+
+/* === UNDO TOAST === */
+#undo-toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(8px);
+  z-index:1000;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(20,12,4,.92);color:rgba(255,220,140,.9);
+  border:1px solid rgba(255,200,100,.25);border-radius:20px;
+  padding:6px 18px;pointer-events:none;
+  opacity:0;transition:opacity .2s,transform .2s;
+}
+#undo-toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ========================================
+   MOBILE / TABLET
+======================================== */
+
+/* FAB - bot&#227;o flutuante de adicionar (mobile) */
+#fab{
+  display:none;
+  position:fixed;bottom:24px;right:20px;z-index:250;
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(20,14,8,.95);border:1px solid rgba(255,200,100,.45);
+  color:#e8d090;font-size:24px;line-height:1;
+  box-shadow:0 4px 18px rgba(0,0,0,.55);
+  cursor:pointer;transition:transform .15s,background .15s;
+  align-items:center;justify-content:center;
+}
+#fab:active{transform:scale(.92)}
+
+/* FAB drawer - expands upward */
+#fab-drawer{
+  display:none;
+  position:fixed;bottom:86px;right:16px;z-index:250;
+  flex-direction:column;gap:8px;align-items:flex-end;
+}
+#fab-drawer.open{ display:flex; }
+.fab-item{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(20,14,8,.95);border:1px solid rgba(255,200,100,.3);
+  border-radius:24px;padding:8px 16px 8px 12px;
+  color:#e8d090;font-family:'Oswald',sans-serif;font-size:12px;
+  letter-spacing:.07em;text-transform:uppercase;cursor:pointer;
+  box-shadow:0 3px 12px rgba(0,0,0,.5);
+  white-space:nowrap;transition:background .15s;
+  animation:fabIn .18s ease both;
+}
+.fab-item:active{background:rgba(255,200,100,.2)}
+.fab-item .fi-icon{font-size:18px}
+@keyframes fabIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* bottom safe-area padding for toolbar on iOS */
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  #toolbar{ padding-bottom:calc(8px + env(safe-area-inset-bottom)); }
+  #fab    { bottom:calc(24px + env(safe-area-inset-bottom)); }
+  #fab-drawer{ bottom:calc(86px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width:768px){
+  /* hide desktop toolbar, show FAB */
+  #toolbar{ display:none; }
+  #fab    { display:flex; }
+
+  /* fixed elements: shift below 2-row header (40+38=78px) */
+  #board-props{ top:auto;bottom:0;right:0;left:0;width:100%;
+    border-radius:16px 16px 0 0;
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom,0px));
+    max-height:80vh;overflow-y:auto; }
+  #tpl-panel{ top:82px; }
+  #minimap{ top:82px; }
+  #mode-indicator{ top:86px; }
+  #focus-bar{ top:86px; }
+
+/* ── MOBILE HEADER: two-row layout ── */
+@media (max-width:768px){
+  #board-header{
+    flex-wrap:wrap;
+    height:auto;
+    padding-top:env(safe-area-inset-top,0px);
+  }
+
+  /* row 1: logo-dot · search · cfg — full width */
+  #header-row1{
+    display:flex;align-items:center;
+    width:100%;height:40px;
+    border-bottom:1px solid rgba(255,200,100,.08);
+    padding:0 4px;
+    order:0;
+  }
+
+  /* row 2: tabs + add button — full width, scrollable */
+  #header-row2{
+    display:flex;align-items:stretch;
+    width:100%;height:38px;overflow-x:auto;
+    scrollbar-width:none;order:1;
+  }
+  #header-row2::-webkit-scrollbar{display:none}
+
+  /* logo: shrink to just the dot on mobile */
+  #ev-wordmark{ padding:0 10px; }
+  #ev-word{ display:none; }
+  #ev-dot{ font-size:20px;line-height:1; }
+
+  /* search: icon-button that expands inline */
+  #search-wrap{ margin:0;flex:1;height:28px;gap:0; }
+  #search-input{
+    width:0;padding:0;border-color:transparent;
+    transition:width .2s,padding .2s,border-color .2s;
+    flex:0;
+  }
+  #search-input.expanded{
+    flex:1;width:auto;padding:0 9px;
+    border-color:var(--search-border);
+  }
+  #search-toggle{
+    background:none;border:none;cursor:pointer;
+    color:var(--ui-accent);font-size:14px;padding:0 8px;
+    display:flex;align-items:center;height:100%;
+    transition:color .15s;
+  }
+  #search-toggle:hover{ color:var(--ui-accent-hover); }
+  #search-clear{ display:none; }
+  #search-input.expanded ~ #search-clear-mobile{ display:flex; }
+  #search-clear-mobile{
+    display:none;align-items:center;justify-content:center;
+    background:var(--ui-accent);border:1px solid var(--search-border);
+    border-left:none;border-radius:0 4px 4px 0;
+    color:var(--ui-text-dim);padding:0 9px;cursor:pointer;
+    font-size:12px;height:100%;box-sizing:border-box;
+  }
+  #search-count{ display:none; }
+
+  /* spacer pushes cfg to right */
+  #header-spacer{ flex:1; }
+
+  /* cfg button */
+  .btab-cfg{ padding:0 12px;height:40px; }
+  .btab-add{ display:none; } /* add is in row2 */
+
+  /* tabs in row2 */
+  #board-tabs{ flex:1;overflow:visible; }
+  .btab{ height:38px;font-size:10px;padding:0 12px;white-space:nowrap;flex-shrink:0; }
+
+  /* add button at end of row2 */
+  #mobile-add-tab{
+    flex-shrink:0;background:none;border:none;padding:0 14px;
+    color:var(--ui-accent);font-size:18px;cursor:pointer;
+    display:flex;align-items:center;height:38px;
+    transition:color .15s;
+  }
+  #mobile-add-tab:hover{ color:var(--ui-accent-hover); }
+
+  .bh-stats{ display:none; }
+}
+
+  /* modal: full screen sheet from bottom */
+  #modal-overlay{ align-items:flex-end; }
+  #modal{
+    width:100%;max-width:100%;border-radius:16px 16px 0 0;
+    padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));
+    max-height:90vh;
+  }
+
+  /* zone modal */
+  #zone-modal{ align-items:flex-end; }
+  #zone-modal-inner{
+    width:100%;border-radius:16px 16px 0 0;
+    padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));
+  }
+
+  /* import modal */
+  #import-modal{ align-items:flex-end; }
+  #import-modal > div{
+    width:100%!important;border-radius:16px 16px 0 0!important;
+    padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px))!important;
+  }
+
+  /* cards: bigger tap targets */
+  .ca-btn{ padding:5px 9px;font-size:12px; }
+  .pin   { width:20px;height:20px; }
+
+  /* zoom indicator: bottom-left to avoid FAB */
+  #zoom-indicator{ right:auto;left:16px;bottom:calc(24px + env(safe-area-inset-bottom,0px)); }
+
+  /* hint hidden on mobile */
+  .hint{ display:none; }
+}
+
+/* desktop: row wrappers invisible, header behaves normally */
+@media (min-width:769px){
+  #header-row1{ display:contents; }
+  #header-row2{ display:contents; }
+  #mobile-add-tab{ display:none; }
+  #header-spacer{ display:none; }
+  #search-toggle{ display:none; }
+  #search-clear-mobile{ display:none!important; }
+  #search-input{ flex:initial;width:170px;padding:0 9px;border-color:var(--search-border); }
+  #fab,#fab-drawer{ display:none!important; }
+}
+
+/* ── LANDSCAPE MOBILE (phone landscape) ── */
+@media (max-width:896px) and (orientation:landscape) and (max-height:500px){
+  /* header: ultra compact */
+  #board-header{ height:36px; }
+  .btab{ height:36px;font-size:10px;padding:0 8px; }
+  .btab-add,.btab-cfg{ padding:0 8px; }
+  #ev-wordmark{ padding:0 10px; }
+  #ev-word{ font-size:12px; }
+
+  /* search hidden in landscape phone — too cramped */
+  #search-wrap{ display:none; }
+
+  /* toolbar: horizontal scroll, smaller buttons */
+  #toolbar{
+    bottom:8px;padding:5px 8px;gap:4px;
+    max-width:calc(100vw - 16px);overflow-x:auto;
+    scrollbar-width:none;
+  }
+  #toolbar::-webkit-scrollbar{display:none}
+  .tb-btn{ padding:4px 8px;font-size:10px; }
+  .tb-sep{ margin:0 1px; }
+  .tb-label{ display:none; }
+
+  /* board: account for smaller header */
+  #board{ height:100vh; }
+
+  /* zoom indicator */
+  #zoom-indicator{ bottom:calc(8px + 38px);right:8px;font-size:9px;padding:3px 6px; }
+
+  /* modals: smaller max-height */
+  #modal{ max-height:85vh;padding:14px 16px 12px; }
+  #modal-overlay{ align-items:flex-end; }
+
+  /* board-props: bottom sheet */
+  #board-props{
+    top:auto;bottom:0;right:0;left:0;width:100%;
+    border-radius:12px 12px 0 0;max-height:75vh;
+  }
+}
+
+#export-flash{
+  position:fixed;inset:0;background:#fff;z-index:9999;
+  opacity:0;pointer-events:none;transition:opacity .15s;
+}
+
+/* === TEMPLATES PANEL === */
+#tpl-panel{
+  position:fixed;top:46px;left:12px;z-index:400;
+  background:rgba(20,12,4,.97);border:1px solid rgba(255,200,100,.25);
+  border-radius:8px;padding:14px 16px 12px;width:240px;
+  box-shadow:0 6px 28px rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  display:none;flex-direction:column;gap:8px;max-height:80vh;overflow-y:auto;
+}
+#tpl-panel.open{display:flex}
+#tpl-panel h3{
+  font-family:'Special Elite',serif;font-size:13px;letter-spacing:.08em;
+  color:rgba(255,220,140,.9);border-bottom:1px solid rgba(255,200,100,.15);
+  padding-bottom:8px;margin-bottom:2px;
+}
+.tpl-item{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,200,100,.06);border:1px solid rgba(255,200,100,.18);
+  border-radius:5px;padding:7px 10px;cursor:pointer;
+  transition:background .15s;
+}
+.tpl-item:hover{background:rgba(255,200,100,.16)}
+.tpl-name{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.06em;
+  color:rgba(255,220,140,.85);flex:1;
+}
+.tpl-use{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(255,200,100,.15);border:1px solid rgba(255,200,100,.3);
+  border-radius:3px;color:#e8d090;padding:2px 7px;cursor:pointer;
+  transition:background .15s;margin-left:6px;flex-shrink:0;
+}
+.tpl-use:hover{background:rgba(255,200,100,.3)}
+.tpl-del{
+  background:none;border:none;cursor:pointer;color:rgba(204,80,80,.5);
+  font-size:13px;padding:0 3px;transition:color .12s;
+}
+.tpl-del:hover{color:#cc2200}
+.tpl-save-btn{
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(255,200,100,.1);border:1px solid rgba(255,200,100,.3);
+  border-radius:4px;color:#e8d090;padding:6px 10px;cursor:pointer;
+  transition:background .15s;width:100%;
+}
+.tpl-save-btn:hover{background:rgba(255,200,100,.25)}
+
+/* === RELATION LABELS (SVG foreignObject fallback via text) === */
+.rel-label{
+  font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.08em;
+  text-transform:uppercase;pointer-events:none;
+}
+
+/* === FOCUS MODE === */
+.card.focus-dim{opacity:.1;filter:drop-shadow(none);pointer-events:none}
+.card.focus-hi {opacity:1;filter:drop-shadow(2px 4px 8px rgba(0,0,0,.45))}
+#focus-bar{
+  position:fixed;top:48px;left:50%;transform:translateX(-50%);z-index:310;
+  display:none;align-items:center;gap:10px;
+  background:rgba(20,12,4,.92);border:1px solid rgba(255,200,100,.35);
+  border-radius:20px;padding:6px 16px;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:rgba(255,220,140,.85);box-shadow:0 3px 16px rgba(0,0,0,.5);
+}
+#focus-bar.active{display:flex}
+#focus-bar button{
+  background:none;border:1px solid rgba(255,200,100,.3);border-radius:12px;
+  color:rgba(255,200,100,.7);font-family:'Oswald',sans-serif;font-size:10px;
+  letter-spacing:.08em;padding:3px 10px;cursor:pointer;transition:background .15s;
+}
+#focus-bar button:hover{background:rgba(255,200,100,.15);color:#fff}
+
+/* === SEARCH BAR === */
+#search-wrap{
+  display:flex;align-items:stretch;gap:0;
+  margin:0 8px;flex-shrink:0;height:28px;
+}
+#search-input{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.06em;
+  background:var(--search-bg);border:1px solid var(--search-border);
+  border-radius:4px 0 0 4px;outline:none;color:var(--search-color);
+  padding:0 9px;width:170px;transition:border-color .15s,width .2s;
+  height:100%;box-sizing:border-box;
+}
+#search-input::placeholder{color:var(--search-placeholder)}
+#search-input:focus{border-color:var(--ui-accent-hover);width:220px}
+#search-clear{
+  font-family:'Oswald',sans-serif;font-size:12px;
+  background:var(--ui-accent);border:1px solid var(--search-border);
+  border-left:none;border-radius:0 4px 4px 0;color:var(--ui-text-dim);
+  padding:0 9px;cursor:pointer;transition:background .15s,color .15s;
+  display:flex;align-items:center;justify-content:center;
+  height:100%;box-sizing:border-box;
+}
+#search-clear:hover{background:var(--ui-accent-hover);color:var(--tab-active);opacity:.9}
+#search-count{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.1em;
+  color:var(--ui-text-dim);padding:0 8px;white-space:nowrap;
+  display:flex;align-items:center;
+}
+/* dimmed cards when search active */
+.card.search-dim{opacity:.18;filter:drop-shadow(none)}
+.card.search-match{opacity:1;filter:drop-shadow(2px 4px 8px rgba(0,0,0,.45))}
+
+/* === MINIMAP === */
+#minimap{
+  position:fixed;top:56px;right:12px;z-index:299;
+  width:180px;height:100px;
+  background:rgba(20,12,4,.82);
+  border:1px solid rgba(255,200,100,.18);
+  border-radius:8px;
+  overflow:hidden;pointer-events:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.45);
+  opacity:0;transition:opacity .25s;
+}
+#minimap.pan-visible{opacity:.85}
+#minimap-canvas{width:100%;height:100%;display:block}
+#minimap-viewport{
+  position:absolute;border:1.5px solid rgba(255,200,100,.7);
+  border-radius:2px;pointer-events:none;background:rgba(255,200,100,.06);
+}
+
+@media (max-width:768px){
+  #minimap{
+    top:86px;        /* below 2-row header (78px) + gap */
+    right:8px;
+    width:100px;
+    height:56px;
+    border-radius:6px;
+    opacity:0;
+  }
+}
+
+/* === ZOOM === */
+#board-canvas{
+  position:absolute;inset:0;
+  z-index:10;
+  transform-origin:0 0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  /* no will-change - it causes blurry subpixel compositing during scale transitions */
+}
+#zoom-indicator{
+  position:fixed;bottom:68px;right:16px;z-index:200;
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;
+  color:rgba(255,200,100,.5);background:rgba(20,12,4,.7);
+  border:1px solid rgba(255,200,100,.15);border-radius:4px;
+  padding:4px 8px;cursor:pointer;transition:opacity .4s, color .15s, border-color .15s;
+}
+#zoom-indicator:hover{color:rgba(255,200,100,.9);border-color:rgba(255,200,100,.4);}
+</style>
+</head>
+<body>
+
+<!-- Board header with tabs -->
+<div id="board-header">
+  <!-- Row 1 (mobile): logo · search · cfg -->
+  <div id="header-row1">
+    <a id="ev-wordmark" href="#" onclick="return false" title="Evidently">
+      <span id="ev-word">Evidently</span><span id="ev-dot">.</span>
+    </a>
+    <div id="search-wrap">
+      <button id="search-toggle" onclick="toggleMobileSearch()" title="Buscar">&#x1F50D;</button>
+      <input id="search-input" type="text" placeholder="Buscar cards..." oninput="onSearch(this.value)" onkeydown="if(event.key==='Escape'){clearSearch();this.blur()}">
+      <button id="search-clear" onclick="clearSearch()" title="Limpar busca">&#x2715;</button>
+      <button id="search-clear-mobile" onclick="clearSearch();document.getElementById('search-input').classList.remove('expanded')" title="Limpar">&#x2715;</button>
+      <span id="search-count"></span>
+    </div>
+    <span id="header-spacer"></span>
+    <span class="bh-stats" id="bh-stats"></span>
+    <button class="btab-cfg" id="btn-cfg" onclick="toggleBoardProps()" title="Propriedades do quadro">&#x2699;</button>
+  </div>
+  <!-- Row 2 (mobile): tabs + add -->
+  <div id="header-row2">
+    <div id="board-tabs"></div>
+    <button class="btab-add" onclick="addBoard()" title="Novo quadro">+</button>
+    <button id="mobile-add-tab" onclick="addBoard()" title="Novo quadro">+</button>
+  </div>
+</div>
+
+<!-- Board properties panel -->
+<div id="board-props">
+  <h3>Configuracoes</h3>
+  <div>
+    <div class="bp-label">Nome</div>
+    <input id="bp-name" type="text" placeholder="Nome do quadro..." maxlength="40"
+      onkeydown="if(event.key==='Enter') saveBoardProps(); if(event.key==='Escape') closeBoardProps();">
+  </div>
+  <div class="bp-sep"></div>
+  <div class="bp-label">Tema</div>
+  <div class="bp-theme-grid" id="bp-theme-grid"></div>
+  <div class="bp-sep"></div>
+  <div class="bp-label">Fonte dos cards</div>
+  <div class="bp-font-grid" id="bp-font-grid"></div>
+  <div class="bp-sep"></div>
+  <div class="bp-label">Arquivo</div>
+  <button class="bp-btn bp-btn-file" onclick="exportJSON()">&#x1F4BE; Exportar quadro</button>
+  <button class="bp-btn bp-btn-file" onclick="document.getElementById('import-file').click()">&#x1F4E5; Importar quadro</button>
+  <input type="file" id="import-file" accept=".invboard,.json" style="display:none" onchange="importJSON(this)">
+  <button class="bp-btn bp-btn-file" onclick="exportImage()">&#x1F4F8; Salvar como PNG</button>
+  <div class="bp-sep"></div>
+  <button class="bp-btn bp-btn-save" onclick="saveBoardProps()">Salvar</button>
+  <button class="bp-btn bp-btn-del"  onclick="deleteBoardFromProps()">Remover</button>
+  <div class="bp-sep"></div>
+  <button class="bp-btn bp-btn-del"  onclick="resetToWelcome()">&#x1F504; Apagar sessao</button>
+</div>
+
+<!-- Focus mode bar -->
+<div id="focus-bar">
+  <span id="focus-label">&#x1F3AF; Modo foco</span>
+  <button onclick="exitFocus()">&#x2715; Sair</button>
+</div>
+
+<div id="board">
+  <svg id="strings"></svg>
+  <div id="board-canvas">
+    <div id="lasso"></div>
+  </div>
+</div>
+
+<div id="zoom-indicator" onclick="zoomReset()" title="Clique para recentrar">100%</div>
+<div id="minimap" title="Clique para navegar">
+  <canvas id="minimap-canvas"></canvas>
+  <div id="minimap-viewport"></div>
+</div>
+<div id="mode-indicator">
+  <span>&#x1F9F5; Conectando &#x2014; clique em outro card</span>
+  <select id="rel-type-sel" onchange="selRelType=this.value">
+    <option value="">sem rótulo</option>
+    <option value="bloqueia">bloqueia</option>
+    <option value="depende">depende de</option>
+    <option value="relacionado">relacionado</option>
+    <option value="referencia">referência</option>
+  </select>
+</div>
+<div class="hint" id="hint">Arraste &#183; Alfinete = conectar &#183; Scroll = zoom &#183; Bot&#227;o do meio = mover &#183; Arrastar no fundo = selecionar m&#250;ltiplos &#183; Shift+clique = adicionar &#224; sele&#231;&#227;o</div>
+<div id="export-flash"></div>
+
+<div id="cut-popup"></div>
+
+<!-- Import modal -->
+<div id="import-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)">
+  <div style="background:var(--card-paper);background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(0,120,200,.12) 27px,rgba(0,120,200,.12) 28px);border:1px solid rgba(0,0,0,.18);border-radius:2px;padding:24px 26px 20px;width:340px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,.6);font-family:'Caveat',cursive;">
+    <h2 style="font-family:'Special Elite',serif;font-size:17px;color:var(--ink);border-bottom:2px solid rgba(0,0,0,.12);padding-bottom:8px;margin-bottom:14px;letter-spacing:.04em">Importar quadro</h2>
+    <p id="import-info" style="font-size:15px;color:var(--ink-faded);line-height:1.5;margin-bottom:6px"></p>
+    <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+      <label style="display:flex;align-items:center;gap:8px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faded);cursor:pointer">
+        <input type="radio" name="import-mode" value="add" checked style="accent-color:var(--ink)"> Adicionar como novo(s) quadro(s)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faded);cursor:pointer">
+        <input type="radio" name="import-mode" value="replace" style="accent-color:var(--ink)"> Substituir quadro atual
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-family:'Oswald',sans-serif;font-size :11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faded);cursor:pointer">
+        <input type="radio" name="import-mode" value="merge" style="accent-color:var(--ink)"> Mesclar com quadro atual
+      </label>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px;justify-content:flex-end">
+      <button class="modal-btn secondary" onclick="closeImportModal()">Cancelar</button>
+      <button class="modal-btn primary"   onclick="confirmImport()">Importar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toolbar -->
+<div id="toolbar">
+  <span class="tb-label">Adicionar</span>
+  <button class="tb-btn" onclick="openModal('note')">&#x1F4DD; Nota</button>
+  <button class="tb-btn" onclick="openModal('photo')">&#x1F5BC; Foto</button>
+  <button class="tb-btn" onclick="openZoneModal()">&#x1F4C2; Zona</button>
+  <button class="tb-btn" onclick="toggleTemplates()" title="Templates de card">&#x1F4CB; Templates</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn danger" onclick="clearConnections()">&#x2702; Fios</button>
+  <button class="tb-btn danger" onclick="clearAll()">&#x1F5D1; Limpar</button>
+</div>
+
+<!-- Templates panel -->
+<div id="tpl-panel">
+  <h3 style="display:flex;align-items:center;justify-content:space-between">
+    <span>&#x1F4CB; Templates</span>
+    <button onclick="document.getElementById('tpl-panel').classList.remove('open')"
+      style="background:none;border:none;cursor:pointer;color:rgba(255,200,100,.4);font-size:16px;line-height:1;padding:0 2px;transition:color .15s"
+      onmouseover="this.style.color='rgba(255,220,140,.9)'" onmouseout="this.style.color='rgba(255,200,100,.4)'"
+      title="Fechar">&#x2715;</button>
+  </h3>
+  <div id="tpl-list"></div>
+  <button class="tpl-save-btn" onclick="saveAsTemplate()">+ Salvar card selecionado como template</button>
+</div>
+
+<!-- FAB (mobile) -->
+<button id="fab" onclick="toggleFab()" aria-label="Adicionar">&#x2795;</button>
+<div id="fab-drawer">
+  <div class="fab-item" onclick="closeFab();openModal('note')"><span class="fi-icon">&#x1F4DD;</span>Nota</div>
+  <div class="fab-item" onclick="closeFab();openModal('photo')"><span class="fi-icon">&#x1F5BC;</span>Foto</div>
+  <div class="fab-item" onclick="closeFab();openZoneModal()"><span class="fi-icon">&#x1F4C2;</span>Zona</div>
+  <div class="fab-item" onclick="closeFab();clearConnections()"><span class="fi-icon">&#x2702;</span>Cortar fios</div>
+</div>
+<div id="modal-overlay">
+<div id="modal">
+
+  <!-- row: pane-area (scrollable) + tab strip -->
+  <div id="modal-body">
+    <div id="modal-pane-area">
+      <h2 id="modal-h2">Nova Evidência</h2>
+
+      <!-- PANE 1: Card -->
+      <div class="modal-pane active" id="pane-card">
+        <div class="fl">Título</div>
+        <input id="f-title" type="text" placeholder="Nome da tarefa..." maxlength="70">
+        <div id="f-desc-wrap" style="flex:1;display:flex;flex-direction:column;min-height:0">
+          <div class="fl">Descrição</div>
+          <textarea id="f-desc" placeholder="Detalhes..."></textarea>
+        </div>
+        <div id="f-img-wrap" style="display:none;flex:1;flex-direction:column;min-height:0">
+          <div class="fl">Imagem — URL</div>
+          <input id="f-img" type="text" placeholder="https://..." oninput="previewImg()">
+          <div class="fl" style="margin-top:8px">ou upload local</div>
+          <div id="f-upload-area" onclick="document.getElementById(&apos;f-file&apos;).click()" style="margin-top:5px;border:1.5px dashed rgba(0,0,0,.2);border-radius:4px;padding:10px;text-align:center;cursor:pointer;font-family:&apos;Oswald&apos;,sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faded)">
+            Clique para escolher arquivo
+          </div>
+          <input id="f-file" type="file" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+          <img id="f-img-preview" src="" alt="" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:3px;margin-top:6px;border:1px solid rgba(0,0,0,.1)">
+          <div class="fl" style="margin-top:8px">Legenda</div>
+          <input id="f-caption" type="text" placeholder="Legenda...">
+        </div>
+      </div>
+
+      <!-- PANE 2: Tarefas -->
+      <div class="modal-pane" id="pane-tasks">
+        <div class="fl">Checklist</div>
+        <div class="cl-editor" id="cl-editor"></div>
+        <button class="cl-add-btn" onclick="addClItem()">+ item</button>
+      </div>
+
+      <!-- PANE 3: Detalhes -->
+      <div class="modal-pane" id="pane-details">
+        <div class="fl">Prazo</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="f-deadline" type="date" style="flex:1">
+          <input id="f-deadline-time" type="time" style="flex:0 0 auto;width:90px">
+        </div>
+        <div class="fl">Tag</div>
+        <div class="tag-pills" id="tag-pills"></div>
+        <div class="fl">Status</div>
+        <select id="f-status">
+          <option value="todo">A fazer</option>
+          <option value="doing">Fazendo</option>
+          <option value="done">Feito</option>
+        </select>
+      </div>
+
+      <!-- PANE 4: Aparência -->
+      <div class="modal-pane" id="pane-style">
+        <div class="fl">Alfinete</div>
+        <div class="pin-opts">
+          <div class="pin-opt po-red    sel" data-pin="red"    onclick="selPin(this)"></div>
+          <div class="pin-opt po-blue"       data-pin="blue"   onclick="selPin(this)"></div>
+          <div class="pin-opt po-yellow"     data-pin="yellow" onclick="selPin(this)"></div>
+          <div class="pin-opt po-green"      data-pin="green"  onclick="selPin(this)"></div>
+        </div>
+        <div class="fl">Cor do barbante</div>
+        <div class="str-color-opts" id="str-color-opts"></div>
+        <div class="fl">Cor do card</div>
+        <div class="card-color-opts" id="card-color-opts"></div>
+      </div>
+
+      <!-- PANE 5: Histórico (editing only) -->
+      <div class="modal-pane" id="pane-history">
+        <div class="fl">Histórico de atividades</div>
+        <div id="activity-list" style="margin-top:6px;overflow-y:auto;flex:1"></div>
+      </div>
+
+    </div><!-- /modal-pane-area -->
+
+    <!-- vertical tab strip -->
+    <div id="modal-tabs">
+      <div class="mtab active" data-pane="pane-card"><span class="mtab-icon">📝</span>Card</div>
+      <div class="mtab" data-pane="pane-tasks"><span class="mtab-icon">✅</span>Tarefas</div>
+      <div class="mtab" data-pane="pane-details"><span class="mtab-icon">📅</span>Detalhes</div>
+      <div class="mtab" data-pane="pane-style"><span class="mtab-icon">🎨</span>Visual</div>
+      <div class="mtab hidden" id="mtab-history" data-pane="pane-history"><span class="mtab-icon">📋</span>Histórico</div>
+    </div>
+
+  </div><!-- /modal-body -->
+
+  <!-- fixed footer -->
+  <div id="modal-footer">
+    <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+    <button class="modal-btn primary"   onclick="saveCard()">Fixar</button>
+  </div>
+
+</div><!-- /modal -->
+</div><!-- /modal-overlay -->
+
+<!-- Zone modal -->
+<div id="zone-modal">
+<div id="zone-modal-inner">
+  <h3>Nova Zona</h3>
+  <div class="fl">Nome</div>
+  <input id="z-name" type="text" placeholder="Ex: Urgente, Sprint 1..." style="width:100%;font-family:'Caveat',cursive;font-size:16px;background:transparent;border:none;border-bottom:1.5px solid rgba(0,0,0,.18);outline:none;color:var(--ink);padding:3px 2px">
+  <div class="fl" style="margin-top:12px">Cor</div>
+  <div id="zone-colors" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap"></div>
+  <div class="modal-btns">
+    <button class="modal-btn secondary" onclick="closeZoneModal()">Cancelar</button>
+    <button class="modal-btn primary"   onclick="saveZone()">Criar zona</button>
+  </div>
+</div>
+</div>
+
+<script>
+/* ========================================
+   CONSTANTS
+======================================== */
+const TAGS   = ['work','pessoal','urgente','ideia','meeting'];
+const VARIANTS = ['','aged','note','red'];
+const STRING_COLORS = ['#cc2200','#cc2200','#ffcc00','#ffffff','#4488ff'];
+const STRING_COLOR_OPTS = [
+  { hex:'#cc2200', label:'Vermelho'  },
+  { hex:'#ff6633', label:'Laranja'   },
+  { hex:'#ffcc00', label:'Amarelo'   },
+  { hex:'#44cc44', label:'Verde'     },
+  { hex:'#4488ff', label:'Azul'      },
+  { hex:'#cc44cc', label:'Roxo'      },
+  { hex:'#ffffff', label:'Branco'    },
+  { hex:'#1a1208', label:'Preto'     },
+];
+const ZONE_PRESETS = [
+  {color:'rgba(204,50,50,.13)',border:'rgba(204,50,50,.35)',text:'#7a1a1a'},
+  {color:'rgba(255,200,50,.13)',border:'rgba(200,160,0,.4)',text:'#7a5000'},
+  {color:'rgba(50,150,80,.12)',border:'rgba(40,120,60,.35)',text:'#1a5a2a'},
+  {color:'rgba(60,100,200,.12)',border:'rgba(50,80,180,.35)',text:'#1a2a7a'},
+  {color:'rgba(140,80,200,.12)',border:'rgba(120,60,180,.35)',text:'#4a1a7a'},
+  {color:'rgba(0,0,0,.06)',border:'rgba(0,0,0,.2)',text:'#3d2e18'},
+];
+
+/* ========================================
+   STATE - multi-board
+======================================== */
+let boards      = [];   // [{id, name}]
+let activeBid   = '';
+let allCards    = {};   // {boardId: [...cards]}
+let allConns    = {};   // {boardId: [...connections]}
+let allZones    = {};   // {boardId: [...zones]}
+
+function curCards() { return allCards[activeBid] || [] }
+function curConns() { return allConns[activeBid] || [] }
+function curZones() { return allZones[activeBid] || [] }
+function setCards(v){ allCards[activeBid]=v }
+function setConns(v){ allConns[activeBid]=v }
+function setZones(v){ allZones[activeBid]=v }
+
+/* ========================================
+   HISTORY - undo / redo
+   One stack per board; each entry is a
+   deep-clone of {cards, conns, zones}
+======================================== */
+const HISTORY_MAX = 60;
+let _undoStacks = {};  // { boardId: [snapshot, ...] }
+let _redoStacks = {};  // { boardId: [snapshot, ...] }
+let _historyPaused = false;  /* set true during undo/redo itself */
+
+function _snapshot() {
+  return JSON.parse(JSON.stringify({
+    cards: allCards[activeBid] || [],
+    conns: allConns[activeBid] || [],
+    zones: allZones[activeBid] || [],
+  }));
+}
+
+function _pushHistory() {
+  if (_historyPaused) return;
+  if (!_undoStacks[activeBid]) _undoStacks[activeBid] = [];
+  if (!_redoStacks[activeBid]) _redoStacks[activeBid] = [];
+  _undoStacks[activeBid].push(_snapshot());
+  if (_undoStacks[activeBid].length > HISTORY_MAX)
+    _undoStacks[activeBid].shift();
+  _redoStacks[activeBid] = [];   /* clear redo on new action */
+}
+
+function _applySnapshot(snap) {
+  allCards[activeBid] = JSON.parse(JSON.stringify(snap.cards));
+  allConns[activeBid] = JSON.parse(JSON.stringify(snap.conns));
+  allZones[activeBid] = JSON.parse(JSON.stringify(snap.zones));
+}
+
+function undo() {
+  const stack = _undoStacks[activeBid];
+  if (!stack || !stack.length) { showToast('Nada para desfazer'); return; }
+  if (!_redoStacks[activeBid]) _redoStacks[activeBid] = [];
+  _redoStacks[activeBid].push(_snapshot());
+  const snap = stack.pop();
+  _historyPaused = true;
+  _applySnapshot(snap);
+  save(); renderAll();
+  _historyPaused = false;
+  showToast('↩ Desfeito');
+}
+
+function redo() {
+  const stack = _redoStacks[activeBid];
+  if (!stack || !stack.length) { showToast('Nada para refazer'); return; }
+  if (!_undoStacks[activeBid]) _undoStacks[activeBid] = [];
+  _undoStacks[activeBid].push(_snapshot());
+  const snap = stack.pop();
+  _historyPaused = true;
+  _applySnapshot(snap);
+  save(); renderAll();
+  _historyPaused = false;
+  showToast('↪ Refeito');
+}
+
+/* clear history when switching boards */
+function _resetHistoryForBoard(bid) {
+  _undoStacks[bid] = [];
+  _redoStacks[bid] = [];
+}
+
+/* ?? toast notification ?? */
+let _toastTimer = null;
+function showToast(msg) {
+  let t = document.getElementById('undo-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'undo-toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('visible'), 1400);
+}
+
+/* ========================================
+   PERSISTENCE
+======================================== */
+function save() {
+  try {
+    localStorage.setItem('invb_boards', JSON.stringify(boards));
+    localStorage.setItem('invb_cards',  JSON.stringify(allCards));
+    localStorage.setItem('invb_conns',  JSON.stringify(allConns));
+    localStorage.setItem('invb_zones',  JSON.stringify(allZones));
+  } catch(e) {
+    if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+      showToast('⚠ Armazenamento cheio — exporte o quadro para não perder dados');
+    }
+  }
+}
+function load() {
+  try {
+    boards    = JSON.parse(localStorage.getItem('invb_boards') || '[]');
+    allCards  = JSON.parse(localStorage.getItem('invb_cards')  || '{}');
+    allConns  = JSON.parse(localStorage.getItem('invb_conns')  || '{}');
+    allZones  = JSON.parse(localStorage.getItem('invb_zones')  || '{}');
+  } catch(e){}
+}
+
+/* ========================================
+   UID
+======================================== */
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6) }
+
+/* ========================================
+   BOARD MANAGEMENT
+======================================== */
+function addBoard(name) {
+  const bname = name || prompt('Nome do quadro:','Novo Quadro');
+  if (!bname) return;
+  const b = { id: uid(), name: bname };
+  boards.push(b);
+  allCards[b.id] = [];
+  allConns[b.id] = [];
+  allZones[b.id] = [];
+  _resetHistoryForBoard(b.id);
+  save();
+  switchBoard(b.id);
+}
+
+function switchBoard(bid) {
+  activeBid = bid;
+  zoom = 1; panX = 0; panY = 0;
+  _resetHistoryForBoard(bid);
+  clearSearch();
+  exitFocus();
+  document.getElementById('tpl-panel')?.classList.remove('open');
+  if(typeof _syncHash==='function') _syncHash();
+  renderTabs();
+  renderAll();
+}
+
+function deleteBoard(bid) {
+  if (boards.length <= 1) { alert('Não é possível remover o único quadro.'); return; }
+  if (!confirm('Remover este quadro e todo seu conteúdo?')) return;
+  boards = boards.filter(b => b.id !== bid);
+  delete allCards[bid]; delete allConns[bid]; delete allZones[bid];
+  delete _undoStacks[bid]; delete _redoStacks[bid];
+  if (activeBid === bid) activeBid = boards[0].id;
+  save(); renderTabs(); renderAll();
+}
+
+function renderTabs() {
+  const wrap = document.getElementById('board-tabs');
+  wrap.innerHTML = '';
+  boards.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'btab' + (b.id === activeBid ? ' active' : '');
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = b.name;
+    nameSpan.style.pointerEvents = 'none';
+    btn.appendChild(nameSpan);
+    btn.addEventListener('click', () => { closeBoardProps(); switchBoard(b.id); });
+    const del = document.createElement('button');
+    del.className = 'btab-del'; del.textContent = '×'; del.title = 'Remover quadro';
+    del.addEventListener('click', e => { e.stopPropagation(); deleteBoard(b.id); });
+    btn.appendChild(del);
+    wrap.appendChild(btn);
+  });
+}
+
+/* ========================================
+   THEME
+======================================== */
+const THEMES = [
+  { id:'cork',  label:'Cork',  dot:'#c8966c' },
+  { id:'night', label:'Night', dot:'#2a2420' },
+  { id:'paper', label:'Paper', dot:'#f0ece4' },
+];
+
+function applyTheme(themeId) {
+  document.documentElement.setAttribute('data-theme', themeId);
+  try { localStorage.setItem('ev_theme', themeId); } catch(e){}
+  requestAnimationFrame(renderStrings);
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem('ev_theme') || 'cork';
+  applyTheme(saved);
+}
+
+function renderThemePicker() {
+  const grid = document.getElementById('bp-theme-grid');
+  if (!grid) return;
+  const current = localStorage.getItem('ev_theme') || 'cork';
+  grid.innerHTML = '';
+  THEMES.forEach(t => {
+    const btn = document.createElement('div');
+    btn.className = 'bp-theme-opt' + (t.id === current ? ' active' : '');
+    btn.innerHTML = `<div class="bp-theme-dot" style="background:${t.dot}"></div><span class="bp-theme-name">${t.label}</span>`;
+    btn.addEventListener('click', () => { applyTheme(t.id); renderThemePicker(); });
+    grid.appendChild(btn);
+  });
+}
+
+/* ========================================
+   MODAL TABS
+======================================== */
+function switchModalTab(paneId) {
+  document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
+  const pane = document.getElementById(paneId);
+  if (pane) pane.classList.add('active');
+  const tab  = document.querySelector(`.mtab[data-pane="${paneId}"]`);
+  if (tab)  tab.classList.add('active');
+  /* refocus first input in pane */
+  const inp = pane?.querySelector('input:not([type=hidden]),textarea,select');
+  if (inp && paneId === 'pane-card') setTimeout(()=>inp.focus(),60);
+}
+
+document.querySelectorAll('.mtab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if (tab.dataset.pane === 'pane-history') { toggleActivityLog(); return; }
+    switchModalTab(tab.dataset.pane);
+  });
+});
+function _addLog(cardId, text) {
+  const cs = curCards();
+  const c  = cs.find(c => c.id === cardId);
+  if (!c) return;
+  if (!c.log) c.log = [];
+  c.log.unshift({ t: Date.now(), text });
+  if (c.log.length > 50) c.log.length = 50; /* cap at 50 entries */
+  setCards(cs);
+}
+
+function _fmtTime(ts) {
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2,'0');
+  const date = `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+  const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${date} ${time}`;
+}
+
+function toggleActivityLog() {
+  const list = document.getElementById('activity-list');
+  list.innerHTML = '';
+  const c = editingId ? curCards().find(c=>c.id===editingId) : null;
+  const entries = c?.log || [];
+  if (!entries.length) {
+    list.innerHTML = `<div class="act-text" style="opacity:.5;font-family:var(--card-font);font-size:14px;color:var(--ink-faded);padding:8px 0">Nenhuma atividade registrada.</div>`;
+  } else {
+    entries.forEach(e => {
+      const row = document.createElement('div');
+      row.className = 'act-entry';
+      const time = document.createElement('span'); time.className='act-time'; time.textContent=_fmtTime(e.t);
+      const txt  = document.createElement('span'); txt.className='act-text';  txt.textContent=e.text;
+      row.appendChild(time); row.appendChild(txt);
+      list.appendChild(row);
+    });
+  }
+  switchModalTab('pane-history');
+}
+const CARD_FONTS = [
+  { id:'caveat',    label:'Caveat',         family:"'Caveat',cursive",       sample:'Aa Bb' },
+  { id:'kalam',     label:'Kalam',          family:"'Kalam',cursive",         sample:'Aa Bb' },
+  { id:'indie',     label:'Indie Flower',   family:"'Indie Flower',cursive",  sample:'Aa Bb' },
+  { id:'patrick',   label:'Patrick Hand',   family:"'Patrick Hand',cursive",  sample:'Aa Bb' },
+  { id:'dm',        label:'DM Sans',        family:"'DM Sans',sans-serif",    sample:'Aa Bb' },
+  { id:'courier',   label:'Courier Prime',  family:"'Courier Prime',monospace",sample:'Aa Bb'},
+  { id:'playfair',  label:'Playfair',       family:"'Playfair Display',serif", sample:'Aa Bb'},
+  { id:'elite',     label:'Special Elite',  family:"'Special Elite',serif",   sample:'Aa Bb' },
+];
+
+function applyCardFont(fontId) {
+  const f = CARD_FONTS.find(f=>f.id===fontId) || CARD_FONTS[0];
+  document.documentElement.style.setProperty('--card-font', f.family);
+  try { localStorage.setItem('ev_card_font', fontId); } catch(e){}
+}
+
+function loadCardFont() {
+  const saved = localStorage.getItem('ev_card_font') || 'caveat';
+  applyCardFont(saved);
+}
+
+function renderFontPicker() {
+  const grid = document.getElementById('bp-font-grid');
+  if (!grid) return;
+  const current = localStorage.getItem('ev_card_font') || 'caveat';
+  grid.innerHTML = '';
+  CARD_FONTS.forEach(f => {
+    const btn = document.createElement('div');
+    btn.className = 'bp-font-opt' + (f.id === current ? ' active' : '');
+    btn.innerHTML = `<span class="bp-font-sample" style="font-family:${f.family}">${f.sample}</span><span class="bp-font-name">${f.label}</span>`;
+    btn.addEventListener('click', () => {
+      applyCardFont(f.id);
+      renderFontPicker();        /* refresh active state */
+    });
+    grid.appendChild(btn);
+  });
+}
+function toggleBoardProps() {
+  const panel = document.getElementById('board-props');
+  const btn   = document.getElementById('btn-cfg');
+  if (panel.classList.contains('open')) { closeBoardProps(); return; }
+  const b = boards.find(b => b.id === activeBid);
+  if (!b) return;
+  document.getElementById('bp-name').value = b.name;
+  renderThemePicker();
+  renderFontPicker();
+  panel.classList.add('open');
+  btn.classList.add('open');
+  setTimeout(() => document.getElementById('bp-name').focus(), 60);
+}
+
+function closeBoardProps() {
+  document.getElementById('board-props').classList.remove('open');
+  document.getElementById('btn-cfg').classList.remove('open');
+}
+
+function saveBoardProps() {
+  const b = boards.find(b => b.id === activeBid);
+  if (!b) return;
+  const val = document.getElementById('bp-name').value.trim();
+  _pushHistory();
+  if (val) b.name = val;
+  save(); renderTabs(); closeBoardProps();
+}
+
+function deleteBoardFromProps() {
+  closeBoardProps();
+  deleteBoard(activeBid);
+}
+
+function resetToWelcome() {
+  if (!confirm('Tem certeza? Todos os quadros e dados serao apagados e o painel de Welcome sera exibido.')) return;
+  ['invb_boards','invb_cards','invb_conns','invb_zones','invb_templates','ev_theme','ev_card_font']
+    .forEach(k => localStorage.removeItem(k));
+  location.reload();
+}
+
+/* ========================================
+   ZONE MODAL
+======================================== */
+let selZonePreset = 0;
+
+function openZoneModal() {
+  document.getElementById('z-name').value = '';
+  const wrap = document.getElementById('zone-colors');
+  wrap.innerHTML = '';
+  ZONE_PRESETS.forEach((p,i) => {
+    const sw = document.createElement('div');
+    sw.style.cssText = `width:24px;height:24px;border-radius:4px;cursor:pointer;
+      background:${p.color};border:2px solid ${p.border};
+      outline:${i===selZonePreset?'2px solid #333':'none'};outline-offset:1px;transition:transform .12s`;
+    sw.addEventListener('click',()=>{
+      selZonePreset=i;
+      wrap.querySelectorAll('div').forEach((d,j)=>d.style.outline=j===i?'2px solid #333':'none');
+    });
+    wrap.appendChild(sw);
+  });
+  document.getElementById('zone-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('z-name').focus(),80);
+}
+function closeZoneModal(){ document.getElementById('zone-modal').classList.remove('open') }
+
+function saveZone() {
+  const name = document.getElementById('z-name').value.trim();
+  if (!name) return;
+  const p = ZONE_PRESETS[selZonePreset];
+    const board=document.getElementById('board');
+    const vcx=(board.clientWidth /2-panX)/zoom;
+    const vcy=(board.clientHeight/2-panY)/zoom;
+    const z = {
+      id: uid(), name,
+      color: p.color, border: p.border, text: p.text,
+      x: vcx-130+Math.random()*80, y: vcy-80+Math.random()*60,
+      w: 260, h: 160,
+    };
+  _pushHistory();
+  const zs = curZones(); zs.push(z); setZones(zs);
+  closeZoneModal(); save(); renderAll();
+}
+
+/* ========================================
+   ZONE DOM FACTORY
+======================================== */
+let dragZone=null,dzOX=0,dzOY=0;
+let resizeZone=null,rzSX=0,rzSY=0,rzW=0,rzH=0;
+
+function createZoneEl(z) {
+  const el = document.createElement('div');
+  el.className = 'zone';
+  el.dataset.zid = z.id;
+  el.style.cssText = `left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px;
+    background:${z.color};border-color:${z.border.replace('rgba(','').split('.')[0]};
+    border:2px dashed ${z.border}`;
+
+  const header = document.createElement('div');
+  header.className = 'zone-header';
+  header.style.color = z.text;
+
+  const nameSpan = document.createElement('span');
+  nameSpan.style.flex = '1';
+  nameSpan.textContent = z.name;
+
+  /* double-click zone name to rename */
+  nameSpan.addEventListener('dblclick', e => {
+    e.stopPropagation();
+    const inp = document.createElement('input');
+    inp.value = z.name;
+    inp.style.cssText = `flex:1;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:none;border-bottom:1px solid currentColor;outline:none;color:inherit;width:100%;padding:0`;
+    header.replaceChild(inp, nameSpan);
+    inp.focus(); inp.select();
+    const commit = () => {
+      const val = inp.value.trim() || z.name;
+      _pushHistory();
+      z.name = val;
+      const zs = curZones(); const zi = zs.find(x => x.id === z.id); if (zi) zi.name = val;
+      save(); header.replaceChild(nameSpan, inp); nameSpan.textContent = val;
+    };
+    inp.addEventListener('blur', commit);
+    inp.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); inp.blur(); } if (ev.key === 'Escape') { inp.value = z.name; inp.blur(); } });
+  });
+
+  header.appendChild(nameSpan);
+
+  const del = document.createElement('button');
+  del.className = 'zone-del'; del.textContent = '×'; del.title = 'Remover zona';
+  del.addEventListener('click', e => {
+    e.stopPropagation();
+    _pushHistory(); const zs = curZones().filter(x=>x.id!==z.id); setZones(zs); save();
+    el.remove();
+  });
+  header.appendChild(del);
+
+  const body = document.createElement('div');
+  body.className = 'zone-body';
+
+  const resize = document.createElement('div');
+  resize.className = 'zone-resize'; resize.textContent = '\u2921';
+
+  el.appendChild(header); el.appendChild(body); el.appendChild(resize);
+
+  /* drag zone */
+  header.addEventListener('mousedown', e => {
+    if(e.button!==0) return;
+    if (e.target === del || e.target.tagName === 'INPUT') return;
+    const board = document.getElementById('board');
+    const br = board.getBoundingClientRect();
+    const mx=(e.clientX-br.left-panX)/zoom;
+    const my=(e.clientY-br.top -panY)/zoom;
+    if(e.shiftKey){
+      /* shift-click: toggle zone in selection */
+      if(selectedIds.has(z.id)){ selectedIds.delete(z.id); el.classList.remove('selected'); }
+      else { selectedIds.add(z.id); el.classList.add('selected'); }
+      e.preventDefault(); return;
+    }
+    if(selectedIds.has(z.id) && selectedIds.size>1){
+      startGroupDrag(e, null); return;
+    }
+    clearSelection(); selectId(z.id);
+    dragZone = z;
+    dzOX = mx - z.x; dzOY = my - z.y;
+    el.style.zIndex = 5; e.preventDefault();
+  });
+
+  /* resize zone */
+  resize.addEventListener('mousedown', e => {
+    resizeZone = z;
+    rzSX = e.clientX; rzSY = e.clientY; rzW = z.w; rzH = z.h;
+    e.preventDefault(); e.stopPropagation();
+  });
+  resize.addEventListener('touchstart', e => {
+    if(e.touches.length!==1) return;
+    resizeZone=z;
+    const t=e.touches[0];
+    rzSX=t.clientX; rzSY=t.clientY; rzW=z.w; rzH=z.h;
+    e.stopPropagation();
+  },{passive:true});
+
+  return el;
+}
+
+/* ========================================
+   MODAL STATE
+======================================== */
+const CARD_COLORS = [
+  { hex:null,      label:'Padrão'   },
+  { hex:'#f0e6c8', label:'Mel'      },
+  { hex:'#f5c8c8', label:'Rosa'     },
+  { hex:'#c8ddf5', label:'Azul'     },
+  { hex:'#c8f0d0', label:'Verde'    },
+  { hex:'#e0c8f5', label:'Lilás'    },
+  { hex:'#f5e8c8', label:'Âmbar'    },
+  { hex:'#ffffff', label:'Branco'   },
+];
+
+let selCardColor = null;
+
+function buildCardColorPicker() {
+  const wrap = document.getElementById('card-color-opts');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  CARD_COLORS.forEach(opt => {
+    const sw = document.createElement('div');
+    const isSel = selCardColor === opt.hex;
+    sw.className = 'card-color-opt' + (isSel ? ' sel' : '') + (!opt.hex ? ' is-default' : '');
+    sw.style.background = opt.hex || 'linear-gradient(135deg,#faf6e8 50%,#fff0f0 50%)';
+    sw.title = opt.label;
+    sw.addEventListener('click', () => { selCardColor = opt.hex; buildCardColorPicker(); });
+    wrap.appendChild(sw);
+  });
+}
+
+let modalType='note', editingId=null, selTag=null, selPinVal='red', selStringColor='#cc2200';
+let clItems=[]; // [{text,done}]
+
+function buildStringColorPicker() {
+  const wrap = document.getElementById('str-color-opts');
+  wrap.innerHTML = '';
+  STRING_COLOR_OPTS.forEach(opt => {
+    const sw = document.createElement('div');
+    sw.className = 'str-color-opt' + (selStringColor === opt.hex ? ' sel' : '');
+    sw.style.background = opt.hex;
+    sw.style.boxShadow  = opt.hex === '#ffffff' ? 'inset 0 0 0 1px rgba(0,0,0,.2)' : '';
+    sw.title = opt.label;
+    sw.addEventListener('click', () => { selStringColor = opt.hex; buildStringColorPicker(); });
+    wrap.appendChild(sw);
+  });
+}
+
+function buildTagPills() {
+  const w=document.getElementById('tag-pills'); w.innerHTML='';
+  TAGS.forEach(tag=>{
+    const el=document.createElement('span');
+    el.className=`tag-pill tp-${tag}`+(selTag===tag?' sel':'');
+    el.textContent=tag;
+    el.addEventListener('click',()=>{ selTag=selTag===tag?null:tag; buildTagPills(); });
+    w.appendChild(el);
+  });
+}
+
+function buildClEditor() {
+  const ed=document.getElementById('cl-editor'); ed.innerHTML='';
+  clItems.forEach((item,i)=>{
+    const row=document.createElement('div'); row.className='cl-edit-row';
+    const inp=document.createElement('input');
+    inp.type='text'; inp.value=item.text; inp.placeholder='Item...';
+    inp.addEventListener('input',()=>clItems[i].text=inp.value);
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();addClItem();} });
+    const del=document.createElement('button');
+    del.className='cl-edit-del'; del.textContent='×';
+    del.addEventListener('click',()=>{ clItems.splice(i,1); buildClEditor(); });
+    row.appendChild(inp); row.appendChild(del); ed.appendChild(row);
+  });
+}
+
+function addClItem() {
+  clItems.push({text:'',done:false});
+  buildClEditor();
+  const inputs=document.getElementById('cl-editor').querySelectorAll('input');
+  if(inputs.length) inputs[inputs.length-1].focus();
+}
+
+function selPin(el) {
+  document.querySelectorAll('.pin-opt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel'); selPinVal=el.dataset.pin;
+}
+
+function previewImg(){
+  const url=document.getElementById('f-img').value.trim();
+  const prev=document.getElementById('f-img-preview');
+  if(url){ prev.src=url; prev.style.display='block'; }
+  else { prev.src=''; prev.style.display='none'; }
+}
+
+function handleFileUpload(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const b64=ev.target.result;
+    document.getElementById('f-img').value=''; /* clear URL field */
+    document.getElementById('f-img-preview').src=b64;
+    document.getElementById('f-img-preview').style.display='block';
+    document.getElementById('f-upload-area').textContent=file.name;
+    /* store base64 in a temp var picked up by saveCard */
+    window._uploadedB64=b64;
+  };
+  reader.readAsDataURL(file);
+}
+
+function openModal(type, id=null) {
+  modalType=type; editingId=id; selTag=null; selPinVal='red'; selStringColor='#cc2200'; selCardColor=null; clItems=[];
+  window._uploadedB64=null;
+  document.getElementById('f-upload-area').textContent='Clique para escolher arquivo';
+  document.getElementById('f-file').value='';
+  document.getElementById('f-img-preview').style.display='none';
+  document.getElementById('f-img-preview').src='';
+  document.getElementById('modal-h2').textContent = id?'Editar Evidência':(type==='photo'?'Nova Foto':'Nova Evidência');
+  document.getElementById('f-desc-wrap').style.display = type==='photo'?'none':'';
+  document.getElementById('f-img-wrap').style.display  = type==='photo'?'':'none';
+
+  if(id) {
+    const c=curCards().find(c=>c.id===id);
+    if(c){
+      document.getElementById('f-title').value   = c.title||'';
+      document.getElementById('f-desc').value    = c.desc||'';
+      document.getElementById('f-img').value     = c.imgUrl&&!c.imgUrl.startsWith('data:') ? c.imgUrl : '';
+      document.getElementById('f-caption').value = c.caption||'';
+      document.getElementById('f-status').value  = c.status||'todo';
+      document.getElementById('f-deadline').value      = c.deadline ? c.deadline.split('T')[0] : '';
+      document.getElementById('f-deadline-time').value  = c.deadline && c.deadline.includes('T') ? c.deadline.split('T')[1].slice(0,5) : '';
+      selTag=c.tag||null; selPinVal=c.pin||'red'; selStringColor=c.stringColor||'#cc2200'; selCardColor=c.cardColor||null;
+      clItems=JSON.parse(JSON.stringify(c.checklist||[]));
+      modalType=c.type;
+      document.getElementById('f-desc-wrap').style.display=c.type==='photo'?'none':'';
+      document.getElementById('f-img-wrap').style.display =c.type==='photo'?'':'none';
+      /* show existing image preview */
+      if(c.imgUrl){ const pv=document.getElementById('f-img-preview'); pv.src=c.imgUrl; pv.style.display='block'; }
+    }
+  } else {
+    ['f-title','f-desc','f-img','f-caption','f-deadline','f-deadline-time'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-status').value='todo';
+  }
+  buildTagPills(); buildClEditor(); buildStringColorPicker(); buildCardColorPicker();
+  document.querySelectorAll('.pin-opt').forEach(el=>el.classList.toggle('sel',el.dataset.pin===selPinVal));
+  /* show/hide history tab — only available when editing existing card */
+  const htab = document.getElementById('mtab-history');
+  if (htab) htab.classList.toggle('hidden', !id);
+  /* always start on first tab */
+  switchModalTab('pane-card');
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('f-title').focus(),80);
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); editingId=null; }
+
+function saveCard() {
+  const title=document.getElementById('f-title').value.trim();
+  if(!title){ document.getElementById('f-title').focus(); return; }
+  const data = {
+    type:modalType, title,
+    desc:    document.getElementById('f-desc').value.trim(),
+    imgUrl:  window._uploadedB64 || document.getElementById('f-img').value.trim(),
+    caption: document.getElementById('f-caption').value.trim(),
+    status:  document.getElementById('f-status').value,
+    deadline:(()=>{ const d=document.getElementById('f-deadline').value; const t=document.getElementById('f-deadline-time').value; return d?(t?`${d}T${t}`:d):''; })(),
+    tag:selTag, pin:selPinVal, stringColor:selStringColor, cardColor:selCardColor,
+    checklist: clItems.filter(i=>i.text.trim()),
+    variant: VARIANTS[Math.floor(Math.random()*VARIANTS.length)],
+  };
+  const cs=curCards();
+  _pushHistory();
+  if(editingId){
+    const c=cs.find(c=>c.id===editingId);
+    if(c){
+      const changes=[];
+      if(data.title!==c.title)   changes.push(`título → "${data.title}"`);
+      if(data.status!==c.status) changes.push(`status → ${data.status}`);
+      if(data.deadline!==c.deadline) changes.push('prazo atualizado');
+      if(data.tag!==c.tag)       changes.push(`tag → ${data.tag||'nenhuma'}`);
+      Object.assign(c,data);
+      _addLog(c.id, changes.length ? changes.join(' · ') : 'card editado');
+    }
+  } else {
+    const board=document.getElementById('board');
+    data.id=uid();
+    const vcx=(board.clientWidth /2-panX)/zoom;
+    const vcy=(board.clientHeight/2-panY)/zoom;
+    data.x=vcx-105+(Math.random()-.5)*200;
+    data.y=vcy-70 +(Math.random()-.5)*160;
+    data.log=[{t:Date.now(),text:'card criado'}];
+    cs.push(data);
+  }
+  setCards(cs); closeModal(); save(); renderAll();
+}
+
+/* ========================================
+   CARD DOM FACTORY  - single createCard fn
+======================================== */
+function createCardEl(c) {
+  const isDone = c.status==='done';
+  const prev   = {fazendo:'backlog',feito:'fazendo'}[c.col]??null; // unused but kept
+  const statusLabels={todo:'A FAZER',doing:'FAZENDO',done:'FEITO \u2713'};
+  const statusClass ={todo:'status-todo',doing:'status-doing',done:'status-done'};
+  const now   = new Date();
+  const today = new Date(); today.setHours(0,0,0,0);
+  let deadlineStr='', isOverdue=false;
+  if(c.deadline){
+    const hasTime = c.deadline.includes('T');
+    const d = hasTime ? new Date(c.deadline) : new Date(c.deadline+'T00:00:00');
+    isOverdue = d < (hasTime ? now : today) && c.status!=='done';
+    if(hasTime){
+      const diff=Math.round((d-now)/(1000*60*60*24));
+      const timeStr=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      deadlineStr = diff===0?`hoje ${timeStr}`: diff===1?`amanhã ${timeStr}`:
+        diff===-1?`ontem ${timeStr}`:
+        diff<0?`${Math.abs(diff)}d atrás ${timeStr}`:`em ${diff}d ${timeStr}`;
+    } else {
+      const diff=Math.round((d-today)/(1000*60*60*24));
+      deadlineStr = diff===0?'hoje': diff===1?'amanhã': diff===-1?'ontem':
+        diff<0?`${Math.abs(diff)}d atrás`:`em ${diff}d`;
+    }
+  }
+
+  const el=document.createElement('div');
+  el.className='card'+(c.type!=='photo'?' '+(c.variant||''):' photo');
+  el.dataset.id=c.id;
+  el.style.left=c.x+'px'; el.style.top=c.y+'px';
+  /* PIN */
+  const pin=document.createElement('div');
+  pin.className=`pin ${c.pin||''}`;
+  pin.title='Clique para conectar';
+  pin.addEventListener('click',e=>{e.stopPropagation();startConnect(c.id);});
+  el.appendChild(pin);
+
+  /* INNER */
+  const inner=document.createElement('div');
+  inner.className='card-inner';
+  if(c.type==='photo') inner.dataset.caption=c.caption||c.title;
+
+  /* status badge ? click to cycle */
+  const badge=document.createElement('span');
+  badge.className=`card-status ${statusClass[c.status]||'status-todo'}`;
+  badge.textContent=statusLabels[c.status]||'A FAZER';
+  badge.title='Clique para mudar status';
+  if(c.type==='photo') badge.style.display='none';
+  badge.addEventListener('click',e=>{e.stopPropagation();cycleStatus(c.id);});
+  inner.appendChild(badge);
+
+  if(c.type==='photo') {
+    if(c.imgUrl){ const img=document.createElement('img');img.className='photo-img';img.src=c.imgUrl;img.alt=c.caption||c.title;img.onerror=()=>img.replaceWith(makePlaceholder(c.title));inner.appendChild(img); }
+    else inner.appendChild(makePlaceholder(c.title));
+  } else {
+    const t=document.createElement('div');
+    t.className='card-title'+(isDone?' struck':''); t.textContent=c.title;
+    inner.appendChild(t);
+    if(c.desc){
+      const descEl=document.createElement('div');
+      descEl.className='card-desc';
+      /* detect URLs and make them clickable */
+      const urlRe=/(https?:\/\/[^\s]+)/g;
+      if(urlRe.test(c.desc)){
+        descEl.innerHTML=c.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener" class="card-link" onclick="event.stopPropagation()">$1</a>');
+      } else {
+        descEl.textContent=c.desc;
+      }
+      inner.appendChild(descEl);
+    }
+  }
+
+  /* checklist */
+  if(c.checklist&&c.checklist.length) {
+    const cl=document.createElement('div'); cl.className='card-checklist';
+    c.checklist.forEach((item,i)=>{
+      const row=document.createElement('div');
+      row.className='cl-item'+(item.done?' done':'');
+      const box=document.createElement('div'); box.className='cl-box';
+      const txt=document.createElement('span'); txt.className='cl-text'; txt.textContent=item.text;
+      row.appendChild(box); row.appendChild(txt);
+      row.addEventListener('click',e=>{e.stopPropagation();toggleClItem(c.id,i);});
+      cl.appendChild(row);
+    });
+    const done=c.checklist.filter(i=>i.done).length, total=c.checklist.length;
+    const prog=document.createElement('div'); prog.className='cl-progress';
+    prog.textContent=`${done}/${total}`;
+    const bw=document.createElement('div'); bw.className='cl-bar-wrap';
+    const bf=document.createElement('div'); bf.className='cl-bar';
+    bf.style.width=`${Math.round(done/total*100)}%`;
+    bw.appendChild(bf); cl.appendChild(prog); cl.appendChild(bw);
+    inner.appendChild(cl);
+  }
+
+  /* deadline */
+  if(deadlineStr) {
+    const dl=document.createElement('div');
+    dl.className='card-deadline'+(isOverdue?' overdue':'');
+    dl.textContent=(isOverdue?'\u26A0 ':'')+deadlineStr;
+    inner.appendChild(dl);
+  }
+
+  /* tag */
+  if(c.tag){ const tg=document.createElement('span');tg.className='card-tag';tg.textContent=c.tag;inner.appendChild(tg); }
+
+  /* actions */
+  const acts=document.createElement('div'); acts.className='card-actions';
+  const mkBtn=(label,title,cls,cb)=>{
+    const b=document.createElement('button');
+    b.className='ca-btn'+(cls?' '+cls:''); b.title=title; b.textContent=label;
+    b.addEventListener('click',e=>{e.stopPropagation();cb(e);});
+    return b;
+  };
+  acts.appendChild(mkBtn('focar','Modo foco','',()=>enterFocus(c.id)));
+  acts.appendChild(mkBtn('fios','Cortar ligações','',(e)=>openCutPopup(e,c.id)));
+  acts.appendChild(mkBtn('editar','Editar','',()=>openModal(c.type,c.id)));
+  acts.appendChild(mkBtn('del','Remover','del',()=>deleteCard(c.id)));
+  inner.appendChild(acts);
+
+  el.appendChild(inner);
+
+  /* apply saved custom size */
+  if (c.w) inner.style.width    = c.w + 'px';
+  if (c.h) inner.style.minHeight = c.h + 'px';
+  /* apply custom card color */
+  if (c.cardColor) inner.style.background = c.cardColor;
+
+  /* resize handle */
+  const rHandle = document.createElement('div');
+  rHandle.className = 'card-resize';
+  rHandle.title = 'Redimensionar';
+  inner.appendChild(rHandle);
+
+  rHandle.addEventListener('mousedown', e => {
+    e.stopPropagation(); e.preventDefault();
+    startCardResize(e, c, inner);
+  });
+  rHandle.addEventListener('touchstart', e => {
+    e.stopPropagation();
+    const t = e.touches[0];
+    startCardResize(t, c, inner);
+  }, { passive:true });
+
+  /* DRAG ? skip if clicking a button, checklist item, or in lasso/connect mode */
+  el.addEventListener('mousedown',e=>{
+    if(e.button!==0) return;
+    if(['ca-btn','pin'].some(cls=>e.target.classList.contains(cls))) return;
+    if(e.target.classList.contains('cl-item')||e.target.closest('.cl-item')) return;
+    if(connectFrom){ finishConnect(c.id); return; }
+    /* if already selected and clicking a selected card ? group drag */
+    if(selectedIds.has(c.id)){
+      startGroupDrag(e, c);
+    } else {
+      if(!e.shiftKey) clearSelection();
+      startSingleDrag(e, c);
+    }
+  });
+  el.addEventListener('dblclick',e=>{ if(!connectFrom) openModal(c.type,c.id); });
+
+  return el;
+}
+
+function makePlaceholder(text){
+  const p=document.createElement('div');p.className='photo-placeholder';
+  p.textContent=text?text.slice(0,12):'SEM IMAGEM';return p;
+}
+
+/* ========================================
+   CHECKLIST TOGGLE
+======================================== */
+function toggleClItem(cardId, idx) {
+  const cs=curCards(); const c=cs.find(c=>c.id===cardId);
+  if(!c||!c.checklist) return;
+  _pushHistory();
+  c.checklist[idx].done=!c.checklist[idx].done;
+  setCards(cs); save(); renderAll();
+}
+
+/* ========================================
+   STATUS CYCLE
+======================================== */
+function cycleStatus(id){
+  const cs=curCards();const c=cs.find(c=>c.id===id);if(!c)return;
+  _pushHistory();
+  const prev=c.status;
+  const ord=['todo','doing','done'];c.status=ord[(ord.indexOf(c.status)+1)%ord.length];
+  _addLog(id,`status: ${prev} → ${c.status}`);
+  setCards(cs);save();renderAll();
+}
+
+/* ========================================
+   DELETE
+======================================== */
+function deleteCard(id){
+  _pushHistory();
+  setCards(curCards().filter(c=>c.id!==id));
+  setConns(curConns().filter(c=>c.from!==id&&c.to!==id));
+  save();renderAll();
+}
+
+/* ========================================
+   CONNECTIONS
+======================================== */
+let connectFrom = null;
+let selRelType  = '';
+
+function startConnect(id){
+  if(connectFrom===id){cancelConnect();return;}
+  if(connectFrom){finishConnect(id);return;}
+  connectFrom=id;
+  selRelType='';
+  const sel=document.getElementById('rel-type-sel');
+  if(sel) sel.value='';
+  document.getElementById('mode-indicator').style.display='flex';
+  document.querySelectorAll('.card').forEach(el=>el.classList.add('connecting'));
+}
+function finishConnect(toId){
+  if(!connectFrom||connectFrom===toId){cancelConnect();return;}
+  _pushHistory();
+  const cs=curConns();
+  const already=cs.find(c=>(c.from===connectFrom&&c.to===toId)||(c.from===toId&&c.to===connectFrom));
+  if(!already){
+    const srcCard=curCards().find(c=>c.id===connectFrom);
+    const color=srcCard?.stringColor||'#cc2200';
+    cs.push({from:connectFrom,to:toId,color,rel:selRelType||''});
+  }
+  setConns(cs);cancelConnect();save();requestAnimationFrame(renderStrings);
+}
+function cancelConnect(){
+  connectFrom=null;
+  document.getElementById('mode-indicator').style.display='none';
+  document.querySelectorAll('.card').forEach(el=>el.classList.remove('connecting'));
+}
+function clearConnections(){_pushHistory();setConns([]);save();requestAnimationFrame(renderStrings);}
+
+/* ========================================
+   CUT / EDIT INDIVIDUAL CONNECTIONS
+======================================== */
+function openCutPopup(e, cardId) {
+  e.stopPropagation();
+  const popup = document.getElementById('cut-popup');
+  popup.innerHTML = '';
+
+  const title = document.createElement('h4');
+  title.textContent = 'Ligações';
+  popup.appendChild(title);
+
+  const conns = curConns().filter(c => c.from === cardId || c.to === cardId);
+  const cards = curCards();
+
+  if (!conns.length) {
+    const empty = document.createElement('div');
+    empty.className = 'cut-empty';
+    empty.textContent = 'Nenhuma ligação';
+    popup.appendChild(empty);
+  } else {
+    conns.forEach(conn => {
+      const otherId = conn.from === cardId ? conn.to : conn.from;
+      const other   = cards.find(c => c.id === otherId);
+      const label   = other ? other.title : '(desconhecido)';
+
+      const row = document.createElement('div');
+      row.className = 'cut-row';
+
+      /* color dot */
+      const dot = document.createElement('span');
+      dot.className = 'cut-dot';
+      dot.style.background = conn.color || '#cc2200';
+
+      /* card name */
+      const lbl = document.createElement('span');
+      lbl.className = 'cut-label';
+      lbl.textContent = label;
+      lbl.title = label;
+
+      /* relation type select */
+      const relSel = document.createElement('select');
+      relSel.className = 'cut-rel-sel';
+      relSel.title = 'Tipo de relação';
+      ['','bloqueia','depende','relacionado','referencia'].forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v; opt.textContent = v || 'sem rótulo';
+        if ((conn.rel||'') === v) opt.selected = true;
+        relSel.appendChild(opt);
+      });
+      relSel.addEventListener('change', ev => {
+        ev.stopPropagation();
+        _pushHistory();
+        const cs = curConns();
+        const t  = cs.find(c =>
+          (c.from===conn.from&&c.to===conn.to)||(c.from===conn.to&&c.to===conn.from));
+        if (t) { t.rel = relSel.value; }
+        setConns(cs); save(); requestAnimationFrame(renderStrings);
+      });
+
+      /* cut button */
+      const btn = document.createElement('button');
+      btn.className = 'cut-btn';
+      btn.textContent = '✂';
+      btn.title = 'Cortar esta ligação';
+      btn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        _pushHistory();
+        setConns(curConns().filter(c =>
+          !((c.from===conn.from&&c.to===conn.to)||(c.from===conn.to&&c.to===conn.from))
+        ));
+        save(); requestAnimationFrame(renderStrings);
+        const remaining = curConns().filter(c => c.from===cardId||c.to===cardId);
+        if (!remaining.length) { closeCutPopup(); return; }
+        openCutPopup(ev, cardId);
+      });
+
+      row.appendChild(dot); row.appendChild(lbl);
+      row.appendChild(relSel); row.appendChild(btn);
+      popup.appendChild(row);
+    });
+  }
+
+  /* position */
+  popup.classList.add('open');
+  const anchor = e.target || e.currentTarget;
+  const rect   = anchor?.getBoundingClientRect?.() || {bottom:100,left:100,top:90};
+  const PW = popup.offsetWidth  || 240;
+  const PH = popup.offsetHeight || 160;
+  let left = rect.left;
+  let top  = rect.bottom + 6;
+  if (left + PW > window.innerWidth  - 8) left = window.innerWidth  - PW - 8;
+  if (top  + PH > window.innerHeight - 8) top  = rect.top - PH - 6;
+  popup.style.left = Math.max(4, left) + 'px';
+  popup.style.top  = Math.max(4, top)  + 'px';
+}
+
+function closeCutPopup() {
+  const p = document.getElementById('cut-popup');
+  if (p) p.classList.remove('open');
+}
+
+/* ========================================
+   RENDER STRINGS
+======================================== */
+function cardCenter(id){
+  /* SVG is now outside board-canvas, so we need screen coords relative to #board.
+     Convert canvas-space (c.x, c.y) -> screen-space using current pan+zoom. */
+  const c=curCards().find(c=>c.id===id);
+  if(!c)return null;
+  const el=document.querySelector(`.card[data-id="${id}"]`);
+  if(!el)return null;
+  const w=el.offsetWidth  || 210;
+  const h=el.offsetHeight || 150;
+  /* canvas-space centre ? screen-space: multiply by zoom then add pan */
+  return {
+    x: (c.x + w/2) * zoom + panX,
+    y: (c.y + h/2) * zoom + panY,
+  };
+}
+function renderStrings(){
+  const svg=document.getElementById('strings');svg.innerHTML='';
+  curConns().forEach(conn=>{
+    const a=cardCenter(conn.from),b=cardCenter(conn.to);if(!a||!b)return;
+    const dist=Math.sqrt((b.x-a.x)**2+(b.y-a.y)**2);
+    const sag=Math.min(dist*.22,80);
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2+sag;
+    const d=`M${a.x},${a.y} Q${mx},${my} ${b.x},${b.y}`;
+
+    /* shadow */
+    const sh=document.createElementNS('http://www.w3.org/2000/svg','path');
+    sh.setAttribute('d',d);sh.setAttribute('stroke','rgba(0,0,0,.3)');sh.setAttribute('stroke-width','3');sh.setAttribute('fill','none');sh.setAttribute('stroke-linecap','round');
+    svg.appendChild(sh);
+
+    /* string */
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',d);p.setAttribute('stroke',conn.color||'#cc2200');p.setAttribute('stroke-width','1.8');p.setAttribute('fill','none');p.setAttribute('stroke-linecap','round');
+    if(conn.color==='#ffffff')p.setAttribute('stroke-dasharray','4 1.5');
+    svg.appendChild(p);
+
+    /* endpoint dots */
+    [a,b].forEach(pt=>{
+      const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);c.setAttribute('r','3');
+      c.setAttribute('fill',conn.color||'#cc2200');c.setAttribute('stroke','rgba(0,0,0,.4)');c.setAttribute('stroke-width','0.8');
+      svg.appendChild(c);
+    });
+
+    /* relation label — placed at the sag apex, pushed below the string */
+    if(conn.rel){
+      const st      = getComputedStyle(document.documentElement);
+      const labelBg = st.getPropertyValue('--props-bg').trim()  || 'rgba(20,12,4,.92)';
+      const labelFg = st.getPropertyValue('--props-h').trim()   || 'rgba(255,220,140,.9)';
+
+      /* label sits at the deepest point of the sag, offset below the curve */
+      const lx = mx;
+      const ly = my + 12;   /* push below the string line */
+
+      /* avoid placing label too close to either card endpoint */
+      const dA = Math.hypot(lx-a.x, ly-a.y);
+      const dB = Math.hypot(lx-b.x, ly-b.y);
+      const tooClose = dA < 40 || dB < 40;
+
+      /* shorter text for cramped strings */
+      const relText  = conn.rel.length > 8 ? conn.rel.slice(0,7)+'\u2026' : conn.rel;
+      const charW    = 5.2;
+      const padX     = 7;
+      const labelW   = relText.length * charW + padX * 2;
+      const labelH   = 14;
+
+      const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      bg.setAttribute('x',    lx - labelW/2);
+      bg.setAttribute('y',    ly - labelH/2);
+      bg.setAttribute('width',  labelW);
+      bg.setAttribute('height', labelH);
+      bg.setAttribute('rx', labelH/2);          /* full pill */
+      bg.setAttribute('fill',   labelBg);
+      bg.setAttribute('stroke', conn.color||'#cc2200');
+      bg.setAttribute('stroke-width', '0.8');
+      bg.setAttribute('opacity', tooClose ? '0.45' : '0.95');
+      svg.appendChild(bg);
+
+      const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x', lx);
+      txt.setAttribute('y', ly);
+      txt.setAttribute('text-anchor',      'middle');
+      txt.setAttribute('dominant-baseline','middle');
+      txt.setAttribute('font-family',  'Oswald,sans-serif');
+      txt.setAttribute('font-size',    '7.5');
+      txt.setAttribute('letter-spacing','0.6');
+      txt.setAttribute('fill',    labelFg);
+      txt.setAttribute('opacity', tooClose ? '0.45' : '1');
+      txt.textContent = relText.toUpperCase();
+      svg.appendChild(txt);
+    }
+  });
+
+  /* re-apply focus dimming if active */
+  if (_focusCardId) {
+    const relConns = new Set();
+    curConns().forEach((cn, i) => {
+      if (cn.from === _focusCardId || cn.to === _focusCardId) relConns.add(i);
+    });
+    _applyFocusStrings(relConns);
+  }
+  /* hide all strings when search is active */
+  if (_searchActive) {
+    const svg = document.getElementById('strings');
+    if (svg) [...svg.children].forEach(el => el.style.opacity = '0');
+  }
+}
+
+/* ========================================
+   RENDER ALL
+======================================== */
+function renderAll(){
+  _renderingAll = true;
+  document.querySelectorAll('.card').forEach(el=>el.remove());
+  document.querySelectorAll('.zone').forEach(el=>el.remove());
+  const canvas=document.getElementById('board-canvas');
+  curZones().forEach(z=>{
+    const el=createZoneEl(z);
+    canvas.appendChild(el);
+    if(window._bindZoneTouch){
+      const hdr=el.querySelector('.zone-header');
+      if(hdr) window._bindZoneTouch(hdr, z, el);
+    }
+  });
+  curCards().forEach(c=>{
+    const el=createCardEl(c);
+    canvas.appendChild(el);
+    if(window._bindCardTouch) window._bindCardTouch(el,c);
+  });
+  applyZoom(); updateStats();
+  _renderingAll = false;
+  /* defer string rendering one frame so offsetWidth/Height are resolved */
+  requestAnimationFrame(()=>{ renderStrings(); });
+}
+function updateStats(){
+  const cs=curCards();
+  const done=cs.filter(c=>c.status==='done').length;
+  document.getElementById('bh-stats').textContent=cs.length?`${done}/${cs.length} concluídas`:'';
+  /* re-apply search highlight after any render */
+  const q=document.getElementById('search-input')?.value||'';
+  if(q.trim()) _applySearch(q);
+}
+
+/* ========================================
+   SEARCH
+======================================== */
+let _searchActive = false;
+
+function toggleMobileSearch() {
+  const inp = document.getElementById('search-input');
+  const isExpanded = inp.classList.contains('expanded');
+  if (isExpanded) {
+    clearSearch();
+    inp.classList.remove('expanded');
+    inp.blur();
+  } else {
+    inp.classList.add('expanded');
+    setTimeout(() => inp.focus(), 50);
+  }
+}
+
+function onSearch(q) {
+  q = q.trim().toLowerCase();
+  if (!q) { clearSearch(false); return; }
+  _searchActive = true;
+  _applySearch(q);
+}
+
+function _applySearch(q) {
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  let matches = 0;
+
+  document.querySelectorAll('.card').forEach(el => {
+    const id = el.dataset.id;
+    const c  = curCards().find(c => c.id === id);
+    if (!c) return;
+    const haystack = [c.title, c.desc, c.tag, c.caption,
+      ...(c.checklist||[]).map(i=>i.text)].join(' ').toLowerCase();
+    const hit = terms.every(t => haystack.includes(t));
+    el.classList.toggle('search-match', hit);
+    el.classList.toggle('search-dim',  !hit);
+    if (hit) matches++;
+  });
+
+  /* hide ALL strings during search */
+  const svg = document.getElementById('strings');
+  if (svg) [...svg.children].forEach(el => el.style.opacity = '0');
+
+  const cnt = document.getElementById('search-count');
+  const total = curCards().length;
+  cnt.textContent = matches ? `${matches}/${total}` : 'nenhum';
+  cnt.style.color = matches ? 'rgba(255,200,100,.6)' : 'rgba(204,80,80,.7)';
+}
+
+function clearSearch(focusClear=true) {
+  _searchActive = false;
+  const inp = document.getElementById('search-input');
+  if (inp) { inp.value = ''; inp.classList.remove('expanded'); }
+  document.getElementById('search-count').textContent = '';
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('search-match','search-dim');
+  });
+  /* restore string opacities */
+  const svg = document.getElementById('strings');
+  if (svg) [...svg.children].forEach(el => el.style.opacity = '');
+}
+
+/* ========================================
+   TEMPLATES
+======================================== */
+let _templates = [];
+
+function _loadTemplates(){
+  try { _templates = JSON.parse(localStorage.getItem('invb_templates')||'[]'); } catch(e){ _templates=[]; }
+}
+function _saveTemplates(){
+  try { localStorage.setItem('invb_templates', JSON.stringify(_templates)); } catch(e){}
+}
+
+function toggleTemplates(){
+  const p = document.getElementById('tpl-panel');
+  if(p.classList.contains('open')){ p.classList.remove('open'); return; }
+  _loadTemplates(); renderTemplates();
+  p.classList.add('open');
+}
+
+function renderTemplates(){
+  const list = document.getElementById('tpl-list');
+  list.innerHTML='';
+  if(!_templates.length){
+    list.innerHTML='<div style="font-family:\'Caveat\',cursive;font-size:13px;color:rgba(255,200,100,.35);padding:4px 0">Nenhum template salvo ainda.<br>Selecione um card e clique em salvar.</div>';
+    return;
+  }
+  _templates.forEach((t,i)=>{
+    const row=document.createElement('div'); row.className='tpl-item';
+    const name=document.createElement('span'); name.className='tpl-name'; name.textContent=t.title;
+    const useBtn=document.createElement('button'); useBtn.className='tpl-use'; useBtn.textContent='usar';
+    useBtn.addEventListener('click',()=>useTemplate(i));
+    const delBtn=document.createElement('button'); delBtn.className='tpl-del'; delBtn.textContent='×';
+    delBtn.title='Remover template';
+    delBtn.addEventListener('click',()=>{_templates.splice(i,1);_saveTemplates();renderTemplates();});
+    row.appendChild(name); row.appendChild(useBtn); row.appendChild(delBtn);
+    list.appendChild(row);
+  });
+}
+
+function saveAsTemplate(){
+  /* use the last single-selected card, or the last edited card */
+  const sel=[...selectedIds];
+  const cardId = sel.length===1 ? sel[0] : null;
+  if(!cardId){ showToast('Selecione um card primeiro'); return; }
+  const c = curCards().find(c=>c.id===cardId);
+  if(!c){ showToast('Card não encontrado'); return; }
+  _loadTemplates();
+  const tpl={
+    title:c.title, desc:c.desc||'', tag:c.tag||'',
+    status:'todo', pin:c.pin||'red', variant:c.variant||'',
+    stringColor:c.stringColor||'#cc2200', type:c.type||'note',
+    checklist:(c.checklist||[]).map(i=>({text:i.text,done:false})),
+  };
+  _templates.push(tpl);
+  _saveTemplates(); renderTemplates();
+  showToast('Template salvo: ' + tpl.title);
+}
+
+function useTemplate(idx){
+  _loadTemplates();
+  const tpl=_templates[idx];
+  if(!tpl) return;
+  const board=document.getElementById('board');
+  const vcx=(board.clientWidth/2-panX)/zoom;
+  const vcy=(board.clientHeight/2-panY)/zoom;
+  const c={
+    ...tpl, id:uid(),
+    x:vcx-105+(Math.random()-.5)*160,
+    y:vcy-70 +(Math.random()-.5)*120,
+    checklist:tpl.checklist.map(i=>({...i,done:false})),
+    deadline:'',
+  };
+  _pushHistory();
+  const cs=curCards(); cs.push(c); setCards(cs);
+  save(); renderAll();
+  showToast('Card criado a partir do template');
+}
+
+/* ========================================
+   FOCUS MODE
+======================================== */
+let _focusCardId = null;
+
+function enterFocus(cardId) {
+  _focusCardId = cardId;
+  const conns = curConns();
+  /* gather IDs connected to this card (1 hop) */
+  const related = new Set([cardId]);
+  const relConns = new Set();
+  conns.forEach((cn, i) => {
+    if (cn.from === cardId || cn.to === cardId) {
+      related.add(cn.from); related.add(cn.to);
+      relConns.add(i);
+    }
+  });
+
+  /* dim/highlight cards */
+  document.querySelectorAll('.card').forEach(el => {
+    const id = el.dataset.id;
+    el.classList.toggle('focus-hi',  related.has(id));
+    el.classList.toggle('focus-dim', !related.has(id));
+  });
+
+  /* dim/highlight string groups in the SVG
+     each connection renders as: shadow path, color path, 2 circles (+ optional label bg+text)
+     — we re-render strings with opacity data attribute instead */
+  _applyFocusStrings(relConns);
+
+  const card  = curCards().find(c => c.id === cardId);
+  const n     = related.size - 1;
+  const label = n === 1 ? '1 conexão' : `${n} conexões`;
+  document.getElementById('focus-label').textContent =
+    `\uD83C\uDFAF ${card?.title || 'Foco'} \u2014 ${label}`;
+  document.getElementById('focus-bar').classList.add('active');
+}
+
+function _applyFocusStrings(relConns) {
+  /* After renderStrings, each conn produces a group of elements.
+     We mark them via opacity directly on the SVG children. */
+  const svg = document.getElementById('strings');
+  if (!svg) return;
+  const children = [...svg.children];
+  /* Each connection renders: shadow + path + 2 circles [+ bg + text] = 4–6 elements.
+     We track by iterating curConns in same order as renderStrings. */
+  let ci = 0, ei = 0;
+  curConns().forEach((conn, i) => {
+    /* count elements this conn produced: shadow + line + 2 dots = 4 min; +2 if has rel label */
+    const count = conn.rel ? 6 : 4;
+    const active = relConns.has(i);
+    for (let k = 0; k < count && ei < children.length; k++, ei++) {
+      children[ei].style.opacity = active ? '1' : '0.06';
+    }
+  });
+}
+
+function exitFocus() {
+  _focusCardId = null;
+  document.querySelectorAll('.card').forEach(el => {
+    el.classList.remove('focus-hi','focus-dim');
+  });
+  /* restore all string opacities */
+  const svg = document.getElementById('strings');
+  if (svg) [...svg.children].forEach(el => el.style.opacity = '');
+  document.getElementById('focus-bar').classList.remove('active');
+}
+
+/* ========================================
+   MINIMAP
+======================================== */
+let _minimapTimer = null;
+
+function renderMinimap() {
+  const mm   = document.getElementById('minimap');
+  const cv   = document.getElementById('minimap-canvas');
+  const vp   = document.getElementById('minimap-viewport');
+  const board= document.getElementById('board');
+  if (!mm||!cv||!vp) return;
+
+  const MW = mm.clientWidth, MH = mm.clientHeight;
+  cv.width  = MW * window.devicePixelRatio;
+  cv.height = MH * window.devicePixelRatio;
+  cv.style.width  = MW + 'px';
+  cv.style.height = MH + 'px';
+
+  const ctx = cv.getContext('2d');
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.clearRect(0, 0, MW, MH);
+
+  /* determine bounds of all elements */
+  const cards = curCards();
+  const zones = curZones();
+  if (!cards.length && !zones.length) { mm.style.opacity='0'; return; }
+
+  const allX = [...cards.map(c=>c.x), ...cards.map(c=>c.x+220),
+                 ...zones.map(z=>z.x), ...zones.map(z=>z.x+z.w)];
+  const allY = [...cards.map(c=>c.y), ...cards.map(c=>c.y+180),
+                 ...zones.map(z=>z.y), ...zones.map(z=>z.y+z.h)];
+  const pad  = 40;
+  const minX = Math.min(...allX)-pad, maxX = Math.max(...allX)+pad;
+  const minY = Math.min(...allY)-pad, maxY = Math.max(...allY)+pad;
+  const cw   = maxX-minX, ch = maxY-minY;
+  const scale= Math.min(MW/cw, MH/ch);
+
+  const tx = (x) => (x - minX) * scale;
+  const ty = (y) => (y - minY) * scale;
+
+  /* draw zones */
+  zones.forEach(z => {
+    ctx.fillStyle = z.color || 'rgba(255,200,50,.15)';
+    ctx.fillRect(tx(z.x), ty(z.y), z.w*scale, z.h*scale);
+  });
+
+  /* draw cards as small rectangles */
+  cards.forEach(c => {
+    const col = c.status==='done' ? 'rgba(80,180,80,.7)'
+              : c.status==='doing'? 'rgba(220,180,40,.7)'
+              : 'rgba(250,246,232,.85)';
+    ctx.fillStyle = col;
+    const cw2 = (c.type==='photo'?168:210)*scale;
+    const ch2 = 40*scale;
+    ctx.fillRect(tx(c.x), ty(c.y), cw2, Math.max(ch2,3));
+    /* pin dot */
+    const pinColor = c.pin==='blue'?'#4466bb':c.pin==='yellow'?'#cc9900':c.pin==='green'?'#337733':'#cc2200';
+    ctx.fillStyle=pinColor;
+    ctx.beginPath();
+    ctx.arc(tx(c.x)+cw2/2, ty(c.y)-2, Math.max(2,3*scale), 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  /* draw connections */
+  curConns().forEach(conn => {
+    const a=cards.find(c=>c.id===conn.from), b=cards.find(c=>c.id===conn.to);
+    if(!a||!b) return;
+    ctx.strokeStyle = conn.color||'#cc2200';
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.moveTo(tx(a.x+105), ty(a.y+20));
+    ctx.lineTo(tx(b.x+105), ty(b.y+20));
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+
+  /* viewport rectangle */
+  const BW = board.clientWidth, BH = board.clientHeight;
+  /* visible area in canvas space */
+  const vx0 = (-panX)/zoom, vy0 = (-panY)/zoom;
+  const vx1 = vx0 + BW/zoom, vy1 = vy0 + BH/zoom;
+  vp.style.left   = Math.max(0,tx(vx0)) + 'px';
+  vp.style.top    = Math.max(0,ty(vy0)) + 'px';
+  vp.style.width  = Math.min(MW, (vx1-vx0)*scale) + 'px';
+  vp.style.height = Math.min(MH, (vy1-vy0)*scale) + 'px';
+  /* do NOT touch mm.style.opacity here — visibility is controlled exclusively
+     by the pan-visible class, added/removed by _showMinimap/_hideMinimap */
+}
+
+function scheduleMinimap() {
+  /* minimap only updates on demand - no polling */
+  clearTimeout(_minimapTimer);
+  _minimapTimer = setTimeout(renderMinimap, 80);
+}
+
+/* ========================================
+   ZOOM + PAN
+======================================== */
+let zoom = 1;
+const ZOOM_MIN = 0.25, ZOOM_MAX = 2.5, ZOOM_STEP = 0.15;
+let zoomHideTimer = null;
+
+/* pan state ? offset of the entire canvas in screen px */
+let panX = 0, panY = 0;
+let isPanning = false, panStartX = 0, panStartY = 0, panOriginX = 0, panOriginY = 0;
+
+let _renderingAll = false;
+
+function applyZoom() {
+  const px = Math.round(panX);
+  const py = Math.round(panY);
+  const z  = Math.round(zoom * 100) / 100;
+  document.getElementById('board-canvas').style.transform =
+    `translate(${px}px,${py}px) scale(${z})`;
+  const ind = document.getElementById('zoom-indicator');
+  ind.textContent = Math.round(z * 100) + '%';
+  ind.style.opacity = '1';
+  clearTimeout(zoomHideTimer);
+  zoomHideTimer = setTimeout(() => ind.style.opacity = '0', 1800);
+  /* strings live in screen space — redraw on every view change,
+     except during renderAll where rAF handles it after layout resolves */
+  if (!_renderingAll) renderStrings();
+}
+
+function zoomBy(delta, cx, cy) {
+  const board = document.getElementById('board');
+  if (cx === undefined) { cx = (board.clientWidth  / 2 - panX) / zoom;
+                          cy = (board.clientHeight / 2 - panY) / zoom; }
+  const oldZoom = zoom;
+  zoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom + delta));
+  if (zoom === oldZoom) return;
+  /* keep the canvas-space point (cx,cy) fixed under the cursor */
+  panX -= cx * (zoom - oldZoom);
+  panY -= cy * (zoom - oldZoom);
+  applyZoom();
+}
+
+function zoomReset() {
+  zoom = 1; panX = 0; panY = 0;
+  applyZoom();
+}
+
+/* scroll ? zoom centred on cursor */
+document.getElementById('board').addEventListener('wheel', e => {
+  if (isPanning) return;
+  e.preventDefault();
+  const board = document.getElementById('board');
+  const br    = board.getBoundingClientRect();
+  /* cursor in canvas space */
+  const cx = (e.clientX - br.left - panX) / zoom;
+  const cy = (e.clientY - br.top  - panY) / zoom;
+  const delta = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
+  const oldZoom = zoom;
+  zoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom + delta));
+  if (zoom === oldZoom) { applyZoom(); return; }
+  /* adjust pan so cx,cy stays fixed */
+  panX -= cx * (zoom - oldZoom);
+  panY -= cy * (zoom - oldZoom);
+  applyZoom();
+}, { passive: false });
+
+/* middle mouse → pan */
+let _minimapHideTimer = null;
+function _showMinimap(){ document.getElementById('minimap').classList.add('pan-visible'); }
+function _hideMinimap(delay=600){
+  clearTimeout(_minimapHideTimer);
+  _minimapHideTimer=setTimeout(()=>document.getElementById('minimap').classList.remove('pan-visible'), delay);
+}
+
+document.getElementById('board').addEventListener('mousedown', e => {
+  if (e.button !== 1) return;   /* only middle button */
+  e.preventDefault();
+  isPanning = true;
+  panStartX  = e.clientX;
+  panStartY  = e.clientY;
+  panOriginX = panX;
+  panOriginY = panY;
+  document.getElementById('board').style.cursor = 'grabbing';
+  renderMinimap(); _showMinimap();
+});
+
+document.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  panX = panOriginX + (e.clientX - panStartX);
+  panY = panOriginY + (e.clientY - panStartY);
+  applyZoom();
+  renderMinimap();
+});
+
+document.addEventListener('mouseup', e => {
+  if (e.button !== 1 || !isPanning) return;
+  isPanning = false;
+  document.getElementById('board').style.cursor = '';
+  _hideMinimap();
+});
+
+/* ========================================
+   MULTI-SELECT + DRAG
+======================================== */
+let dragCard=null,dragOX=0,dragOY=0; /* kept for compat but unused directly */
+
+/* ── CARD RESIZE ── */
+let _resizeCard=null, _resizeInner=null, _rsX=0, _rsY=0, _rsW=0, _rsH=0;
+const CARD_MIN_W=140, CARD_MIN_H=80;
+
+function startCardResize(e, c, inner) {
+  _resizeCard  = c;
+  _resizeInner = inner;
+  _rsX  = e.clientX; _rsY = e.clientY;
+  _rsW  = inner.offsetWidth;
+  _rsH  = inner.offsetHeight;
+}
+
+document.addEventListener('mousemove', e => {
+  if (_resizeCard) {
+    const dw = (e.clientX - _rsX) / zoom;
+    const dh = (e.clientY - _rsY) / zoom;
+    const nw = Math.max(CARD_MIN_W, _rsW + dw);
+    const nh = Math.max(CARD_MIN_H, _rsH + dh);
+    _resizeInner.style.width     = nw + 'px';
+    _resizeInner.style.minHeight = nh + 'px';
+    renderStrings();
+  }
+});
+document.addEventListener('mouseup', e => {
+  if (_resizeCard) {
+    _resizeCard.w = _resizeInner.offsetWidth;
+    _resizeCard.h = _resizeInner.offsetHeight;
+    const cs = curCards();
+    const t  = cs.find(c => c.id === _resizeCard.id);
+    if (t) { t.w = _resizeCard.w; t.h = _resizeCard.h; }
+    _pushHistory(); setCards(cs); save();
+    _resizeCard = null; _resizeInner = null;
+  }
+});
+
+/* selection */
+let selectedIds = new Set();
+let _clipboard  = [];  /* copied cards */
+
+function clearSelection(){
+  selectedIds.clear();
+  document.querySelectorAll('.card.selected,.zone.selected').forEach(el=>el.classList.remove('selected'));
+}
+
+function selectId(id){
+  selectedIds.add(id);
+  const el = document.querySelector(`.card[data-id="${id}"],.zone[data-zid="${id}"]`);
+  if(el) el.classList.add('selected');
+}
+
+/* single-card drag */
+let singleDrag=null, sdOX=0, sdOY=0;
+function startSingleDrag(e, c){
+  singleDrag=c; selectId(c.id);
+  const br=document.getElementById('board').getBoundingClientRect();
+  sdOX=(e.clientX-br.left-panX)/zoom - c.x;
+  sdOY=(e.clientY-br.top -panY)/zoom - c.y;
+  document.querySelector(`.card[data-id="${c.id}"]`).style.zIndex=100;
+  e.preventDefault();
+}
+
+/* group drag ? all selectedIds move together */
+let groupDrag=false, gdStartX=0, gdStartY=0;
+let gdSnap={}; /* {id: {x0,y0}} */
+function startGroupDrag(e, _c){
+  groupDrag=true;
+  const br=document.getElementById('board').getBoundingClientRect();
+  gdStartX=(e.clientX-br.left-panX)/zoom;
+  gdStartY=(e.clientY-br.top -panY)/zoom;
+  gdSnap={};
+  curCards().forEach(c=>{ if(selectedIds.has(c.id)) gdSnap[c.id]={x0:c.x,y0:c.y}; });
+  curZones().forEach(z=>{ if(selectedIds.has(z.id)) gdSnap[z.id]={x0:z.x,y0:z.y}; });
+  e.preventDefault();
+}
+
+/* lasso */
+let lasso=false, lassoX0=0, lassoY0=0;
+
+document.getElementById('board').addEventListener('mousedown',e=>{
+  if(e.button!==0) return;
+  if(connectFrom) return;
+  /* only start lasso on bare board/canvas clicks */
+  const tgt=e.target;
+  const onCard=tgt.closest?.('.card');
+  const onZone=tgt.closest?.('.zone');
+  const onToolbar=tgt.closest?.('#toolbar,#board-header,#board-props,#modal-overlay,#zone-modal');
+  if(onCard||onZone||onToolbar) return;
+  if(!e.shiftKey) clearSelection();
+  const br=document.getElementById('board').getBoundingClientRect();
+  lassoX0=(e.clientX-br.left-panX)/zoom;
+  lassoY0=(e.clientY-br.top -panY)/zoom;
+  lasso=true;
+  const ld=document.getElementById('lasso');
+  ld.style.display='block';
+  ld.style.left=lassoX0+'px'; ld.style.top=lassoY0+'px';
+  ld.style.width='0'; ld.style.height='0';
+  e.preventDefault();
+});
+
+document.addEventListener('mousemove',e=>{
+  if(isPanning) return;
+  const board=document.getElementById('board');
+  const br=board.getBoundingClientRect();
+  const mx=(e.clientX-br.left-panX)/zoom;
+  const my=(e.clientY-br.top -panY)/zoom;
+
+  if(singleDrag){
+    singleDrag.x=mx-sdOX; singleDrag.y=my-sdOY;
+    const el=document.querySelector(`.card[data-id="${singleDrag.id}"]`);
+    if(el){el.style.left=singleDrag.x+'px';el.style.top=singleDrag.y+'px';}
+    renderStrings(); return;
+  }
+
+  if(groupDrag){
+    const dx=mx-gdStartX, dy=my-gdStartY;
+    curCards().forEach(c=>{
+      if(!gdSnap[c.id]) return;
+      c.x=gdSnap[c.id].x0+dx; c.y=gdSnap[c.id].y0+dy;
+      const el=document.querySelector(`.card[data-id="${c.id}"]`);
+      if(el){el.style.left=c.x+'px';el.style.top=c.y+'px';}
+    });
+    curZones().forEach(z=>{
+      if(!gdSnap[z.id]) return;
+      z.x=gdSnap[z.id].x0+dx; z.y=gdSnap[z.id].y0+dy;
+      const el=document.querySelector(`.zone[data-zid="${z.id}"]`);
+      if(el){el.style.left=z.x+'px';el.style.top=z.y+'px';}
+    });
+    renderStrings(); return;
+  }
+
+  if(dragZone){
+    dragZone.x=mx-dzOX; dragZone.y=my-dzOY;
+    const el=document.querySelector(`.zone[data-zid="${dragZone.id}"]`);
+    if(el){el.style.left=dragZone.x+'px';el.style.top=dragZone.y+'px';}
+    return;
+  }
+
+  if(resizeZone){
+    resizeZone.w=Math.max(140,rzW+(e.clientX-rzSX)/zoom);
+    resizeZone.h=Math.max(80, rzH+(e.clientY-rzSY)/zoom);
+    const el=document.querySelector(`.zone[data-zid="${resizeZone.id}"]`);
+    if(el){el.style.width=resizeZone.w+'px';el.style.height=resizeZone.h+'px';}
+    return;
+  }
+
+  if(lasso){
+    const x=Math.min(mx,lassoX0), y=Math.min(my,lassoY0);
+    const w=Math.abs(mx-lassoX0), h=Math.abs(my-lassoY0);
+    const ld=document.getElementById('lasso');
+    ld.style.left=x+'px'; ld.style.top=y+'px';
+    ld.style.width=w+'px'; ld.style.height=h+'px';
+    /* live highlight — cards */
+    document.querySelectorAll('.card.selected').forEach(el=>el.classList.remove('selected'));
+    curCards().forEach(c=>{
+      const hit=c.x+210>x&&c.x<x+w&&c.y+130>y&&c.y<y+h;
+      if(hit){ selectedIds.add(c.id); document.querySelector(`.card[data-id="${c.id}"]`)?.classList.add('selected'); }
+      else { selectedIds.delete(c.id); }
+    });
+    /* live highlight — zones (only if 100% contained in lasso) */
+    document.querySelectorAll('.zone.selected').forEach(el=>el.classList.remove('selected'));
+    curZones().forEach(z=>{
+      const fullyContained=z.x>=x&&z.y>=y&&(z.x+z.w)<=x+w&&(z.y+z.h)<=y+h;
+      if(fullyContained){ selectedIds.add(z.id); document.querySelector(`.zone[data-zid="${z.id}"]`)?.classList.add('selected'); }
+      else { selectedIds.delete(z.id); }
+    });
+  }
+});
+
+document.addEventListener('mouseup',e=>{
+  if(e.button===1){ if(isPanning){ isPanning=false; document.getElementById('board').style.cursor=''; } return; }
+  /* drag-end saves are position-only ? suppress history push */
+  _historyPaused = true;
+  if(singleDrag){ save(); singleDrag=null; }
+  if(groupDrag){ save(); groupDrag=false; gdSnap={}; }
+  if(dragZone){ save(); dragZone=null; }
+  if(resizeZone){ save(); resizeZone=null; }
+  _historyPaused = false;
+  if(lasso){ document.getElementById('lasso').style.display='none'; lasso=false; }
+});
+
+document.getElementById('board').addEventListener('click',e=>{
+  const onBoard  = e.target===document.getElementById('board')||e.target===document.getElementById('strings');
+  const onCanvas = e.target===document.getElementById('board-canvas');
+
+  /* cancel connect mode on bare background clicks */
+  if((onBoard||onCanvas) && connectFrom) cancelConnect();
+
+  /* exit focus mode when clicking the dimmed background or a dimmed card */
+  if(_focusCardId){
+    const dimCard = e.target.closest?.('.card.focus-dim');
+    if(onBoard || onCanvas || dimCard) exitFocus();
+  }
+});
+
+/* ========================================
+   EXPORT AS IMAGE
+======================================== */
+async function exportImage(){
+  closeBoardProps();
+  const fl=document.getElementById('export-flash');
+  fl.style.opacity='.4'; setTimeout(()=>fl.style.opacity='0',250);
+
+  try {
+    const html2canvas=(await import('https://esm.sh/html2canvas@1.4.1')).default;
+    const board=document.getElementById('board');
+
+    /* temporarily inject a style that removes the dark ::after vignette
+       and disables drop-shadows that html2canvas renders darker */
+    const patch=document.createElement('style');
+    patch.id='export-patch';
+    patch.textContent=`
+      #board::after{display:none!important}
+      .card{filter:none!important}
+    `;
+    document.head.appendChild(patch);
+
+    /* small delay so the style takes effect before capture */
+    await new Promise(r=>setTimeout(r,60));
+
+    const canvas=await html2canvas(board,{
+      useCORS:true,
+      allowTaint:true,
+      scale:1.5,
+      logging:false,
+      backgroundColor:'#c8966c',  /* cork colour ? prevents dark transparent bleed */
+      imageTimeout:8000,
+    });
+
+    patch.remove(); /* restore vignette */
+
+    const a=document.createElement('a');
+    a.download=`evidently-${boards.find(b=>b.id===activeBid)?.name||'board'}.png`;
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+  } catch(err) {
+    alert('Exportação não disponível.\nUse a captura de tela do sistema (Win+Shift+S ou Cmd+Shift+4).');
+  }
+}
+
+/* ========================================
+   EXPORT / IMPORT ? JSON
+======================================== */
+function exportJSON() {
+  closeBoardProps();
+  /* export ALL boards so the file is a complete backup */
+  const payload = {
+    version: 1,
+    exported: new Date().toISOString(),
+    boards,
+    cards:  allCards,
+    conns:  allConns,
+    zones:  allZones,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.download = `evidently-${(boards.find(b=>b.id===activeBid)?.name||'board').replace(/\s+/g,'-')}.invboard`;
+  a.href = URL.createObjectURL(blob);
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+
+/* staged import ? parse file then show options modal */
+let _pendingImport = null;
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  input.value = ''; /* allow re-import of same file */
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.boards || !data.cards) throw new Error('Formato inválido');
+      _pendingImport = data;
+      closeBoardProps();
+      /* info text */
+      const totalCards = Object.values(data.cards).reduce((s,a)=>s+a.length,0);
+      document.getElementById('import-info').textContent =
+        `Arquivo: ${file.name}\n${data.boards.length} quadro(s) · ${totalCards} card(s)`;
+      const modal = document.getElementById('import-modal');
+      modal.style.display = 'flex';
+    } catch(e) {
+      alert('Arquivo inválido ou corrompido.\nUse um arquivo .invboard gerado por esta ferramenta.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function closeImportModal() {
+  document.getElementById('import-modal').style.display = 'none';
+  _pendingImport = null;
+}
+
+function confirmImport() {
+  if (!_pendingImport) return;
+  _pushHistory();
+  const mode = document.querySelector('input[name="import-mode"]:checked')?.value || 'add';
+  const d = _pendingImport;
+
+  if (mode === 'add') {
+    /* add all boards from file, re-generating IDs to avoid collisions */
+    d.boards.forEach(b => {
+      const newId = uid();
+      const oldId = b.id;
+      boards.push({ id: newId, name: b.name });
+      allCards[newId] = (d.cards[oldId] || []).map(c => ({ ...c, id: uid() }));
+      /* remap connection IDs */
+      const idMap = {};
+      (d.cards[oldId] || []).forEach((c, i) => { idMap[c.id] = allCards[newId][i].id; });
+      allConns[newId] = (d.conns?.[oldId] || []).map(cn => ({
+        ...cn,
+        from: idMap[cn.from] || cn.from,
+        to:   idMap[cn.to]   || cn.to,
+      }));
+      allZones[newId] = (d.zones?.[oldId] || []).map(z => ({ ...z, id: uid() }));
+    });
+    activeBid = boards[boards.length - 1].id;
+
+  } else if (mode === 'replace') {
+    /* replace active board content with first board from file */
+    const src = d.boards[0];
+    boards.find(b => b.id === activeBid).name = src.name;
+    allCards[activeBid] = (d.cards[src.id] || []);
+    allConns[activeBid] = (d.conns?.[src.id] || []);
+    allZones[activeBid] = (d.zones?.[src.id] || []);
+
+  } else if (mode === 'merge') {
+    /* append cards/zones from first imported board into active board */
+    const src = d.boards[0];
+    const existCards = curCards();
+    const newCards = (d.cards[src.id] || []).map(c => ({ ...c, id: uid() }));
+    const idMap = {};
+    (d.cards[src.id] || []).forEach((c, i) => { idMap[c.id] = newCards[i].id; });
+    setCards([...existCards, ...newCards]);
+    setConns([...curConns(), ...(d.conns?.[src.id] || []).map(cn => ({
+      ...cn,
+      from: idMap[cn.from] || cn.from,
+      to:   idMap[cn.to]   || cn.to,
+    }))]);
+    setZones([...curZones(), ...(d.zones?.[src.id] || []).map(z => ({ ...z, id: uid() }))]);
+  }
+
+  save(); closeImportModal(); renderTabs(); renderAll();
+}
+
+/* ========================================
+   FAB (mobile)
+======================================== */
+let fabOpen = false;
+function toggleFab(){ fabOpen ? closeFab() : openFab(); }
+function openFab(){
+  fabOpen = true;
+  document.getElementById('fab').textContent = '\u00D7';
+  document.getElementById('fab-drawer').classList.add('open');
+}
+function closeFab(){
+  fabOpen = false;
+  document.getElementById('fab').textContent = '+';
+  document.getElementById('fab-drawer').classList.remove('open');
+}
+
+/* ========================================
+   TOUCH - drag cards, pan board, pinch zoom
+======================================== */
+(function setupTouch(){
+  const getBoard = () => document.getElementById('board');
+  const getBR    = () => getBoard().getBoundingClientRect();
+
+  const toCanvas = (cx, cy) => ({
+    x: (cx - getBR().left - panX) / zoom,
+    y: (cy - getBR().top  - panY) / zoom,
+  });
+
+  /* ?? bind touch drag to a card element ?? */
+  function bindCardTouch(el, c){
+    let t0 = null, moved = false, tapTimer = null;
+    let localOX = 0, localOY = 0;
+
+    el.addEventListener('touchstart', e => {
+      if(e.touches.length > 1) return;
+      /* let resize handle take over when touched */
+      if(e.target.classList.contains('card-resize')) return;
+      const t = e.touches[0];
+      t0 = { x: t.clientX, y: t.clientY };
+      moved = false;
+      const cv = toCanvas(t.clientX, t.clientY);
+      localOX = cv.x - c.x;
+      localOY = cv.y - c.y;
+      e.stopPropagation();
+    }, { passive: true });
+
+    el.addEventListener('touchmove', e => {
+      if(e.touches.length > 1) return;
+      /* abort if resize took over */
+      if(_resizeCard) return;
+      const t = e.touches[0];
+      if(!moved && Math.hypot(t.clientX-t0.x, t.clientY-t0.y) < 6) return;
+      moved = true;
+      if(connectFrom){ e.preventDefault(); return; }
+      singleDrag = c;
+      const cv = toCanvas(t.clientX, t.clientY);
+      c.x = cv.x - localOX;
+      c.y = cv.y - localOY;
+      const el2 = document.querySelector(`.card[data-id="${c.id}"]`);
+      if(el2){ el2.style.left = c.x+'px'; el2.style.top = c.y+'px'; }
+      renderStrings();
+      e.preventDefault();
+    }, { passive: false });
+
+    el.addEventListener('touchend', e => {
+      if(!moved){
+        if(tapTimer){
+          clearTimeout(tapTimer); tapTimer = null;
+          if(connectFrom){ finishConnect(c.id); return; }
+          openModal(c.type, c.id);
+        } else {
+          tapTimer = setTimeout(()=>{ tapTimer=null; }, 280);
+        }
+      } else {
+        if(singleDrag){ save(); singleDrag = null; }
+      }
+      e.stopPropagation();
+    }, { passive: true });
+  }
+
+  /* ── bind touch drag to zone header ── */
+  function bindZoneHeaderTouch(headerEl, z, zoneEl){
+    let zt0 = null, zMoved = false;
+    let zOX = 0, zOY = 0;
+
+    headerEl.addEventListener('touchstart', e => {
+      if(e.touches.length > 1) return;
+      if(e.target.classList.contains('zone-del') || e.target.tagName === 'INPUT') return;
+      const t = e.touches[0];
+      zt0 = { x: t.clientX, y: t.clientY };
+      zMoved = false;
+      const cv = toCanvas(t.clientX, t.clientY);
+      zOX = cv.x - z.x;
+      zOY = cv.y - z.y;
+      e.stopPropagation();
+    }, { passive: true });
+
+    headerEl.addEventListener('touchmove', e => {
+      if(e.touches.length > 1) return;
+      const t = e.touches[0];
+      if(!zMoved && Math.hypot(t.clientX-zt0.x, t.clientY-zt0.y) < 6) return;
+      zMoved = true;
+      const cv = toCanvas(t.clientX, t.clientY);
+      z.x = cv.x - zOX;
+      z.y = cv.y - zOY;
+      zoneEl.style.left = z.x + 'px';
+      zoneEl.style.top  = z.y + 'px';
+      e.preventDefault();
+    }, { passive: false });
+
+    headerEl.addEventListener('touchend', e => {
+      if(zMoved){
+        _historyPaused = true; save(); _historyPaused = false;
+        zMoved = false;
+      }
+      e.stopPropagation();
+    }, { passive: true });
+  }
+
+  /* ── board touch: 1 finger = pan, 2 fingers = pinch zoom ── */
+  let pinchDist0=0, pinchZoom0=1, pinchPanX0=0, pinchPanY0=0;
+  let panTouchId=null;
+
+  function touchDist(a,b){ return Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY); }
+  function touchMid(a,b) { return {x:(a.clientX+b.clientX)/2, y:(a.clientY+b.clientY)/2}; }
+
+  getBoard().addEventListener('touchstart', e => {
+    closeFab();
+    const onCard       = e.target.closest?.('.card');
+    const onZoneHeader = e.target.closest?.('.zone-header');
+
+    if(e.touches.length === 2){
+      const [a,b] = [e.touches[0], e.touches[1]];
+      pinchDist0=touchDist(a,b); pinchZoom0=zoom;
+      pinchPanX0=panX; pinchPanY0=panY;
+      panTouchId=null;
+      e.preventDefault(); return;
+    }
+
+    /* pan: anywhere except cards and zone headers */
+    if(e.touches.length === 1 && !onCard && !onZoneHeader){
+      const t=e.touches[0];
+      panTouchId=t.identifier;
+      panStartX=t.clientX; panStartY=t.clientY;
+      panOriginX=panX; panOriginY=panY;
+    }
+  }, { passive:false });
+
+  getBoard().addEventListener('touchmove', e => {
+    /* zone resize via touch */
+    if(resizeZone && e.touches.length===1){
+      const t=e.touches[0];
+      resizeZone.w=Math.max(140,rzW+(t.clientX-rzSX)/zoom);
+      resizeZone.h=Math.max(80, rzH+(t.clientY-rzSY)/zoom);
+      const el=document.querySelector(`.zone[data-zid="${resizeZone.id}"]`);
+      if(el){el.style.width=resizeZone.w+'px';el.style.height=resizeZone.h+'px';}
+      e.preventDefault(); return;
+    }
+    /* card resize via touch */
+    if(_resizeCard && e.touches.length===1){
+      const t=e.touches[0];
+      const dw=(t.clientX-_rsX)/zoom, dh=(t.clientY-_rsY)/zoom;
+      const nw=Math.max(CARD_MIN_W,_rsW+dw), nh=Math.max(CARD_MIN_H,_rsH+dh);
+      _resizeInner.style.width=nw+'px'; _resizeInner.style.minHeight=nh+'px';
+      renderStrings(); e.preventDefault(); return;
+    }
+    if(e.touches.length === 2){
+      const [a,b]=[e.touches[0],e.touches[1]];
+      const dist=touchDist(a,b);
+      const mid=touchMid(a,b);
+      const brect=getBR();
+      const cx=(mid.x-brect.left-pinchPanX0)/pinchZoom0;
+      const cy=(mid.y-brect.top -pinchPanY0)/pinchZoom0;
+      zoom=Math.min(ZOOM_MAX,Math.max(ZOOM_MIN,pinchZoom0*dist/pinchDist0));
+      panX=mid.x-brect.left-cx*zoom;
+      panY=mid.y-brect.top -cy*zoom;
+      applyZoom(); e.preventDefault(); return;
+    }
+    if(e.touches.length===1 && panTouchId!==null){
+      const t=[...e.touches].find(t=>t.identifier===panTouchId);
+      if(!t) return;
+      panX=panOriginX+(t.clientX-panStartX);
+      panY=panOriginY+(t.clientY-panStartY);
+      applyZoom(); renderMinimap(); _showMinimap(); e.preventDefault();
+    }
+  }, { passive:false });
+
+  getBoard().addEventListener('touchend', e => {
+    if(_resizeCard){
+      _resizeCard.w=_resizeInner.offsetWidth; _resizeCard.h=_resizeInner.offsetHeight;
+      const cs=curCards(); const t=cs.find(c=>c.id===_resizeCard.id);
+      if(t){t.w=_resizeCard.w;t.h=_resizeCard.h;}
+      _pushHistory(); setCards(cs); save();
+      _resizeCard=null; _resizeInner=null;
+    }
+    if(resizeZone){ _historyPaused=true; save(); _historyPaused=false; resizeZone=null; }
+    if(e.touches.length<2) pinchDist0=0;
+    if(e.touches.length===0){ panTouchId=null; _hideMinimap(); }
+  }, { passive:true });
+
+  /* expose so renderAll can attach touch to freshly created elements */
+  window._bindCardTouch = bindCardTouch;
+  window._bindZoneTouch = bindZoneHeaderTouch;
+})();
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){cancelConnect();closeModal();closeZoneModal();closeBoardProps();clearSelection();closeImportModal();exitFocus();clearSearch();document.getElementById('tpl-panel')?.classList.remove('open');closeCutPopup();}
+  /* undo / redo — ignore when typing in an input */
+  const tag = document.activeElement?.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  if((e.ctrlKey||e.metaKey) && e.key==='z' && !e.shiftKey){ e.preventDefault(); undo(); }
+  if((e.ctrlKey||e.metaKey) && (e.key==='Z' || (e.key==='z'&&e.shiftKey))){ e.preventDefault(); redo(); }
+  if((e.ctrlKey||e.metaKey) && e.key==='y'){ e.preventDefault(); redo(); }
+  /* copy selected cards */
+  if((e.ctrlKey||e.metaKey) && e.key==='c' && selectedIds.size){
+    e.preventDefault();
+    _clipboard = curCards()
+      .filter(c=>selectedIds.has(c.id))
+      .map(c=>JSON.parse(JSON.stringify(c)));
+    showToast(`\uD83D\uDCCB ${_clipboard.length} card(s) copiado(s)`);
+  }
+  /* paste copied cards */
+  if((e.ctrlKey||e.metaKey) && e.key==='v' && _clipboard.length){
+    e.preventDefault();
+    _pushHistory();
+    clearSelection();
+    const board=document.getElementById('board');
+    const vcx=(board.clientWidth/2-panX)/zoom;
+    const vcy=(board.clientHeight/2-panY)/zoom;
+    /* find bounding box of clipboard to center the paste */
+    const minX=Math.min(..._clipboard.map(c=>c.x));
+    const minY=Math.min(..._clipboard.map(c=>c.y));
+    const offX=vcx-minX+20; const offY=vcy-minY+20;
+    const cs=curCards();
+    _clipboard.forEach(orig=>{
+      const copy={...JSON.parse(JSON.stringify(orig)),
+        id:uid(), x:orig.x+offX, y:orig.y+offY,
+        log:[{t:Date.now(),text:'colado de cópia'}]};
+      cs.push(copy);
+      selectedIds.add(copy.id);
+    });
+    setCards(cs); save(); renderAll();
+    showToast(`\uD83D\uDCCB ${_clipboard.length} card(s) colado(s)`);
+  }
+  /* Ctrl+N — new card */
+  if((e.ctrlKey||e.metaKey) && e.key==='n'){
+    e.preventDefault();
+    openModal('note');
+  }
+  /* Delete — remove all selected elements */
+  if(e.key==='Delete' && selectedIds.size){
+    e.preventDefault();
+    _pushHistory();
+    const ids=[...selectedIds];
+    setCards(curCards().filter(c=>!ids.includes(c.id)));
+    setConns(curConns().filter(c=>!ids.includes(c.from)&&!ids.includes(c.to)));
+    setZones(curZones().filter(z=>!ids.includes(z.id)));
+    clearSelection(); save(); renderAll();
+    showToast(`\uD83D\uDDD1 ${ids.length} elemento(s) removido(s)`);
+  }
+  if((e.ctrlKey||e.metaKey) && e.key==='Tab'){
+    e.preventDefault();
+    const idx=boards.findIndex(b=>b.id===activeBid);
+    const next=boards[(idx+1)%boards.length];
+    if(next) switchBoard(next.id);
+  }
+});
+document.getElementById('modal-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal-overlay'))closeModal();
+});
+document.getElementById('zone-modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('zone-modal'))closeZoneModal();
+});
+document.addEventListener('click', e => {
+  const panel = document.getElementById('board-props');
+  const btn   = document.getElementById('btn-cfg');
+  if (panel.classList.contains('open') && !panel.contains(e.target) && e.target !== btn)
+    closeBoardProps();
+
+  /* blur search input when clicking outside the search wrap */
+  const sw  = document.getElementById('search-wrap');
+  const inp = document.getElementById('search-input');
+  if (sw && inp && !sw.contains(e.target)) inp.blur();
+
+  /* close cut-popup when clicking outside it */
+  const cp = document.getElementById('cut-popup');
+  if (cp && cp.classList.contains('open') && !cp.contains(e.target)) closeCutPopup();
+});
+
+/* ========================================
+   CLEAR ALL
+======================================== */
+function clearAll(){
+  if(!confirm('Apagar todo o conteúdo deste quadro?'))return;
+  _pushHistory();setCards([]);setConns([]);setZones([]);save();renderAll();
+}
+
+/* ========================================
+   SEED - quadro de boas-vindas
+   Positions extracted from evidently-Principal.invboard
+======================================== */
+function seed(){
+  const cs=[], zs=[], conns=[];
+  const mk=(o)=>{ const c={id:uid(),checklist:[],deadline:'',variant:'',stringColor:'#cc2200',...o}; cs.push(c); return c; };
+
+  /* ── ZONES ── */
+  const Z1={id:uid(),name:'Bem-vindo',                       color:'rgba(255,200,50,.11)', border:'rgba(200,160,0,.38)',  text:'#7a5000', x:30,   y:30,  w:560,  h:440};
+  const Z2={id:uid(),name:'Cards & Personaliza\u00e7\u00e3o',color:'rgba(60,100,200,.1)',  border:'rgba(50,80,180,.38)', text:'#1a2a7a', x:610,  y:30,  w:560,  h:440};
+  const Z3={id:uid(),name:'Conex\u00f5es & Foco',            color:'rgba(180,40,0,.09)',   border:'rgba(180,40,0,.35)',  text:'#7a1a00', x:1190, y:30,  w:560,  h:440};
+  const Z4={id:uid(),name:'Sele\u00e7\u00e3o & Organiza\u00e7\u00e3o',color:'rgba(50,150,80,.1)',border:'rgba(40,120,60,.38)',text:'#1a5a2a',x:30,  y:490, w:560,  h:440};
+  const Z5={id:uid(),name:'Navega\u00e7\u00e3o & Mobile',    color:'rgba(80,40,160,.1)',   border:'rgba(80,40,160,.35)', text:'#3a1a7a', x:610,  y:490, w:560,  h:440};
+  const Z6={id:uid(),name:'Hist\u00f3rico & Dados',          color:'rgba(0,120,120,.1)',   border:'rgba(0,100,100,.35)', text:'#00505a', x:1190, y:490, w:560,  h:440};
+  const Z7={id:uid(),name:'Atalhos R\u00e1pidos',            color:'rgba(140,80,200,.09)', border:'rgba(120,60,180,.35)',text:'#4a1a7a', x:30,   y:950, w:1720, h:210};
+  [Z1,Z2,Z3,Z4,Z5,Z6,Z7].forEach(z=>zs.push(z));
+
+  /* ── ZONE 1: Bem-vindo ── */
+  const bv    = mk({type:'note',variant:'aged', tag:'ideia',  status:'todo',  pin:'yellow',stringColor:'#ffcc00',x:69,  y:66,
+    title:'Bem-vindo ao Evidently!',
+    desc:'Seu mural de investiga\u00e7\u00e3o pessoal. Fixe evid\u00eancias, conecte ideias com barbante e organize tudo visualmente \u2014 sem colunas fixas.'});
+
+  const sobre = mk({type:'note',variant:'note',  tag:'ideia',  status:'doing', pin:'blue',  stringColor:'#4488ff',x:332, y:55,
+    title:'Como come\u00e7ar?',
+    desc:'1. Clique em "\uD83D\uDCDD Nota" para criar um card.\n2. Arraste-o livremente pelo quadro.\n3. Clique no alfinete para conectar cards.\n4. Explore as zonas ao redor para conhecer todas as fun\u00e7\u00f5es.'});
+
+  /* ── ZONE 2: Cards & Personalização ── */
+  const cNota = mk({type:'note',variant:'',      tag:'work',   status:'todo',  pin:'red',   stringColor:'#cc2200',x:652, y:102,
+    title:'Nota & Edi\u00e7\u00e3o por Abas',
+    desc:'Edite o card em 5 abas laterais: \uD83D\uDCDD Card (t\u00edtulo/desc) \u2022 \u2705 Tarefas (checklist) \u2022 \uD83D\uDCC5 Detalhes (prazo + hora, tag, status) \u2022 \uD83C\uDFA8 Visual \u2022 \uD83D\uDCCB Hist\u00f3rico.',
+    checklist:[{text:'Checklist com barra de progresso',done:true},{text:'Prazo com data e hora espec\u00edfica',done:false},{text:'Hist\u00f3rico de atividades por card',done:false}]});
+
+  const cVisual = mk({type:'note',variant:'aged', tag:'ideia',  status:'todo',  pin:'blue',  stringColor:'#4488ff',x:74,  y:262,
+    title:'Visual, Resize & Foto',
+    desc:'Aba \uD83C\uDFA8 Visual: cor do alfinete, barbante e fundo do card (9 cores). Redimensione pelo canto \u2921 (mouse e touch). Cards de Foto: imagem via URL ou upload local + legenda.',
+    cardColor:'#c8ddf5'});
+
+  const cStatus = mk({type:'note',variant:'note', tag:'work',   status:'doing', pin:'green', stringColor:'#44cc44',x:911, y:44,
+    title:'Status, Tags & Temas',
+    desc:'Badge clic\u00e1vel cicla: A FAZER \u2192 FAZENDO \u2192 FEITO \u2713. 5 tags. URLs na descri\u00e7\u00e3o viram links clic\u00e1veis. 3 temas no painel \u2699: Cork, Night e Paper.'});
+
+  const cTpl  = mk({type:'note',variant:'',       tag:'ideia',  status:'todo',  pin:'yellow',stringColor:'#ffcc00',x:902, y:252,
+    title:'Templates & Fonte',
+    desc:'Salve layouts de cards frequentes em "\uD83D\uDCCB Templates" na toolbar \u2014 instancie com 1 clique na vis\u00e3o atual. Fonte dos cards configur\u00e1vel no painel \u2699 (8 op\u00e7\u00f5es).'});
+
+  /* ── ZONE 3: Conexões & Foco ── */
+  const cConn = mk({type:'note',variant:'aged',  tag:'urgente',status:'todo',  pin:'red',   stringColor:'#cc2200',x:1226,y:63,
+    title:'Barbante & R\u00f3tulos',
+    desc:'Clique no alfinete para conectar. Escolha o r\u00f3tulo: bloqueia, depende de, relacionado, refer\u00eancia. O r\u00f3tulo aparece sobre o fio.'});
+
+  const cGerFios = mk({type:'note',variant:'',   tag:'urgente',status:'todo',  pin:'red',   stringColor:'#ff6633',x:1515,y:59,
+    title:'Gerenciar Liga\u00e7\u00f5es',
+    desc:'Bot\u00e3o "fios" no card abre popup com todas as liga\u00e7\u00f5es. Altere o r\u00f3tulo de cada fio ou corte liga\u00e7\u00f5es individualmente com \u2702.'});
+
+  const cFoco = mk({type:'note',variant:'note',  tag:'urgente',status:'todo',  pin:'blue',  stringColor:'#4488ff',x:1225,y:264,
+    title:'Modo Foco',
+    desc:'Clique em "focar" no card. Ele e suas conex\u00f5es diretas ficam destacados; o resto some. Os fios desconectados tamb\u00e9m somem. Esc para sair.'});
+
+  const cBusca= mk({type:'note',variant:'',      tag:'ideia',  status:'todo',  pin:'yellow',stringColor:'#ffcc00',x:1497,y:266,
+    title:'Busca',
+    desc:'Campo no header filtra cards por t\u00edtulo, descri\u00e7\u00e3o, tag e checklist. Durante a busca, todos os fios ficam ocultos. Esc limpa.'});
+
+  /* ── ZONE 4: Seleção & Organização ── */
+  const cSel  = mk({type:'note',variant:'note',  tag:'work',   status:'todo',  pin:'green', stringColor:'#44cc44',x:61,  y:527,
+    title:'Sele\u00e7\u00e3o M\u00faltipla',
+    desc:'Arraste no fundo para criar la\u00e7o. Zonas s\u00f3 s\u00e3o selecionadas se 100% contidas. Shift+clique adiciona. Mova o grupo arrastando qualquer elemento selecionado.'});
+
+  const cCopy = mk({type:'note',variant:'',      tag:'work',   status:'todo',  pin:'green', stringColor:'#44cc44',x:318, y:513,
+    title:'Copiar & Colar',
+    desc:'Ctrl+C copia todos os cards selecionados. Ctrl+V cola c\u00f3pias centradas na vis\u00e3o atual. Delete remove todos os elementos selecionados (cards e zonas).'});
+
+  const cQuadros=mk({type:'note',variant:'aged', tag:'work',   status:'todo',  pin:'blue',  stringColor:'#4488ff',x:50,  y:740,
+    title:'M\u00faltiplos Quadros',
+    desc:'Abas no topo para criar quadros separados. Ctrl+Tab navega entre eles. Cada quadro tem cards, zonas e conex\u00f5es independentes.'});
+
+  const cZonas= mk({type:'note',variant:'',      tag:'work',   status:'todo',  pin:'green', stringColor:'#44cc44',x:320, y:716,
+    title:'Zonas',
+    desc:'Agrupe cards. Arraste pelo cabe\u00e7alho, redimensione pelo canto \u2921 (mouse e touch). Duplo-clique no nome para renomear. La\u00e7o 100% contido seleciona a zona.'});
+
+  /* ── ZONE 5: Navegação & Mobile ── */
+  const cZoom = mk({type:'note',variant:'note',  tag:'pessoal',status:'todo',  pin:'yellow',stringColor:'#ffcc00',x:657, y:525,
+    title:'Zoom & Pan',
+    desc:'Scroll = zoom centrado no cursor. Bot\u00e3o do meio (pressionado) = mover vis\u00e3o. Ctrl+N = novo card. Clique no % = resetar zoom.'});
+
+  const cMini = mk({type:'note',variant:'',      tag:'ideia',  status:'todo',  pin:'blue',  stringColor:'#4488ff',x:917, y:515,
+    title:'Minimapa',
+    desc:'Aparece no canto superior direito durante o pan. Mostra cards, zonas e conex\u00f5es em miniatura com a \u00e1rea vis\u00edvel destacada.'});
+
+  const cTouch= mk({type:'note',variant:'aged',  tag:'urgente',status:'todo',  pin:'red',   stringColor:'#cc2200',x:649, y:715,
+    title:'Mobile & Touch',
+    desc:'1 dedo no fundo ou corpo de zona = pan \u2022 Arraste card = mover \u2022 2 dedos = pinch zoom \u2022 Duplo-toque = editar \u2022 Bot\u00e3o + flutuante para adicionar.'});
+
+  const cLandscape=mk({type:'note',variant:'note',tag:'urgente',status:'todo', pin:'red',   stringColor:'#ff6633',x:924, y:718,
+    title:'Modo Landscape',
+    desc:'Em celulares deitados: header compacto, toolbar com scroll horizontal, modais como bottom sheet. Otimizado para telas estreitas.'});
+
+  /* ── ZONE 6: Histórico & Dados ── */
+  const cLog  = mk({type:'note',variant:'note',  tag:'meeting',status:'todo',  pin:'blue',  stringColor:'#4488ff',x:1230,y:523,
+    title:'Hist\u00f3rico de Atividades',
+    desc:'Cada card registra um log: cria\u00e7\u00e3o, edi\u00e7\u00f5es de t\u00edtulo/status/prazo/tag e ciclos de status. Acesse pela aba \uD83D\uDCCB Hist\u00f3rico ao editar o card.'});
+
+  const cUndo = mk({type:'note',variant:'',      tag:'meeting',status:'todo',  pin:'green', stringColor:'#44cc44',x:1485,y:518,
+    title:'Desfazer & Refazer',
+    desc:'Ctrl+Z = desfaz (at\u00e9 60 n\u00edveis). Ctrl+Shift+Z ou Ctrl+Y = refaz. Hist\u00f3rico independente por quadro. Drag de posi\u00e7\u00e3o n\u00e3o polui o hist\u00f3rico.'});
+
+  const cExp  = mk({type:'note',variant:'aged',  tag:'meeting',status:'todo',  pin:'blue',  stringColor:'#4488ff',x:1224,y:731,
+    title:'Exportar & Importar',
+    desc:'Engrenagem \u2699 \u2192 Exportar salva arquivo .invboard (JSON completo). Importar: adicionar quadros, substituir ou mesclar. PNG captura o quadro visual.'});
+
+  const cLocal= mk({type:'note',variant:'',      tag:'work',   status:'done',  pin:'green', stringColor:'#44cc44',x:1488,y:713,
+    title:'Armazenamento & Links',
+    desc:'Auto-salvo no localStorage. URL reflete o quadro ativo via hash (#id) para bookmarking. Sem servidor, sem cadastro.'});
+
+  /* ── ZONE 7: Atalhos Rápidos ── */
+  mk({type:'note',variant:'note', tag:'ideia',status:'todo',pin:'blue',  stringColor:'#4488ff', x:63,   y:987,
+    title:'\uD83D\uDDB1 Mouse',
+    desc:'Scroll = zoom \u2022 Bot\u00e3o do meio = pan \u2022 Duplo-clique = editar \u2022 Alfinete = conectar'});
+  mk({type:'note',variant:'',     tag:'ideia',status:'todo',pin:'yellow',stringColor:'#ffcc00', x:307,  y:972,
+    title:'\u2328 Edi\u00e7\u00e3o',
+    desc:'Ctrl+Z = desfazer \u2022 Ctrl+Y/Shift+Z = refazer \u2022 Ctrl+N = novo card \u2022 Ctrl+Tab = pr\u00f3ximo quadro'});
+  mk({type:'note',variant:'aged', tag:'ideia',status:'todo',pin:'green', stringColor:'#44cc44', x:579,  y:971,
+    title:'\uD83D\uDDC2 Sele\u00e7\u00e3o',
+    desc:'La\u00e7o no fundo = selecionar \u2022 Shift+clique = adicionar \u2022 Ctrl+C = copiar \u2022 Ctrl+V = colar \u2022 Delete = excluir'});
+  mk({type:'note',variant:'',     tag:'ideia',status:'todo',pin:'red',   stringColor:'#cc2200', x:846,  y:971,
+    title:'\uD83C\uDFAF Foco & Busca',
+    desc:'"focar" = modo foco \u2022 Busca no header \u2022 Esc sai/limpa \u2022 Fios ocultam na busca'});
+  mk({type:'note',variant:'note', tag:'ideia',status:'todo',pin:'yellow',stringColor:'#ffcc00', x:1118, y:980,
+    title:'\uD83D\uDCCC Organiza\u00e7\u00e3o',
+    desc:'Templates na toolbar \u2022 Zonas: arrastar cabe\u00e7alho, resize \u2921 \u2022 La\u00e7o 100% contido seleciona zona'});
+  mk({type:'note',variant:'aged', tag:'ideia',status:'todo',pin:'red',   stringColor:'#ff6633', x:1374, y:975,
+    title:'\uD83D\uDD17 Conex\u00f5es',
+    desc:'Alfinete = iniciar \u2022 R\u00f3tulo no indicador vermelho \u2022 "fios" = editar/cortar \u2022 Esc cancela'});
+
+  /* ── CONNECTIONS ── */
+  conns.push({from:bv.id,        to:sobre.id,      color:'#ffcc00',rel:''});
+  conns.push({from:cNota.id,     to:cVisual.id,    color:'#4488ff',rel:''});
+  conns.push({from:cConn.id,     to:cGerFios.id,   color:'#cc2200',rel:'relacionado'});
+  conns.push({from:cFoco.id,     to:cBusca.id,     color:'#4488ff',rel:'relacionado'});
+  conns.push({from:cSel.id,      to:cCopy.id,      color:'#44cc44',rel:''});
+  conns.push({from:cQuadros.id,  to:cZonas.id,     color:'#44cc44',rel:''});
+  conns.push({from:cZoom.id,     to:cMini.id,      color:'#ffcc00',rel:''});
+  conns.push({from:cTouch.id,    to:cLandscape.id, color:'#cc2200',rel:''});
+  conns.push({from:cLog.id,      to:cUndo.id,      color:'#4488ff',rel:'depende'});
+  conns.push({from:cExp.id,      to:cLocal.id,     color:'#44cc44',rel:''});
+  conns.push({from:cStatus.id,   to:cTpl.id,       color:'#ffcc00',rel:'relacionado'});
+
+  allCards[activeBid]=cs;
+  allConns[activeBid]=conns;
+  allZones[activeBid]=zs;
+}
+
+/* ========================================
+   INIT
+======================================== */
+load();
+if(!boards.length){
+  const b={id:uid(),name:'Principal'};
+  boards=[b]; activeBid=b.id;
+  allCards[b.id]=[]; allConns[b.id]=[]; allZones[b.id]=[];
+  seed();
+} else {
+  /* restore last active board from URL hash if present */
+  const hashBid = location.hash.slice(1);
+  const found   = boards.find(b=>b.id===hashBid);
+  activeBid     = found ? found.id : boards[0].id;
+}
+renderTabs(); loadTheme(); loadCardFont(); renderAll();
+function _syncHash(){ history.replaceState(null,'','#'+activeBid); }
+_syncHash();
+
+/* handle back/forward navigation */
+window.addEventListener('popstate',()=>{
+  const bid=location.hash.slice(1);
+  if(bid&&boards.find(b=>b.id===bid)) switchBoard(bid);
+});
+
+setTimeout(()=>{ const h=document.getElementById('hint');if(h){h.style.opacity='0';} },7000);
+</script>
+</body>
+</html>
