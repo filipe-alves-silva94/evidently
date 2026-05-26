@@ -346,6 +346,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 .card.show-actions .card-actions{ max-height:44px;opacity:1; }
 .card.show-actions .card-resize{ opacity:1; }
 .card.show-actions .card-inner{ box-shadow:0 0 0 2px var(--pin-red), 0 6px 22px rgba(0,0,0,.4); }
+/* long-press "picked up" state — card lifts (scale on .card preserves
+   the per-variant rotation that lives on .card-inner) */
+.card.drag-armed{ z-index:200!important;transform:scale(1.04);transition:transform .12s ease; }
+.card.drag-armed .card-inner{
+  box-shadow:0 0 0 2px var(--pin-red), 0 10px 30px rgba(0,0,0,.55);
+  transition:box-shadow .12s ease;
+}
+/* zones lift without scaling (they are large containers) */
+.zone.drag-armed{ z-index:200!important;box-shadow:0 0 0 2px var(--pin-red),0 8px 26px rgba(0,0,0,.5);transition:box-shadow .12s ease; }
 .ca-btn{
   font-size:10px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);
   border-radius:3px;padding:2px 5px;cursor:pointer;color:var(--ink-faded);
@@ -1055,8 +1064,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
     padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px))!important;
   }
 
-  /* cards: bigger tap targets */
-  .ca-btn{ padding:5px 9px;font-size:12px; }
+  /* cards: pin tap target (action buttons handled in pointer:coarse block) */
   .pin   { width:20px;height:20px; }
 
   /* zoom indicator: bottom-LEFT, compact, clear of the FAB (bottom-right) */
@@ -1080,9 +1088,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 
 /* ── COARSE POINTER (touch phones + tablets): larger hit targets, momentum scroll ── */
 @media (pointer:coarse){
-  /* card action buttons: comfortable ≥40px touch area */
-  .ca-btn{ padding:8px 12px;font-size:12px;min-height:36px;display:inline-flex;align-items:center; }
-  .card-actions{ gap:6px; }
+  /* card action buttons on touch: icon-only, equal-width, always contained.
+     Text labels are replaced by icons so they fit any card width. */
+  .card-actions{ gap:5px;flex-wrap:nowrap;padding:6px 0 2px; }
+  .ca-btn{
+    flex:1 1 0;min-width:0;                 /* equal share of the row */
+    padding:0;height:34px;font-size:0;       /* hide text via font-size:0 */
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .ca-btn::before{
+    content:attr(data-icon);
+    font-size:15px;line-height:1;           /* restore size for the icon glyph */
+  }
   /* pins easier to hit */
   .pin{ width:22px;height:22px; }
   /* resize handle bigger + always faintly visible on touch (no hover) */
@@ -2405,10 +2422,14 @@ function createCardEl(c) {
     b.addEventListener('click',e=>{e.stopPropagation();cb(e);});
     return b;
   };
-  acts.appendChild(mkBtn('focar','Modo foco','',()=>enterFocus(c.id)));
-  acts.appendChild(mkBtn('fios','Cortar ligações','',(e)=>openCutPopup(e,c.id)));
-  acts.appendChild(mkBtn('editar','Editar','',()=>openModal(c.type,c.id)));
-  acts.appendChild(mkBtn('del','Remover','del',()=>deleteCard(c.id)));
+  const _bFocus = mkBtn('focar','Modo foco','',()=>enterFocus(c.id));        _bFocus.dataset.icon='\u{1F3AF}';   /* 🎯 */
+  const _bFios  = mkBtn('fios','Cortar ligações','',(e)=>openCutPopup(e,c.id)); _bFios.dataset.icon='\u2702';        /* ✂ */
+  const _bEdit  = mkBtn('editar','Editar','',()=>openModal(c.type,c.id));     _bEdit.dataset.icon='\u270E';         /* ✎ */
+  const _bDel   = mkBtn('del','Remover','del',()=>deleteCard(c.id));          _bDel.dataset.icon='\u{1F5D1}';      /* 🗑 */
+  acts.appendChild(_bFocus);
+  acts.appendChild(_bFios);
+  acts.appendChild(_bEdit);
+  acts.appendChild(_bDel);
   inner.appendChild(acts);
 
   el.appendChild(inner);
@@ -3499,44 +3520,72 @@ function closeFab(){
 
   /* ?? bind touch drag to a card element ?? */
   function bindCardTouch(el, c){
+    /* Mobile interaction model:
+       • tap (no move)         → toggle the action strip
+       • double-tap            → open the editor
+       • long-press (250ms)    → "pick up" the card, then drag it
+       • press + immediate move → falls through to board pan (no accidental drag)
+       • connect mode tap      → finish the connection                       */
     let t0 = null, moved = false, tapTimer = null;
     let localOX = 0, localOY = 0;
+    let holdTimer = null, dragArmed = false;
+
+    const DRAG_HOLD_MS = 250;   /* hold this long to pick up the card */
+    const MOVE_TOL     = 8;     /* px finger wiggle allowed before it counts as a move */
+
+    function disarmHold(){
+      if(holdTimer){ clearTimeout(holdTimer); holdTimer = null; }
+    }
 
     el.addEventListener('touchstart', e => {
-      if(e.touches.length > 1) return;
+      if(e.touches.length > 1){ disarmHold(); return; }
       /* let resize handle take over when touched */
       if(e.target.classList.contains('card-resize')) return;
+      /* taps on action buttons / pin must not start a drag */
+      if(e.target.closest('.card-actions') || e.target.classList.contains('pin')) return;
+
       const t = e.touches[0];
       t0 = { x: t.clientX, y: t.clientY };
       moved = false;
+      dragArmed = false;
       const cv = toCanvas(t.clientX, t.clientY);
       localOX = cv.x - c.x;
       localOY = cv.y - c.y;
-      /* Only capture the gesture (block board pan) when this card is
-         draggable: tap-revealed, selected, or in connect mode.
-         Inactive cards let the touch bubble so the board can pan,
-         which prevents accidental dragging on mobile. */
-      const isActive = el.classList.contains('show-actions') || selectedIds.has(c.id) || connectFrom;
-      if(isActive) e.stopPropagation();
+
+      /* If already selected or in connect mode, the card is immediately
+         draggable (no hold needed). Otherwise, arm a long-press to pick it up. */
+      if(selectedIds.has(c.id) || connectFrom){
+        dragArmed = true;
+        e.stopPropagation();          /* block board pan */
+      } else {
+        holdTimer = setTimeout(() => {
+          dragArmed = true;
+          el.classList.add('drag-armed');   /* visual "picked up" cue */
+          if(navigator.vibrate) navigator.vibrate(15);
+        }, DRAG_HOLD_MS);
+      }
     }, { passive: true });
 
     el.addEventListener('touchmove', e => {
-      if(e.touches.length > 1) return;
-      /* abort if resize took over */
+      if(e.touches.length > 1){ disarmHold(); return; }
       if(_resizeCard) return;
       const t = e.touches[0];
-      if(!moved && Math.hypot(t.clientX-t0.x, t.clientY-t0.y) < 6) return;
-      /* prevent accidental drag: only move a card that is "active"
-         (tap-revealed via show-actions) or part of a multi-selection.
-         Otherwise let the gesture fall through to board pan. */
-      const isActive = el.classList.contains('show-actions') || selectedIds.has(c.id);
-      if(!isActive && !connectFrom){
-        moved = true;       /* consume as non-tap, but do NOT drag */
-        return;             /* board pan handler takes over */
+      const dist = Math.hypot(t.clientX-t0.x, t.clientY-t0.y);
+
+      /* finger moved before the hold completed → this is a pan/scroll gesture,
+         not a drag. Cancel the pickup and let the board handle it. */
+      if(!dragArmed){
+        if(dist > MOVE_TOL){ disarmHold(); moved = true; }
+        return;             /* board pan takes over (we never stopped propagation) */
       }
+
+      if(dist < MOVE_TOL && !moved) return;
       moved = true;
       if(connectFrom){ e.preventDefault(); return; }
+
       singleDrag = c;
+      /* a card drag overrides any board pan that may have started */
+      panTouchId = null;
       const cv = toCanvas(t.clientX, t.clientY);
       c.x = cv.x - localOX;
       c.y = cv.y - localOY;
@@ -3544,13 +3593,17 @@ function closeFab(){
       if(el2){ el2.style.left = c.x+'px'; el2.style.top = c.y+'px'; }
       renderStrings();
       e.preventDefault();
+      e.stopPropagation();
     }, { passive: false });
 
     el.addEventListener('touchend', e => {
+      disarmHold();
+      el.classList.remove('drag-armed');
+
       if(!moved){
         if(connectFrom){ finishConnect(c.id); return; }
         if(tapTimer){
-          /* second tap within window → open editor */
+          /* second tap → open editor */
           clearTimeout(tapTimer); tapTimer = null;
           el.classList.remove('show-actions');
           openModal(c.type, c.id);
@@ -3561,40 +3614,64 @@ function closeFab(){
           });
           el.classList.toggle('show-actions');
           tapTimer = setTimeout(()=>{ tapTimer=null; }, 300);
+          e.stopPropagation();
         }
       } else {
         if(singleDrag){ save(); singleDrag = null; }
+        dragArmed = false;
       }
-      e.stopPropagation();
+    }, { passive: true });
+
+    el.addEventListener('touchcancel', () => {
+      disarmHold();
+      el.classList.remove('drag-armed');
+      dragArmed = false;
     }, { passive: true });
   }
 
   /* ── bind touch drag to zone header ── */
   function bindZoneHeaderTouch(headerEl, z, zoneEl){
-    let zt0 = null, zMoved = false, zTapTimer = null;
+    /* Same model as cards: tap selects/deselects, long-press picks up to drag. */
+    let zt0 = null, zMoved = false, zArmed = false, zHold = null;
     let zOX = 0, zOY = 0;
+    const DRAG_HOLD_MS = 250, MOVE_TOL = 8;
+
+    const disarm = () => { if(zHold){ clearTimeout(zHold); zHold = null; } };
 
     headerEl.addEventListener('touchstart', e => {
-      if(e.touches.length > 1) return;
+      if(e.touches.length > 1){ disarm(); return; }
       if(e.target.classList.contains('zone-del') || e.target.tagName === 'INPUT') return;
       const t = e.touches[0];
       zt0 = { x: t.clientX, y: t.clientY };
-      zMoved = false;
+      zMoved = false; zArmed = false;
       const cv = toCanvas(t.clientX, t.clientY);
       zOX = cv.x - z.x;
       zOY = cv.y - z.y;
-      /* Only capture (block board pan) when the zone is already selected,
-         so a stray touch on the header doesn't drag the zone by accident. */
-      if(selectedIds.has(z.id)) e.stopPropagation();
+
+      if(selectedIds.has(z.id)){
+        zArmed = true;
+        e.stopPropagation();
+      } else {
+        zHold = setTimeout(() => {
+          zArmed = true;
+          zoneEl.classList.add('drag-armed');
+          if(navigator.vibrate) navigator.vibrate(15);
+        }, DRAG_HOLD_MS);
+      }
     }, { passive: true });
 
     headerEl.addEventListener('touchmove', e => {
-      if(e.touches.length > 1) return;
+      if(e.touches.length > 1){ disarm(); return; }
       const t = e.touches[0];
-      if(!zMoved && Math.hypot(t.clientX-zt0.x, t.clientY-zt0.y) < 6) return;
-      /* drag only when selected; otherwise fall through to board pan */
-      if(!selectedIds.has(z.id)){ zMoved = true; return; }
+      const dist = Math.hypot(t.clientX-zt0.x, t.clientY-zt0.y);
+
+      if(!zArmed){
+        if(dist > MOVE_TOL){ disarm(); zMoved = true; }
+        return;   /* board pan takes over */
+      }
+      if(dist < MOVE_TOL && !zMoved) return;
       zMoved = true;
+      panTouchId = null;                  /* override any board pan */
       const cv = toCanvas(t.clientX, t.clientY);
       z.x = cv.x - zOX;
       z.y = cv.y - zOY;
@@ -3602,22 +3679,25 @@ function closeFab(){
       zoneEl.style.top  = z.y + 'px';
       renderStrings();
       e.preventDefault();
+      e.stopPropagation();
     }, { passive: false });
 
     headerEl.addEventListener('touchend', e => {
+      disarm();
+      zoneEl.classList.remove('drag-armed');
       if(zMoved){
-        if(selectedIds.has(z.id)){ _historyPaused = true; save(); _historyPaused = false; }
-        zMoved = false;
+        _historyPaused = true; save(); _historyPaused = false;
+        zMoved = false; zArmed = false;
       } else {
-        /* tap on header → toggle zone selection */
-        if(selectedIds.has(z.id)){
-          clearSelection();
-        } else {
-          clearSelection();
-          selectId(z.id);
-        }
+        /* tap → toggle zone selection */
+        if(selectedIds.has(z.id)){ clearSelection(); }
+        else { clearSelection(); selectId(z.id); }
         e.stopPropagation();
       }
+    }, { passive: true });
+
+    headerEl.addEventListener('touchcancel', () => {
+      disarm(); zoneEl.classList.remove('drag-armed'); zArmed = false;
     }, { passive: true });
   }
 
@@ -3641,14 +3721,14 @@ function closeFab(){
       e.preventDefault(); return;
     }
 
-    /* pan: anywhere except ACTIVE cards and zone headers.
-       An inactive card (not tap-revealed / not selected) still allows pan,
-       so a stray touch on a card scrolls the board instead of moving it. */
+    /* pan: anywhere except cards/zones that are currently drag-ready.
+       A card only blocks pan when it's selected (immediate drag) — a long-press
+       pickup on an unselected card is handled by the card's own touch handler
+       which stops propagation once the drag is armed. So here we only treat
+       SELECTED cards as pan-blocking. */
     const cardEl = onCard;
-    const cardActive = cardEl && (cardEl.classList.contains('show-actions')
-                                   || selectedIds.has(cardEl.dataset.id));
-    /* a zone header only blocks pan when its zone is selected (drag-ready);
-       otherwise a touch on the header still pans the board */
+    const cardActive = cardEl && selectedIds.has(cardEl.dataset.id);
+    /* a zone header only blocks pan when its zone is selected (drag-ready) */
     const zoneEl = e.target.closest?.('.zone');
     const zoneHeaderActive = onZoneHeader && zoneEl && selectedIds.has(zoneEl.dataset.zid);
     if(e.touches.length === 1 && !cardActive && !zoneHeaderActive && !connectFrom){
@@ -3899,7 +3979,7 @@ function seed(){
 
   const cTouch= mk({type:'note',variant:'aged',  tag:'urgente',status:'todo',  pin:'red',   stringColor:'#cc2200',x:649, y:715,
     title:'Mobile & Touch',
-    desc:'1 dedo no fundo ou corpo de zona = pan \u2022 Arraste card = mover \u2022 2 dedos = pinch zoom \u2022 Duplo-toque = editar \u2022 Bot\u00e3o + flutuante para adicionar.'});
+    desc:'1 dedo = pan \u2022 Toque no card = a\u00e7\u00f5es \u2022 Segure e arraste = mover \u2022 2 dedos = pinch zoom \u2022 Duplo-toque = editar \u2022 Bot\u00e3o + flutuante para adicionar.'});
 
   const cLandscape=mk({type:'note',variant:'note',tag:'urgente',status:'todo', pin:'red',   stringColor:'#ff6633',x:924, y:718,
     title:'Modo Landscape',
