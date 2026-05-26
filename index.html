@@ -21,6 +21,10 @@
   --card-aged:#f0e6c8;
   --card-note:#fffde7;
   --card-red:#fff0f0;
+  /* themed card colors — cork (warm pastels on cork) */
+  --cc-mel:#f0e6c8;   --cc-rosa:#f5c8c8;  --cc-azul:#c8ddf5;  --cc-verde:#c8f0d0;
+  --cc-lilas:#e0c8f5; --cc-ambar:#f5e8c8; --cc-branco:#ffffff;
+  --cc-ink:#1a1208;   /* text on colored cards */
   --card-border:rgba(0,0,0,.12);
   --ink:#1a1208;
   --ink-faded:#3d2e18;
@@ -79,6 +83,10 @@
   --card-aged:#241e1a;
   --card-note:#2c2818;
   --card-red:#2a1e1e;
+  /* themed card colors — night (deep muted tints, light ink) */
+  --cc-mel:#3a3322;   --cc-rosa:#3a2626;  --cc-azul:#222f3f;  --cc-verde:#1f3a28;
+  --cc-lilas:#2e2440; --cc-ambar:#3a3220; --cc-branco:#33302c;
+  --cc-ink:#e8d8c0;
   --card-border:rgba(255,255,255,.08);
   --ink:#e8d8c0;
   --ink-faded:#c8b090;
@@ -136,6 +144,10 @@
   --card-aged:#fdf8ee;
   --card-note:#fffef5;
   --card-red:#fff5f5;
+  /* themed card colors — paper (crisp pastels on white) */
+  --cc-mel:#fbeecb;   --cc-rosa:#fcdcdc;  --cc-azul:#d8e8fb;  --cc-verde:#d6f2dd;
+  --cc-lilas:#ebdcfb; --cc-ambar:#fbf0d2; --cc-branco:#ffffff;
+  --cc-ink:#1a1208;
   --card-border:rgba(0,0,0,.1);
   --ink:#1a1208;
   --ink-faded:#3d2e18;
@@ -330,6 +342,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   max-height:40px;
   opacity:1;
 }
+/* touch: tap reveals the action strip (no hover on mobile) */
+.card.show-actions .card-actions{ max-height:44px;opacity:1; }
+.card.show-actions .card-resize{ opacity:1; }
+.card.show-actions .card-inner{ box-shadow:0 0 0 2px var(--pin-red), 0 6px 22px rgba(0,0,0,.4); }
 .ca-btn{
   font-size:10px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);
   border-radius:3px;padding:2px 5px;cursor:pointer;color:var(--ink-faded);
@@ -495,13 +511,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   font-family:'Caveat',cursive;font-size:14px;color:var(--ink-faded);
   text-align:center;padding:4px 0;
 }
-.cut-rel-sel{
-  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.05em;
-  background:var(--props-input-bg);border:1px solid var(--props-sep);
-  border-radius:3px;color:var(--props-h);padding:2px 4px;cursor:pointer;
-  text-transform:uppercase;flex-shrink:0;max-width:80px;
-}
-
 /* activity log */
 .act-entry{
   display:flex;gap:6px;align-items:flex-start;
@@ -555,10 +564,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 #toolbar{
   position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
   z-index:200;display:flex;gap:6px;
+  max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none;
   background:var(--toolbar-bg);border:1px solid var(--toolbar-border);
   border-radius:8px;padding:8px 12px;backdrop-filter:blur(4px);
   box-shadow:0 4px 20px rgba(0,0,0,.6);transition:background .4s,border-color .4s;
 }
+#toolbar::-webkit-scrollbar{ display:none; }
+#toolbar > *{ flex-shrink:0; }
 .tb-btn{
   font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
   padding:6px 12px;border-radius:5px;border:1px solid var(--tb-btn-border);
@@ -810,10 +822,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 }
 #zone-modal.open{display:flex}
 #zone-modal-inner{
-  background:var(--card-paper);border-radius:4px;padding:20px;width:300px;
+  background:var(--card-paper);border-radius:8px;padding:26px 26px 22px;width:340px;max-width:92vw;
   font-family:'Caveat',cursive;box-shadow:0 8px 32px rgba(0,0,0,.5);
+  display:flex;flex-direction:column;gap:18px;
 }
-#zone-modal-inner h3{font-family:'Special Elite',serif;font-size:15px;margin-bottom:14px;color:var(--ink)}
+#zone-modal-inner h3{font-family:'Special Elite',serif;font-size:16px;margin:0;color:var(--ink)}
+/* each labelled field becomes its own block with internal spacing */
+#zone-modal-inner .zm-field{display:flex;flex-direction:column;gap:8px}
+#zone-modal-inner .fl{margin:0}
+#zone-modal-inner #z-name{margin-top:2px}
+/* color swatches: larger targets, more gap */
+#zone-modal-inner #zone-colors{display:flex;gap:12px;flex-wrap:wrap;margin:0}
+/* button row: side by side, right aligned, clear separation from content */
+#zone-modal-inner .modal-btns{
+  display:flex;gap:12px;justify-content:flex-end;
+  margin-top:6px;padding-top:18px;border-top:1px solid rgba(0,0,0,.08);
+}
 
 /* mode indicator */
 #mode-indicator{
@@ -823,17 +847,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   display:none;align-items:center;gap:8px;pointer-events:auto;
   box-shadow:0 2px 12px rgba(204,34,0,.5);
 }
-#rel-type-sel{
-  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.06em;
-  /* solid colours so the native dropdown dropdown is readable on every OS */
-  background:#4a0a00;color:#ffd0c0;
-  border:1px solid rgba(255,160,120,.5);border-radius:3px;
-  padding:3px 6px;cursor:pointer;outline:none;
-  text-transform:uppercase;
-}
-#rel-type-sel:focus{border-color:rgba(255,160,120,.9)}
-#rel-type-sel option{background:#3a0800;color:#ffd0c0;}
-
 /* hint */
 .hint{
   position:fixed;bottom:74px;left:50%;transform:translateX(-50%);
@@ -870,14 +883,37 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   align-items:center;justify-content:center;
 }
 #fab:active{transform:scale(.92)}
+#fab.fab-open{transform:rotate(0deg);background:rgba(204,34,0,.95);border-color:rgba(255,120,90,.6);color:#fff}
+/* drawer section labels + grid for the richer mobile menu */
+.fab-section-label{
+  align-self:flex-end;font-family:'Oswald',sans-serif;font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,200,100,.55);margin:6px 4px 1px;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.fab-item.danger{border-color:rgba(255,120,90,.4)}
+.fab-item.danger .fi-icon{filter:none}
+.fab-item.danger:active{background:rgba(204,34,0,.25)}
 
 /* FAB drawer - expands upward */
 #fab-drawer{
   display:none;
   position:fixed;bottom:86px;right:16px;z-index:250;
-  flex-direction:column;gap:8px;align-items:flex-end;
+  flex-direction:column;gap:6px;align-items:flex-end;
+  max-height:calc(100vh - 160px);overflow-y:auto;
+  padding:4px 2px;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+#fab-drawer::-webkit-scrollbar{ display:none; }
 #fab-drawer.open{ display:flex; }
+/* backdrop dims board while drawer is open */
+#fab-backdrop{
+  display:none;position:fixed;inset:0;z-index:240;
+  background:rgba(0,0,0,.35);backdrop-filter:blur(1px);
+  animation:fadeIn .18s ease;
+}
+#fab-backdrop.open{ display:block; }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .fab-item{
   display:flex;align-items:center;gap:10px;
   background:rgba(20,14,8,.95);border:1px solid rgba(255,200,100,.3);
@@ -1007,8 +1043,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   /* zone modal */
   #zone-modal{ align-items:flex-end; }
   #zone-modal-inner{
-    width:100%;border-radius:16px 16px 0 0;
-    padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));
+    width:100%;max-width:100%;border-radius:16px 16px 0 0;
+    padding:24px 22px calc(26px + env(safe-area-inset-bottom,0px));
+    gap:20px;
   }
 
   /* import modal */
@@ -1022,8 +1059,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   .ca-btn{ padding:5px 9px;font-size:12px; }
   .pin   { width:20px;height:20px; }
 
-  /* zoom indicator: bottom-left to avoid FAB */
-  #zoom-indicator{ right:auto;left:16px;bottom:calc(24px + env(safe-area-inset-bottom,0px)); }
+  /* zoom indicator: bottom-LEFT, compact, clear of the FAB (bottom-right) */
+  #zoom-indicator{ left:12px;right:auto;bottom:calc(20px + env(safe-area-inset-bottom,0px));width:auto;max-width:max-content; }
 
   /* hint hidden on mobile */
   .hint{ display:none; }
@@ -1038,7 +1075,31 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   #search-toggle{ display:none; }
   #search-clear-mobile{ display:none!important; }
   #search-input{ flex:initial;width:170px;padding:0 9px;border-color:var(--search-border); }
-  #fab,#fab-drawer{ display:none!important; }
+  #fab,#fab-drawer,#fab-backdrop{ display:none!important; }
+}
+
+/* ── COARSE POINTER (touch phones + tablets): larger hit targets, momentum scroll ── */
+@media (pointer:coarse){
+  /* card action buttons: comfortable ≥40px touch area */
+  .ca-btn{ padding:8px 12px;font-size:12px;min-height:36px;display:inline-flex;align-items:center; }
+  .card-actions{ gap:6px; }
+  /* pins easier to hit */
+  .pin{ width:22px;height:22px; }
+  /* resize handle bigger + always faintly visible on touch (no hover) */
+  .card-resize{ width:26px;height:26px;opacity:.5; }
+  .card.show-actions .card-resize{ opacity:1; }
+  /* cut popup rows: taller for fingers */
+  .cut-row{ min-height:40px; }
+  .cut-btn{ min-width:34px;min-height:34px;font-size:15px; }
+  /* momentum scrolling in every scrollable panel */
+  #tpl-panel, #board-props, #cut-popup, #activity-list,
+  #pane-tasks, #pane-details, #pane-style, #pane-history,
+  #modal, #fab-drawer{ -webkit-overflow-scrolling:touch; }
+  /* zone color swatches a touch larger already (30px) — keep */
+  /* modal tab buttons easier to tap */
+  .mtab{ min-height:40px; }
+  /* board-tab (top) larger tap height */
+  .btab{ min-height:38px; }
 }
 
 /* ── LANDSCAPE MOBILE (phone landscape) ── */
@@ -1067,8 +1128,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   /* board: account for smaller header */
   #board{ height:100vh; }
 
-  /* zoom indicator */
-  #zoom-indicator{ bottom:calc(8px + 38px);right:8px;font-size:9px;padding:3px 6px; }
+  /* zoom indicator — compact, bottom-left, never full width */
+  #zoom-indicator{ left:12px;right:auto;bottom:calc(20px + env(safe-area-inset-bottom,0px));font-size:9px;padding:3px 7px;width:auto;max-width:max-content;white-space:nowrap; }
 
   /* modals: smaller max-height */
   #modal{ max-height:85vh;padding:14px 16px 12px; }
@@ -1089,54 +1150,54 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 /* === TEMPLATES PANEL === */
 #tpl-panel{
   position:fixed;top:46px;left:12px;z-index:400;
-  background:rgba(20,12,4,.97);border:1px solid rgba(255,200,100,.25);
+  background:var(--props-bg);border:1px solid var(--props-border);
   border-radius:8px;padding:14px 16px 12px;width:240px;
-  box-shadow:0 6px 28px rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  box-shadow:0 6px 28px rgba(0,0,0,.55);backdrop-filter:blur(6px);
   display:none;flex-direction:column;gap:8px;max-height:80vh;overflow-y:auto;
 }
 #tpl-panel.open{display:flex}
 #tpl-panel h3{
   font-family:'Special Elite',serif;font-size:13px;letter-spacing:.08em;
-  color:rgba(255,220,140,.9);border-bottom:1px solid rgba(255,200,100,.15);
+  color:var(--props-h);border-bottom:1px solid var(--props-sep);
   padding-bottom:8px;margin-bottom:2px;
 }
 .tpl-item{
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(255,200,100,.06);border:1px solid rgba(255,200,100,.18);
+  background:var(--ui-accent);border:1px solid var(--props-border);
   border-radius:5px;padding:7px 10px;cursor:pointer;
   transition:background .15s;
 }
-.tpl-item:hover{background:rgba(255,200,100,.16)}
+.tpl-item:hover{background:var(--ui-accent-hover)}
 .tpl-name{
   font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.06em;
-  color:rgba(255,220,140,.85);flex:1;
+  color:var(--ui-text);flex:1;
 }
 .tpl-use{
   font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
-  background:rgba(255,200,100,.15);border:1px solid rgba(255,200,100,.3);
-  border-radius:3px;color:#e8d090;padding:2px 7px;cursor:pointer;
+  background:var(--ui-accent);border:1px solid var(--props-border);
+  border-radius:3px;color:var(--props-h);padding:2px 7px;cursor:pointer;
   transition:background .15s;margin-left:6px;flex-shrink:0;
 }
-.tpl-use:hover{background:rgba(255,200,100,.3)}
+.tpl-use:hover{background:var(--ui-accent-hover)}
 .tpl-del{
-  background:none;border:none;cursor:pointer;color:rgba(204,80,80,.5);
+  background:none;border:none;cursor:pointer;color:rgba(204,80,80,.65);
   font-size:13px;padding:0 3px;transition:color .12s;
 }
 .tpl-del:hover{color:#cc2200}
 .tpl-save-btn{
   font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-  background:rgba(255,200,100,.1);border:1px solid rgba(255,200,100,.3);
-  border-radius:4px;color:#e8d090;padding:6px 10px;cursor:pointer;
+  background:var(--ui-accent);border:1px solid var(--props-border);
+  border-radius:4px;color:var(--props-h);padding:6px 10px;cursor:pointer;
   transition:background .15s;width:100%;
 }
-.tpl-save-btn:hover{background:rgba(255,200,100,.25)}
+.tpl-save-btn:hover{background:var(--ui-accent-hover)}
+.tpl-close{
+  background:none;border:none;cursor:pointer;color:var(--ui-text-dim);
+  font-size:16px;line-height:1;padding:0 2px;transition:color .15s;
+}
+.tpl-close:hover{color:var(--props-h)}
 
 /* === RELATION LABELS (SVG foreignObject fallback via text) === */
-.rel-label{
-  font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.08em;
-  text-transform:uppercase;pointer-events:none;
-}
-
 /* === FOCUS MODE === */
 .card.focus-dim{opacity:.1;filter:drop-shadow(none);pointer-events:none}
 .card.focus-hi {opacity:1;filter:drop-shadow(2px 4px 8px rgba(0,0,0,.45))}
@@ -1228,6 +1289,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 }
 #zoom-indicator{
   position:fixed;bottom:68px;right:16px;z-index:200;
+  width:max-content;max-width:max-content;white-space:nowrap;
   font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.1em;
   color:rgba(255,200,100,.5);background:rgba(20,12,4,.7);
   border:1px solid rgba(255,200,100,.15);border-radius:4px;
@@ -1311,13 +1373,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 </div>
 <div id="mode-indicator">
   <span>&#x1F9F5; Conectando &#x2014; clique em outro card</span>
-  <select id="rel-type-sel" onchange="selRelType=this.value">
-    <option value="">sem rótulo</option>
-    <option value="bloqueia">bloqueia</option>
-    <option value="depende">depende de</option>
-    <option value="relacionado">relacionado</option>
-    <option value="referencia">referência</option>
-  </select>
 </div>
 <div class="hint" id="hint">Arraste &#183; Alfinete = conectar &#183; Scroll = zoom &#183; Bot&#227;o do meio = mover &#183; Arrastar no fundo = selecionar m&#250;ltiplos &#183; Shift+clique = adicionar &#224; sele&#231;&#227;o</div>
 <div id="export-flash"></div>
@@ -1363,9 +1418,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 <div id="tpl-panel">
   <h3 style="display:flex;align-items:center;justify-content:space-between">
     <span>&#x1F4CB; Templates</span>
-    <button onclick="document.getElementById('tpl-panel').classList.remove('open')"
-      style="background:none;border:none;cursor:pointer;color:rgba(255,200,100,.4);font-size:16px;line-height:1;padding:0 2px;transition:color .15s"
-      onmouseover="this.style.color='rgba(255,220,140,.9)'" onmouseout="this.style.color='rgba(255,200,100,.4)'"
+    <button class="tpl-close" onclick="document.getElementById('tpl-panel').classList.remove('open')"
       title="Fechar">&#x2715;</button>
   </h3>
   <div id="tpl-list"></div>
@@ -1373,12 +1426,21 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 </div>
 
 <!-- FAB (mobile) -->
-<button id="fab" onclick="toggleFab()" aria-label="Adicionar">&#x2795;</button>
+<div id="fab-backdrop" onclick="closeFab()"></div>
+<button id="fab" onclick="toggleFab()" aria-label="Adicionar">+</button>
 <div id="fab-drawer">
+  <div class="fab-section-label">Adicionar</div>
   <div class="fab-item" onclick="closeFab();openModal('note')"><span class="fi-icon">&#x1F4DD;</span>Nota</div>
   <div class="fab-item" onclick="closeFab();openModal('photo')"><span class="fi-icon">&#x1F5BC;</span>Foto</div>
   <div class="fab-item" onclick="closeFab();openZoneModal()"><span class="fi-icon">&#x1F4C2;</span>Zona</div>
-  <div class="fab-item" onclick="closeFab();clearConnections()"><span class="fi-icon">&#x2702;</span>Cortar fios</div>
+  <div class="fab-item" onclick="closeFab();toggleTemplates()"><span class="fi-icon">&#x1F4CB;</span>Templates</div>
+  <div class="fab-section-label">Arquivo</div>
+  <div class="fab-item" onclick="closeFab();exportJSON()"><span class="fi-icon">&#x1F4BE;</span>Exportar</div>
+  <div class="fab-item" onclick="closeFab();document.getElementById('import-file').click()"><span class="fi-icon">&#x1F4E5;</span>Importar</div>
+  <div class="fab-item" onclick="closeFab();exportImage()"><span class="fi-icon">&#x1F4F8;</span>Salvar PNG</div>
+  <div class="fab-section-label">Limpar</div>
+  <div class="fab-item danger" onclick="closeFab();clearConnections()"><span class="fi-icon">&#x2702;</span>Cortar fios</div>
+  <div class="fab-item danger" onclick="closeFab();clearAll()"><span class="fi-icon">&#x1F5D1;</span>Limpar tudo</div>
 </div>
 <div id="modal-overlay">
 <div id="modal">
@@ -1481,10 +1543,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 <div id="zone-modal">
 <div id="zone-modal-inner">
   <h3>Nova Zona</h3>
-  <div class="fl">Nome</div>
-  <input id="z-name" type="text" placeholder="Ex: Urgente, Sprint 1..." style="width:100%;font-family:'Caveat',cursive;font-size:16px;background:transparent;border:none;border-bottom:1.5px solid rgba(0,0,0,.18);outline:none;color:var(--ink);padding:3px 2px">
-  <div class="fl" style="margin-top:12px">Cor</div>
-  <div id="zone-colors" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap"></div>
+  <div class="zm-field">
+    <div class="fl">Nome</div>
+    <input id="z-name" type="text" placeholder="Ex: Urgente, Sprint 1..." style="width:100%;font-family:'Caveat',cursive;font-size:16px;background:transparent;border:none;border-bottom:1.5px solid rgba(0,0,0,.18);outline:none;color:var(--ink);padding:4px 2px">
+  </div>
+  <div class="zm-field">
+    <div class="fl">Cor</div>
+    <div id="zone-colors"></div>
+  </div>
   <div class="modal-btns">
     <button class="modal-btn secondary" onclick="closeZoneModal()">Cancelar</button>
     <button class="modal-btn primary"   onclick="saveZone()">Criar zona</button>
@@ -1882,12 +1948,12 @@ function openZoneModal() {
   wrap.innerHTML = '';
   ZONE_PRESETS.forEach((p,i) => {
     const sw = document.createElement('div');
-    sw.style.cssText = `width:24px;height:24px;border-radius:4px;cursor:pointer;
+    sw.style.cssText = `width:30px;height:30px;border-radius:5px;cursor:pointer;
       background:${p.color};border:2px solid ${p.border};
-      outline:${i===selZonePreset?'2px solid #333':'none'};outline-offset:1px;transition:transform .12s`;
+      outline:${i===selZonePreset?'2.5px solid var(--ink)':'none'};outline-offset:2px;transition:transform .12s`;
     sw.addEventListener('click',()=>{
       selZonePreset=i;
-      wrap.querySelectorAll('div').forEach((d,j)=>d.style.outline=j===i?'2px solid #333':'none');
+      wrap.querySelectorAll('div').forEach((d,j)=>d.style.outline=j===i?'2.5px solid var(--ink)':'none');
     });
     wrap.appendChild(sw);
   });
@@ -2018,15 +2084,30 @@ function createZoneEl(z) {
    MODAL STATE
 ======================================== */
 const CARD_COLORS = [
-  { hex:null,      label:'Padrão'   },
-  { hex:'#f0e6c8', label:'Mel'      },
-  { hex:'#f5c8c8', label:'Rosa'     },
-  { hex:'#c8ddf5', label:'Azul'     },
-  { hex:'#c8f0d0', label:'Verde'    },
-  { hex:'#e0c8f5', label:'Lilás'    },
-  { hex:'#f5e8c8', label:'Âmbar'    },
-  { hex:'#ffffff', label:'Branco'   },
+  { key:null,     label:'Padrão' },
+  { key:'mel',    label:'Mel'    },
+  { key:'rosa',   label:'Rosa'   },
+  { key:'azul',   label:'Azul'   },
+  { key:'verde',  label:'Verde'  },
+  { key:'lilas',  label:'Lilás'  },
+  { key:'ambar',  label:'Âmbar'  },
+  { key:'branco', label:'Branco' },
 ];
+
+/* migrate legacy absolute-hex cardColor values to semantic keys */
+const _CC_LEGACY = {
+  '#f0e6c8':'mel', '#f5c8c8':'rosa', '#c8ddf5':'azul', '#c8f0d0':'verde',
+  '#e0c8f5':'lilas', '#f5e8c8':'ambar', '#ffffff':'branco'
+};
+function migrateCardColor(v){
+  if(!v) return null;
+  if(CARD_COLORS.some(c=>c.key===v)) return v;       // already a key
+  return _CC_LEGACY[String(v).toLowerCase()] || null; // map old hex → key
+}
+/* resolve a semantic key to the current theme's CSS variable */
+function cardColorValue(key){
+  return key ? `var(--cc-${key})` : null;
+}
 
 let selCardColor = null;
 
@@ -2036,11 +2117,12 @@ function buildCardColorPicker() {
   wrap.innerHTML = '';
   CARD_COLORS.forEach(opt => {
     const sw = document.createElement('div');
-    const isSel = selCardColor === opt.hex;
-    sw.className = 'card-color-opt' + (isSel ? ' sel' : '') + (!opt.hex ? ' is-default' : '');
-    sw.style.background = opt.hex || 'linear-gradient(135deg,#faf6e8 50%,#fff0f0 50%)';
+    const isSel = selCardColor === opt.key;
+    sw.className = 'card-color-opt' + (isSel ? ' sel' : '') + (!opt.key ? ' is-default' : '');
+    /* swatch preview follows the live theme via CSS variable */
+    sw.style.background = opt.key ? `var(--cc-${opt.key})` : 'linear-gradient(135deg,var(--card-paper) 50%,var(--card-red) 50%)';
     sw.title = opt.label;
-    sw.addEventListener('click', () => { selCardColor = opt.hex; buildCardColorPicker(); });
+    sw.addEventListener('click', () => { selCardColor = opt.key; buildCardColorPicker(); });
     wrap.appendChild(sw);
   });
 }
@@ -2143,7 +2225,7 @@ function openModal(type, id=null) {
       document.getElementById('f-status').value  = c.status||'todo';
       document.getElementById('f-deadline').value      = c.deadline ? c.deadline.split('T')[0] : '';
       document.getElementById('f-deadline-time').value  = c.deadline && c.deadline.includes('T') ? c.deadline.split('T')[1].slice(0,5) : '';
-      selTag=c.tag||null; selPinVal=c.pin||'red'; selStringColor=c.stringColor||'#cc2200'; selCardColor=c.cardColor||null;
+      selTag=c.tag||null; selPinVal=c.pin||'red'; selStringColor=c.stringColor||'#cc2200'; selCardColor=migrateCardColor(c.cardColor);
       clItems=JSON.parse(JSON.stringify(c.checklist||[]));
       modalType=c.type;
       document.getElementById('f-desc-wrap').style.display=c.type==='photo'?'none':'';
@@ -2334,8 +2416,9 @@ function createCardEl(c) {
   /* apply saved custom size */
   if (c.w) inner.style.width    = c.w + 'px';
   if (c.h) inner.style.minHeight = c.h + 'px';
-  /* apply custom card color */
-  if (c.cardColor) inner.style.background = c.cardColor;
+  /* apply custom card color (theme-aware via CSS variable) */
+  const _ccKey = migrateCardColor(c.cardColor);
+  if (_ccKey) inner.style.background = `var(--cc-${_ccKey})`;
 
   /* resize handle */
   const rHandle = document.createElement('div');
@@ -2414,15 +2497,11 @@ function deleteCard(id){
    CONNECTIONS
 ======================================== */
 let connectFrom = null;
-let selRelType  = '';
 
 function startConnect(id){
   if(connectFrom===id){cancelConnect();return;}
   if(connectFrom){finishConnect(id);return;}
   connectFrom=id;
-  selRelType='';
-  const sel=document.getElementById('rel-type-sel');
-  if(sel) sel.value='';
   document.getElementById('mode-indicator').style.display='flex';
   document.querySelectorAll('.card').forEach(el=>el.classList.add('connecting'));
 }
@@ -2434,7 +2513,7 @@ function finishConnect(toId){
   if(!already){
     const srcCard=curCards().find(c=>c.id===connectFrom);
     const color=srcCard?.stringColor||'#cc2200';
-    cs.push({from:connectFrom,to:toId,color,rel:selRelType||''});
+    cs.push({from:connectFrom,to:toId,color});
   }
   setConns(cs);cancelConnect();save();requestAnimationFrame(renderStrings);
 }
@@ -2485,26 +2564,6 @@ function openCutPopup(e, cardId) {
       lbl.textContent = label;
       lbl.title = label;
 
-      /* relation type select */
-      const relSel = document.createElement('select');
-      relSel.className = 'cut-rel-sel';
-      relSel.title = 'Tipo de relação';
-      ['','bloqueia','depende','relacionado','referencia'].forEach(v => {
-        const opt = document.createElement('option');
-        opt.value = v; opt.textContent = v || 'sem rótulo';
-        if ((conn.rel||'') === v) opt.selected = true;
-        relSel.appendChild(opt);
-      });
-      relSel.addEventListener('change', ev => {
-        ev.stopPropagation();
-        _pushHistory();
-        const cs = curConns();
-        const t  = cs.find(c =>
-          (c.from===conn.from&&c.to===conn.to)||(c.from===conn.to&&c.to===conn.from));
-        if (t) { t.rel = relSel.value; }
-        setConns(cs); save(); requestAnimationFrame(renderStrings);
-      });
-
       /* cut button */
       const btn = document.createElement('button');
       btn.className = 'cut-btn';
@@ -2523,7 +2582,7 @@ function openCutPopup(e, cardId) {
       });
 
       row.appendChild(dot); row.appendChild(lbl);
-      row.appendChild(relSel); row.appendChild(btn);
+      row.appendChild(btn);
       popup.appendChild(row);
     });
   }
@@ -2593,53 +2652,6 @@ function renderStrings(){
       svg.appendChild(c);
     });
 
-    /* relation label — placed at the sag apex, pushed below the string */
-    if(conn.rel){
-      const st      = getComputedStyle(document.documentElement);
-      const labelBg = st.getPropertyValue('--props-bg').trim()  || 'rgba(20,12,4,.92)';
-      const labelFg = st.getPropertyValue('--props-h').trim()   || 'rgba(255,220,140,.9)';
-
-      /* label sits at the deepest point of the sag, offset below the curve */
-      const lx = mx;
-      const ly = my + 12;   /* push below the string line */
-
-      /* avoid placing label too close to either card endpoint */
-      const dA = Math.hypot(lx-a.x, ly-a.y);
-      const dB = Math.hypot(lx-b.x, ly-b.y);
-      const tooClose = dA < 40 || dB < 40;
-
-      /* shorter text for cramped strings */
-      const relText  = conn.rel.length > 8 ? conn.rel.slice(0,7)+'\u2026' : conn.rel;
-      const charW    = 5.2;
-      const padX     = 7;
-      const labelW   = relText.length * charW + padX * 2;
-      const labelH   = 14;
-
-      const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
-      bg.setAttribute('x',    lx - labelW/2);
-      bg.setAttribute('y',    ly - labelH/2);
-      bg.setAttribute('width',  labelW);
-      bg.setAttribute('height', labelH);
-      bg.setAttribute('rx', labelH/2);          /* full pill */
-      bg.setAttribute('fill',   labelBg);
-      bg.setAttribute('stroke', conn.color||'#cc2200');
-      bg.setAttribute('stroke-width', '0.8');
-      bg.setAttribute('opacity', tooClose ? '0.45' : '0.95');
-      svg.appendChild(bg);
-
-      const txt = document.createElementNS('http://www.w3.org/2000/svg','text');
-      txt.setAttribute('x', lx);
-      txt.setAttribute('y', ly);
-      txt.setAttribute('text-anchor',      'middle');
-      txt.setAttribute('dominant-baseline','middle');
-      txt.setAttribute('font-family',  'Oswald,sans-serif');
-      txt.setAttribute('font-size',    '7.5');
-      txt.setAttribute('letter-spacing','0.6');
-      txt.setAttribute('fill',    labelFg);
-      txt.setAttribute('opacity', tooClose ? '0.45' : '1');
-      txt.textContent = relText.toUpperCase();
-      svg.appendChild(txt);
-    }
   });
 
   /* re-apply focus dimming if active */
@@ -2779,7 +2791,7 @@ function renderTemplates(){
   const list = document.getElementById('tpl-list');
   list.innerHTML='';
   if(!_templates.length){
-    list.innerHTML='<div style="font-family:\'Caveat\',cursive;font-size:13px;color:rgba(255,200,100,.35);padding:4px 0">Nenhum template salvo ainda.<br>Selecione um card e clique em salvar.</div>';
+    list.innerHTML='<div style="font-family:\'Caveat\',cursive;font-size:13px;color:var(--ui-text-dim);padding:4px 0">Nenhum template salvo ainda.<br>Selecione um card e clique em salvar.</div>';
     return;
   }
   _templates.forEach((t,i)=>{
@@ -2882,8 +2894,8 @@ function _applyFocusStrings(relConns) {
      We track by iterating curConns in same order as renderStrings. */
   let ci = 0, ei = 0;
   curConns().forEach((conn, i) => {
-    /* count elements this conn produced: shadow + line + 2 dots = 4 min; +2 if has rel label */
-    const count = conn.rel ? 6 : 4;
+    /* each conn produces exactly: shadow + line + 2 dots = 4 elements */
+    const count = 4;
     const active = relConns.has(i);
     for (let k = 0; k < count && ei < children.length; k++, ei++) {
       children[ei].style.opacity = active ? '1' : '0.06';
@@ -3146,6 +3158,8 @@ let _clipboard  = [];  /* copied cards */
 function clearSelection(){
   selectedIds.clear();
   document.querySelectorAll('.card.selected,.zone.selected').forEach(el=>el.classList.remove('selected'));
+  /* also hide any touch-revealed action strips */
+  document.querySelectorAll('.card.show-actions').forEach(el=>el.classList.remove('show-actions'));
 }
 
 function selectId(id){
@@ -3456,13 +3470,19 @@ let fabOpen = false;
 function toggleFab(){ fabOpen ? closeFab() : openFab(); }
 function openFab(){
   fabOpen = true;
-  document.getElementById('fab').textContent = '\u00D7';
+  const f = document.getElementById('fab');
+  f.textContent = '\u00D7';          /* × close glyph */
+  f.classList.add('fab-open');
   document.getElementById('fab-drawer').classList.add('open');
+  document.getElementById('fab-backdrop').classList.add('open');
 }
 function closeFab(){
   fabOpen = false;
-  document.getElementById('fab').textContent = '+';
+  const f = document.getElementById('fab');
+  f.textContent = '+';                /* plain + — matches initial HTML */
+  f.classList.remove('fab-open');
   document.getElementById('fab-drawer').classList.remove('open');
+  document.getElementById('fab-backdrop').classList.remove('open');
 }
 
 /* ========================================
@@ -3492,7 +3512,12 @@ function closeFab(){
       const cv = toCanvas(t.clientX, t.clientY);
       localOX = cv.x - c.x;
       localOY = cv.y - c.y;
-      e.stopPropagation();
+      /* Only capture the gesture (block board pan) when this card is
+         draggable: tap-revealed, selected, or in connect mode.
+         Inactive cards let the touch bubble so the board can pan,
+         which prevents accidental dragging on mobile. */
+      const isActive = el.classList.contains('show-actions') || selectedIds.has(c.id) || connectFrom;
+      if(isActive) e.stopPropagation();
     }, { passive: true });
 
     el.addEventListener('touchmove', e => {
@@ -3501,6 +3526,14 @@ function closeFab(){
       if(_resizeCard) return;
       const t = e.touches[0];
       if(!moved && Math.hypot(t.clientX-t0.x, t.clientY-t0.y) < 6) return;
+      /* prevent accidental drag: only move a card that is "active"
+         (tap-revealed via show-actions) or part of a multi-selection.
+         Otherwise let the gesture fall through to board pan. */
+      const isActive = el.classList.contains('show-actions') || selectedIds.has(c.id);
+      if(!isActive && !connectFrom){
+        moved = true;       /* consume as non-tap, but do NOT drag */
+        return;             /* board pan handler takes over */
+      }
       moved = true;
       if(connectFrom){ e.preventDefault(); return; }
       singleDrag = c;
@@ -3515,12 +3548,19 @@ function closeFab(){
 
     el.addEventListener('touchend', e => {
       if(!moved){
+        if(connectFrom){ finishConnect(c.id); return; }
         if(tapTimer){
+          /* second tap within window → open editor */
           clearTimeout(tapTimer); tapTimer = null;
-          if(connectFrom){ finishConnect(c.id); return; }
+          el.classList.remove('show-actions');
           openModal(c.type, c.id);
         } else {
-          tapTimer = setTimeout(()=>{ tapTimer=null; }, 280);
+          /* first tap → reveal this card's action strip, hide others */
+          document.querySelectorAll('.card.show-actions').forEach(x=>{
+            if(x!==el) x.classList.remove('show-actions');
+          });
+          el.classList.toggle('show-actions');
+          tapTimer = setTimeout(()=>{ tapTimer=null; }, 300);
         }
       } else {
         if(singleDrag){ save(); singleDrag = null; }
@@ -3531,7 +3571,7 @@ function closeFab(){
 
   /* ── bind touch drag to zone header ── */
   function bindZoneHeaderTouch(headerEl, z, zoneEl){
-    let zt0 = null, zMoved = false;
+    let zt0 = null, zMoved = false, zTapTimer = null;
     let zOX = 0, zOY = 0;
 
     headerEl.addEventListener('touchstart', e => {
@@ -3543,28 +3583,41 @@ function closeFab(){
       const cv = toCanvas(t.clientX, t.clientY);
       zOX = cv.x - z.x;
       zOY = cv.y - z.y;
-      e.stopPropagation();
+      /* Only capture (block board pan) when the zone is already selected,
+         so a stray touch on the header doesn't drag the zone by accident. */
+      if(selectedIds.has(z.id)) e.stopPropagation();
     }, { passive: true });
 
     headerEl.addEventListener('touchmove', e => {
       if(e.touches.length > 1) return;
       const t = e.touches[0];
       if(!zMoved && Math.hypot(t.clientX-zt0.x, t.clientY-zt0.y) < 6) return;
+      /* drag only when selected; otherwise fall through to board pan */
+      if(!selectedIds.has(z.id)){ zMoved = true; return; }
       zMoved = true;
       const cv = toCanvas(t.clientX, t.clientY);
       z.x = cv.x - zOX;
       z.y = cv.y - zOY;
       zoneEl.style.left = z.x + 'px';
       zoneEl.style.top  = z.y + 'px';
+      renderStrings();
       e.preventDefault();
     }, { passive: false });
 
     headerEl.addEventListener('touchend', e => {
       if(zMoved){
-        _historyPaused = true; save(); _historyPaused = false;
+        if(selectedIds.has(z.id)){ _historyPaused = true; save(); _historyPaused = false; }
         zMoved = false;
+      } else {
+        /* tap on header → toggle zone selection */
+        if(selectedIds.has(z.id)){
+          clearSelection();
+        } else {
+          clearSelection();
+          selectId(z.id);
+        }
+        e.stopPropagation();
       }
-      e.stopPropagation();
     }, { passive: true });
   }
 
@@ -3588,8 +3641,17 @@ function closeFab(){
       e.preventDefault(); return;
     }
 
-    /* pan: anywhere except cards and zone headers */
-    if(e.touches.length === 1 && !onCard && !onZoneHeader){
+    /* pan: anywhere except ACTIVE cards and zone headers.
+       An inactive card (not tap-revealed / not selected) still allows pan,
+       so a stray touch on a card scrolls the board instead of moving it. */
+    const cardEl = onCard;
+    const cardActive = cardEl && (cardEl.classList.contains('show-actions')
+                                   || selectedIds.has(cardEl.dataset.id));
+    /* a zone header only blocks pan when its zone is selected (drag-ready);
+       otherwise a touch on the header still pans the board */
+    const zoneEl = e.target.closest?.('.zone');
+    const zoneHeaderActive = onZoneHeader && zoneEl && selectedIds.has(zoneEl.dataset.zid);
+    if(e.touches.length === 1 && !cardActive && !zoneHeaderActive && !connectFrom){
       const t=e.touches[0];
       panTouchId=t.identifier;
       panStartX=t.clientX; panStartY=t.clientY;
@@ -3782,7 +3844,7 @@ function seed(){
   const cVisual = mk({type:'note',variant:'aged', tag:'ideia',  status:'todo',  pin:'blue',  stringColor:'#4488ff',x:74,  y:262,
     title:'Visual, Resize & Foto',
     desc:'Aba \uD83C\uDFA8 Visual: cor do alfinete, barbante e fundo do card (9 cores). Redimensione pelo canto \u2921 (mouse e touch). Cards de Foto: imagem via URL ou upload local + legenda.',
-    cardColor:'#c8ddf5'});
+    cardColor:'azul'});
 
   const cStatus = mk({type:'note',variant:'note', tag:'work',   status:'doing', pin:'green', stringColor:'#44cc44',x:911, y:44,
     title:'Status, Tags & Temas',
@@ -3795,11 +3857,11 @@ function seed(){
   /* ── ZONE 3: Conexões & Foco ── */
   const cConn = mk({type:'note',variant:'aged',  tag:'urgente',status:'todo',  pin:'red',   stringColor:'#cc2200',x:1226,y:63,
     title:'Barbante & R\u00f3tulos',
-    desc:'Clique no alfinete para conectar. Escolha o r\u00f3tulo: bloqueia, depende de, relacionado, refer\u00eancia. O r\u00f3tulo aparece sobre o fio.'});
+    desc:'Clique no alfinete de um card e depois em outro card para criar uma liga\u00e7\u00e3o. Use o bot\u00e3o \u201cfios\u201d para gerenciar ou cortar liga\u00e7\u00f5es.'});
 
   const cGerFios = mk({type:'note',variant:'',   tag:'urgente',status:'todo',  pin:'red',   stringColor:'#ff6633',x:1515,y:59,
     title:'Gerenciar Liga\u00e7\u00f5es',
-    desc:'Bot\u00e3o "fios" no card abre popup com todas as liga\u00e7\u00f5es. Altere o r\u00f3tulo de cada fio ou corte liga\u00e7\u00f5es individualmente com \u2702.'});
+    desc:'Bot\u00e3o "fios" no card abre popup com todas as liga\u00e7\u00f5es. Corte liga\u00e7\u00f5es individualmente com \u2702.'});
 
   const cFoco = mk({type:'note',variant:'note',  tag:'urgente',status:'todo',  pin:'blue',  stringColor:'#4488ff',x:1225,y:264,
     title:'Modo Foco',
@@ -3881,17 +3943,17 @@ function seed(){
     desc:'Alfinete = iniciar \u2022 R\u00f3tulo no indicador vermelho \u2022 "fios" = editar/cortar \u2022 Esc cancela'});
 
   /* ── CONNECTIONS ── */
-  conns.push({from:bv.id,        to:sobre.id,      color:'#ffcc00',rel:''});
-  conns.push({from:cNota.id,     to:cVisual.id,    color:'#4488ff',rel:''});
-  conns.push({from:cConn.id,     to:cGerFios.id,   color:'#cc2200',rel:'relacionado'});
-  conns.push({from:cFoco.id,     to:cBusca.id,     color:'#4488ff',rel:'relacionado'});
-  conns.push({from:cSel.id,      to:cCopy.id,      color:'#44cc44',rel:''});
-  conns.push({from:cQuadros.id,  to:cZonas.id,     color:'#44cc44',rel:''});
-  conns.push({from:cZoom.id,     to:cMini.id,      color:'#ffcc00',rel:''});
-  conns.push({from:cTouch.id,    to:cLandscape.id, color:'#cc2200',rel:''});
-  conns.push({from:cLog.id,      to:cUndo.id,      color:'#4488ff',rel:'depende'});
-  conns.push({from:cExp.id,      to:cLocal.id,     color:'#44cc44',rel:''});
-  conns.push({from:cStatus.id,   to:cTpl.id,       color:'#ffcc00',rel:'relacionado'});
+  conns.push({from:bv.id,        to:sobre.id,      color:'#ffcc00'});
+  conns.push({from:cNota.id,     to:cVisual.id,    color:'#4488ff'});
+  conns.push({from:cConn.id,     to:cGerFios.id,   color:'#cc2200'});
+  conns.push({from:cFoco.id,     to:cBusca.id,     color:'#4488ff'});
+  conns.push({from:cSel.id,      to:cCopy.id,      color:'#44cc44'});
+  conns.push({from:cQuadros.id,  to:cZonas.id,     color:'#44cc44'});
+  conns.push({from:cZoom.id,     to:cMini.id,      color:'#ffcc00'});
+  conns.push({from:cTouch.id,    to:cLandscape.id, color:'#cc2200'});
+  conns.push({from:cLog.id,      to:cUndo.id,      color:'#4488ff'});
+  conns.push({from:cExp.id,      to:cLocal.id,     color:'#44cc44'});
+  conns.push({from:cStatus.id,   to:cTpl.id,       color:'#ffcc00'});
 
   allCards[activeBid]=cs;
   allConns[activeBid]=conns;
