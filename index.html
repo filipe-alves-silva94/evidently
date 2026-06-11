@@ -292,7 +292,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 
 .card-title{font-size:17px;font-weight:700;color:var(--ink);line-height:1.25;margin-bottom:4px;word-break:break-word}
 .card-title.struck{text-decoration:line-through;opacity:.55}
-.card-desc{font-size:13px;color:var(--ink-faded);line-height:1.4;word-break:break-word;margin-bottom:4px}
+.card-desc{font-size:13px;color:var(--ink-faded);line-height:1.4;word-break:break-word;margin-bottom:4px;white-space:pre-wrap}
 .card-link{color:var(--pin-blue);text-decoration:underline;text-decoration-style:dotted;word-break:break-all;cursor:pointer}
 .card-link:hover{text-decoration-style:solid}
 
@@ -332,14 +332,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 
 /* card actions - fluxo normal, sempre abaixo do conte&#250;do */
 .card-actions{
-  display:flex;gap:4px;justify-content:center;
+  display:flex;gap:5px;justify-content:center;
   padding:6px 0 2px;
   max-height:0;overflow:hidden;
   opacity:0;
   transition:max-height .18s ease, opacity .15s ease;
 }
-.card:hover .card-actions{
-  max-height:40px;
+/* actions reveal when the card is selected (no hover reveal) */
+.card.selected .card-actions{
+  max-height:44px;
   opacity:1;
 }
 /* touch: tap reveals the action strip (no hover on mobile) */
@@ -356,9 +357,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 /* zones lift without scaling (they are large containers) */
 .zone.drag-armed{ z-index:200!important;box-shadow:0 0 0 2px var(--pin-red),0 8px 26px rgba(0,0,0,.5);transition:box-shadow .12s ease; }
 .ca-btn{
-  font-size:10px;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);
-  border-radius:3px;padding:2px 5px;cursor:pointer;color:var(--ink-faded);
-  font-family:'Oswald',sans-serif;letter-spacing:.04em;transition:background .1s;
+  font-size:15px;line-height:1;background:rgba(0,0,0,.08);border:1px solid rgba(0,0,0,.15);
+  border-radius:5px;padding:0;cursor:pointer;color:var(--ink-faded);
+  width:30px;height:26px;display:inline-flex;align-items:center;justify-content:center;
+  transition:background .1s;
 }
 .ca-btn:hover{background:rgba(0,0,0,.18);color:var(--ink)}
 .ca-btn.del:hover{background:#cc2200;color:#fff;border-color:#cc2200}
@@ -423,16 +425,19 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 }
 .btab-del:hover{opacity:1}
 .btab-add{
-  font-size:18px;padding:0 12px;background:none;border:none;
-  color:var(--ui-accent);cursor:pointer;transition:color .15s;line-height:1;
+  font-size:20px;padding:0 9px;margin-left:6px;background:none;border:none;
+  color:var(--ui-accent);cursor:pointer;transition:color .15s,background .15s;line-height:1;
+  align-self:center;height:28px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
 }
-.btab-add:hover{color:var(--ui-accent-hover)}
+.btab-add:hover{color:var(--ui-accent-hover);background:var(--search-bg)}
 .btab-cfg{
-  font-size:13px;padding:0 10px;background:none;border:none;
-  color:var(--ui-accent);cursor:pointer;transition:color .15s;line-height:1;
+  font-size:18px;padding:0 14px;background:none;border:none;
+  color:var(--ui-text);cursor:pointer;transition:opacity .15s;line-height:1;
+  display:flex;align-items:center;justify-content:center;opacity:.72;
 }
-.btab-cfg:hover{color:var(--ui-accent-hover)}
-.btab-cfg.open{color:var(--ui-accent-hover)}
+.btab-cfg:hover{opacity:1}
+.btab-cfg.open{opacity:1}
 
 /* board properties panel */
 #board-props{
@@ -1025,18 +1030,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   .btab-cfg{ padding:0 12px;height:40px; }
   .btab-add{ display:none; } /* add is in row2 */
 
-  /* tabs in row2 */
-  #board-tabs{ flex:1;overflow:visible; }
+  /* tabs in row2 — hug content so the + sits right after the last tab */
+  #board-tabs{ flex:0 0 auto;overflow:visible; }
   .btab{ height:38px;font-size:10px;padding:0 12px;white-space:nowrap;flex-shrink:0; }
 
   /* add button at end of row2 */
   #mobile-add-tab{
-    flex-shrink:0;background:none;border:none;padding:0 14px;
-    color:var(--ui-accent);font-size:18px;cursor:pointer;
-    display:flex;align-items:center;height:38px;
-    transition:color .15s;
+    flex-shrink:0;background:none;border:none;padding:0 12px;margin-left:2px;
+    color:var(--ui-accent);font-size:20px;cursor:pointer;
+    display:flex;align-items:center;height:38px;border-radius:7px;
+    transition:color .15s,background .15s;
   }
-  #mobile-add-tab:hover{ color:var(--ui-accent-hover); }
+  #mobile-add-tab:hover{ color:var(--ui-accent-hover);background:var(--search-bg); }
 
   .bh-stats{ display:none; }
 }
@@ -1079,26 +1084,30 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   #header-row1{ display:contents; }
   #header-row2{ display:contents; }
   #mobile-add-tab{ display:none; }
-  #header-spacer{ display:none; }
   #search-toggle{ display:none; }
   #search-clear-mobile{ display:none!important; }
   #search-input{ flex:initial;width:170px;padding:0 9px;border-color:var(--search-border); }
   #fab,#fab-drawer,#fab-backdrop{ display:none!important; }
+
+  /* Chrome-style header order:
+     wordmark · search · [board tabs] (+)  ──gap──  stats · ⚙ */
+  #ev-wordmark{ order:0; }
+  #search-wrap { order:1; }
+  #board-tabs  { order:2; flex:0 1 auto; min-width:0; }
+  .btab-add    { order:3; }
+  #header-spacer{ display:block; order:4; flex:1 1 auto; }
+  .bh-stats    { order:5; }
+  .btab-cfg    { order:6; }
 }
 
 /* ── COARSE POINTER (touch phones + tablets): larger hit targets, momentum scroll ── */
 @media (pointer:coarse){
-  /* card action buttons on touch: icon-only, equal-width, always contained.
-     Text labels are replaced by icons so they fit any card width. */
-  .card-actions{ gap:5px;flex-wrap:nowrap;padding:6px 0 2px; }
+  /* card action buttons on touch: icon-only, equal-width, always contained. */
+  .card-actions{ gap:6px;flex-wrap:nowrap;padding:6px 0 2px; }
   .ca-btn{
-    flex:1 1 0;min-width:0;                 /* equal share of the row */
-    padding:0;height:34px;font-size:0;       /* hide text via font-size:0 */
+    flex:1 1 0;min-width:0;width:auto;        /* equal share of the row */
+    padding:0;height:36px;font-size:17px;
     display:inline-flex;align-items:center;justify-content:center;
-  }
-  .ca-btn::before{
-    content:attr(data-icon);
-    font-size:15px;line-height:1;           /* restore size for the icon glyph */
   }
   /* pins easier to hit */
   .pin{ width:22px;height:22px; }
@@ -1162,6 +1171,214 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 #export-flash{
   position:fixed;inset:0;background:#fff;z-index:9999;
   opacity:0;pointer-events:none;transition:opacity .15s;
+}
+
+/* === TRANSFER MODAL === */
+#transfer-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:600;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px);
+}
+#transfer-modal.open{display:flex}
+#transfer-modal-inner{
+  background:var(--card-paper);
+  background-image:repeating-linear-gradient(transparent,transparent 27px,rgba(0,120,200,.12) 27px,rgba(0,120,200,.12) 28px);
+  border:1px solid rgba(0,0,0,.18);border-radius:2px;padding:24px 26px 20px;
+  width:360px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,.6);
+  font-family:'Caveat',cursive;display:flex;flex-direction:column;gap:14px;
+}
+#transfer-modal-inner h2{
+  font-family:'Special Elite',serif;font-size:17px;color:var(--ink);
+  border-bottom:2px solid rgba(0,0,0,.12);padding-bottom:8px;letter-spacing:.04em;margin:0;
+}
+#transfer-board-list{
+  display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;
+  padding-right:2px;
+}
+.transfer-board-opt{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:5px;cursor:pointer;
+  border:1.5px solid rgba(0,0,0,.12);background:rgba(0,0,0,.03);
+  font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.06em;
+  color:var(--ink);transition:background .15s,border-color .15s;
+}
+.transfer-board-opt:hover{background:var(--ui-accent);border-color:rgba(0,0,0,.25)}
+.transfer-board-opt.selected{border-color:var(--pin-blue);background:rgba(68,136,255,.12)}
+.transfer-board-dot{
+  width:10px;height:10px;border-radius:50%;background:var(--pin-yellow);
+  border:1px solid rgba(0,0,0,.15);flex-shrink:0;
+}
+#transfer-mode-row{
+  display:flex;flex-direction:column;gap:6px;
+  padding:10px 12px;background:rgba(0,0,0,.04);
+  border:1px solid rgba(0,0,0,.1);border-radius:4px;
+}
+.transfer-mode-opt{
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-faded);
+}
+#transfer-info{
+  font-family:'Caveat',cursive;font-size:14px;color:var(--ink-faded);
+  min-height:18px;
+}
+
+/* transfer button: always on screen, inactive until cards are selected */
+#btn-transfer-sel{
+  display:inline-flex;align-items:center;
+  opacity:.4;
+  pointer-events:none;       /* inactive — no hover, no click */
+  cursor:default;
+}
+#btn-transfer-sel.has-sel{
+  opacity:1;
+  pointer-events:auto;
+  cursor:pointer;
+  background:rgba(68,136,255,.15);
+  border-color:rgba(68,136,255,.5);
+  color:#88bbff;
+  animation:selPulse .6s ease both;
+}
+[data-theme="paper"] #btn-transfer-sel.has-sel{
+  background:rgba(30,60,180,.08);border-color:rgba(30,60,180,.4);color:#1a2a7a;
+}
+@keyframes selPulse{from{transform:scale(.94)}to{transform:scale(1)}}
+
+/* === ARQUIVO MORTO (archive drawer) === */
+#archive-drawer{
+  position:fixed;top:46px;right:0;bottom:0;width:300px;z-index:350;
+  transform:translateX(300px);transition:transform .28s cubic-bezier(.4,.0,.2,1);
+}
+#archive-drawer.open{transform:translateX(0)}
+
+/* folder tab handle — sticks out to the left of the drawer body */
+#archive-tab{
+  position:absolute;left:-44px;top:50%;transform:translateY(-50%);
+  width:44px;min-height:150px;padding:14px 0 12px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  cursor:pointer;border:none;
+  /* manila folder look */
+  background:linear-gradient(180deg,#e8c878,#dcb45e);
+  border-radius:10px 0 0 10px;
+  box-shadow:-3px 3px 10px rgba(0,0,0,.35), inset 1px 0 0 rgba(255,255,255,.4);
+  color:#5a3d12;
+  transition:background .15s,box-shadow .15s,width .15s;
+}
+#archive-tab::before{
+  /* the little folder-fold notch at the top */
+  content:'';position:absolute;top:-1px;left:8px;right:10px;height:7px;
+  background:linear-gradient(180deg,#f0d488,#e8c878);
+  border-radius:7px 7px 0 0;
+}
+#archive-tab:hover{background:linear-gradient(180deg,#f0d488,#e4bc66);width:48px}
+#archive-tab .at-icon{font-size:20px;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.2))}
+#archive-tab .at-label{
+  writing-mode:vertical-rl;text-orientation:mixed;
+  font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;font-weight:500;
+}
+#archive-tab .at-count{
+  font-family:'Oswald',sans-serif;font-size:10px;font-weight:700;
+  background:rgba(90,61,18,.9);color:#f0d488;
+  min-width:18px;height:18px;border-radius:9px;padding:0 5px;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+#archive-tab .at-count.empty{display:none}
+
+/* drawer body — looks like the inside of a folder */
+#archive-body{
+  height:100%;display:flex;flex-direction:column;
+  background:
+    linear-gradient(180deg, rgba(232,200,120,.18), transparent 120px),
+    var(--props-bg);
+  border-left:3px solid #dcb45e;
+  box-shadow:-8px 0 28px rgba(0,0,0,.5);
+  backdrop-filter:blur(6px);
+}
+#archive-header{
+  display:flex;align-items:center;gap:8px;padding:14px 16px 12px;
+  border-bottom:1px solid var(--props-sep);
+}
+#archive-header h3{
+  font-family:'Special Elite',serif;font-size:14px;letter-spacing:.06em;
+  color:var(--props-h);flex:1;
+}
+#archive-close{
+  background:none;border:none;cursor:pointer;color:var(--ui-text-dim);
+  font-size:18px;line-height:1;padding:0 2px;transition:color .15s;
+}
+#archive-close:hover{color:var(--props-h)}
+#archive-hint{
+  font-family:'Caveat',cursive;font-size:14px;color:var(--ui-text-dim);
+  text-align:center;padding:10px 16px;border-bottom:1px dashed var(--props-sep);
+}
+#archive-list{
+  flex:1;overflow-y:auto;padding:12px 14px;
+  display:flex;flex-direction:column;gap:9px;
+}
+#archive-list::-webkit-scrollbar{width:8px}
+#archive-list::-webkit-scrollbar-thumb{background:var(--props-sep);border-radius:4px}
+.archive-empty{
+  font-family:'Caveat',cursive;font-size:15px;color:var(--ui-text-dim);
+  text-align:center;padding:24px 8px;line-height:1.5;
+}
+/* each archived card = a little file/index card */
+.archive-item{
+  position:relative;background:var(--card-paper);
+  border:1px solid var(--card-border);border-radius:3px;
+  padding:9px 10px 8px 12px;
+  box-shadow:1px 2px 5px rgba(0,0,0,.22);
+  display:flex;flex-direction:column;gap:3px;
+  cursor:default;
+}
+.archive-item::before{
+  /* colored spine to evoke a tab/file */
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  border-radius:3px 0 0 3px;background:var(--ai-spine,#cc2200);
+}
+.archive-item-title{
+  font-family:var(--card-font);font-size:15px;font-weight:700;
+  color:var(--ink);line-height:1.2;word-break:break-word;
+}
+.archive-item-meta{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:1px;
+}
+.archive-item-tag{
+  font-family:'Oswald',sans-serif;font-size:8px;letter-spacing:.08em;
+  text-transform:uppercase;padding:1px 6px;border-radius:2px;
+  background:var(--tag-bg);color:var(--ink-faded);border:1px solid var(--tag-border);
+}
+.archive-item-date{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.04em;
+  color:var(--ink-faded);opacity:.7;
+}
+.archive-item-actions{display:flex;gap:6px;margin-top:5px}
+.ai-btn{
+  font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.06em;
+  text-transform:uppercase;padding:3px 9px;border-radius:3px;cursor:pointer;
+  border:1px solid var(--card-border);background:rgba(0,0,0,.04);color:var(--ink-faded);
+  transition:background .12s,color .12s;
+}
+.ai-btn.restore:hover{background:rgba(68,136,255,.18);color:var(--pin-blue);border-color:rgba(68,136,255,.4)}
+.ai-btn.del:hover{background:rgba(204,34,0,.18);color:#cc2200;border-color:rgba(204,34,0,.4)}
+
+/* drop-target highlight while dragging a card over the drawer/tab */
+#archive-drawer.drag-over #archive-tab{
+  background:linear-gradient(180deg,#aef0c0,#7fd89a);
+  box-shadow:-3px 3px 16px rgba(40,160,80,.55), inset 1px 0 0 rgba(255,255,255,.5);
+  color:#1a5a2a;width:50px;
+}
+#archive-drawer.drag-over #archive-body{
+  border-left-color:#5fc080;
+  box-shadow:-8px 0 28px rgba(40,160,80,.4), inset 0 0 0 2px rgba(95,192,128,.5);
+}
+#archive-drawer.drag-over #archive-hint{
+  color:#2a8a4a;font-weight:700;
+}
+
+@media (max-width:768px){
+  #archive-drawer{ top:78px;width:84vw;max-width:330px;transform:translateX(84vw) }
+  #archive-drawer.open{ transform:translateX(0) }
+  #archive-tab{ left:-40px;min-height:128px }
 }
 
 /* === TEMPLATES PANEL === */
@@ -1313,6 +1530,77 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   padding:4px 8px;cursor:pointer;transition:opacity .4s, color .15s, border-color .15s;
 }
 #zoom-indicator:hover{color:rgba(255,200,100,.9);border-color:rgba(255,200,100,.4);}
+
+/* === IMAGE LIGHTBOX (fullscreen photo viewer) === */
+.photo-expand{
+  position:absolute;top:12px;right:12px;width:28px;height:28px;
+  border-radius:6px;border:none;cursor:pointer;z-index:4;
+  background:rgba(0,0,0,.55);color:#fff;font-size:14px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .15s,background .15s;
+}
+.card.photo:hover .photo-expand{opacity:1}
+.photo-expand:hover{background:rgba(0,0,0,.8)}
+@media (pointer:coarse){ .photo-expand{opacity:.9} }
+
+#lightbox{
+  position:fixed;inset:0;z-index:700;display:none;
+  background:rgba(8,8,10,.95);
+  align-items:center;justify-content:center;
+}
+#lightbox.open{display:flex}
+#lb-stage{
+  position:absolute;inset:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  touch-action:none;
+}
+#lb-img{
+  max-width:94vw;max-height:88vh;object-fit:contain;
+  user-select:none;-webkit-user-drag:none;
+  transform-origin:center center;
+  transition:transform .14s ease-out;
+  box-shadow:0 12px 70px rgba(0,0,0,.7);
+  cursor:zoom-in;
+}
+#lb-img.zoomed{cursor:grab}
+#lb-img.grabbing{cursor:grabbing;transition:none}
+#lb-caption{
+  position:fixed;left:0;right:0;bottom:20px;text-align:center;pointer-events:none;
+  font-family:'Caveat',cursive;font-size:19px;color:#f0e6d2;
+  text-shadow:0 1px 6px rgba(0,0,0,.9);padding:0 60px;
+}
+#lb-counter{
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);
+  font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.14em;
+  color:#cfcfcf;background:rgba(0,0,0,.4);padding:4px 12px;border-radius:20px;
+}
+.lb-btn{
+  position:fixed;z-index:2;border:none;cursor:pointer;
+  background:rgba(255,255,255,.1);color:#fff;
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;line-height:1;transition:background .15s,transform .15s;
+  backdrop-filter:blur(4px);
+}
+.lb-btn:hover{background:rgba(255,255,255,.22)}
+.lb-btn:active{transform:scale(.92)}
+#lb-close{top:14px;right:16px;font-size:20px}
+#lb-prev{left:18px;top:50%;transform:translateY(-50%)}
+#lb-next{right:18px;top:50%;transform:translateY(-50%)}
+#lb-prev:hover,#lb-next:hover{background:rgba(255,255,255,.22)}
+#lb-prev.hidden,#lb-next.hidden{display:none}
+#lb-hint{
+  position:fixed;top:18px;left:18px;font-family:'Oswald',sans-serif;
+  font-size:10px;letter-spacing:.1em;color:#888;pointer-events:none;
+}
+@media (pointer:coarse){ #lb-hint{display:none} .lb-btn{width:42px;height:42px} }
+@media (max-width:768px){
+  #lb-prev{left:8px} #lb-next{right:8px}
+  #lb-caption{font-size:16px;padding:0 16px;bottom:14px}
+}
+
+/* clickable preview in the edit modal */
+#f-img-preview{cursor:zoom-in}
 </style>
 </head>
 <body>
@@ -1333,7 +1621,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
     </div>
     <span id="header-spacer"></span>
     <span class="bh-stats" id="bh-stats"></span>
-    <button class="btab-cfg" id="btn-cfg" onclick="toggleBoardProps()" title="Propriedades do quadro">&#x2699;</button>
+    <button class="btab-cfg" id="btn-cfg" onclick="toggleBoardProps()" title="Propriedades do quadro">&#x2699;&#xFE0F;</button>
   </div>
   <!-- Row 2 (mobile): tabs + add -->
   <div id="header-row2">
@@ -1426,6 +1714,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   <button class="tb-btn" onclick="openModal('photo')">&#x1F5BC; Foto</button>
   <button class="tb-btn" onclick="openZoneModal()">&#x1F4C2; Zona</button>
   <button class="tb-btn" onclick="toggleTemplates()" title="Templates de card">&#x1F4CB; Templates</button>
+  <button class="tb-btn" onclick="toggleArchive()" title="Arquivo Morto — guardar cards sem excluir">&#x1F5C3; Arquivo</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-transfer-sel" onclick="openTransferModal()" title="Mover ou copiar cards selecionados para outro quadro">&#x2708; Mover</button>
   <div class="tb-sep"></div>
   <button class="tb-btn danger" onclick="clearConnections()">&#x2702; Fios</button>
   <button class="tb-btn danger" onclick="clearAll()">&#x1F5D1; Limpar</button>
@@ -1451,6 +1742,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
   <div class="fab-item" onclick="closeFab();openModal('photo')"><span class="fi-icon">&#x1F5BC;</span>Foto</div>
   <div class="fab-item" onclick="closeFab();openZoneModal()"><span class="fi-icon">&#x1F4C2;</span>Zona</div>
   <div class="fab-item" onclick="closeFab();toggleTemplates()"><span class="fi-icon">&#x1F4CB;</span>Templates</div>
+  <div class="fab-item" onclick="closeFab();toggleArchive()"><span class="fi-icon">&#x1F5C3;</span>Arquivo Morto</div>
   <div class="fab-section-label">Arquivo</div>
   <div class="fab-item" onclick="closeFab();exportJSON()"><span class="fi-icon">&#x1F4BE;</span>Exportar</div>
   <div class="fab-item" onclick="closeFab();document.getElementById('import-file').click()"><span class="fi-icon">&#x1F4E5;</span>Importar</div>
@@ -1483,7 +1775,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
             Clique para escolher arquivo
           </div>
           <input id="f-file" type="file" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
-          <img id="f-img-preview" src="" alt="" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:3px;margin-top:6px;border:1px solid rgba(0,0,0,.1)">
+          <img id="f-img-preview" src="" alt="" title="Clique para ver em tela cheia" onclick="openLightboxSrc(this.src, document.getElementById('f-caption').value || document.getElementById('f-title').value)" style="display:none;width:100%;max-height:120px;object-fit:cover;border-radius:3px;margin-top:6px;border:1px solid rgba(0,0,0,.1)">
           <div class="fl" style="margin-top:8px">Legenda</div>
           <input id="f-caption" type="text" placeholder="Legenda...">
         </div>
@@ -1575,7 +1867,448 @@ html,body{width:100%;height:100%;overflow:hidden;background:#111;user-select:non
 </div>
 </div>
 
+<!-- Transfer modal -->
+<div id="transfer-modal">
+  <div id="transfer-modal-inner">
+    <h2>&#x2708; Mover / Copiar seleção</h2>
+    <div id="transfer-info"></div>
+    <div style="font-family:'Oswald',sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faded)">Destino</div>
+    <div id="transfer-board-list"></div>
+    <div id="transfer-mode-row">
+      <label class="transfer-mode-opt">
+        <input type="radio" name="transfer-mode" value="move" checked style="accent-color:var(--pin-blue)">
+        Mover (remove do quadro atual)
+      </label>
+      <label class="transfer-mode-opt">
+        <input type="radio" name="transfer-mode" value="copy" style="accent-color:var(--pin-blue)">
+        Copiar (mantém no quadro atual)
+      </label>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+      <button class="modal-btn secondary" onclick="closeTransferModal()">Cancelar</button>
+      <button class="modal-btn primary"   onclick="confirmTransfer()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Arquivo Morto (archive drawer) -->
+<div id="archive-drawer">
+  <button id="archive-tab" onclick="toggleArchive()" title="Arquivo Morto — arraste cards aqui para arquivar">
+    <span class="at-icon">&#x1F5C3;</span>
+    <span class="at-label">Arquivo Morto</span>
+    <span class="at-count empty" id="archive-count">0</span>
+  </button>
+  <div id="archive-body">
+    <div id="archive-header">
+      <h3>&#x1F5C3; Arquivo Morto</h3>
+      <button id="archive-close" onclick="closeArchive()" title="Recolher">&#x2715;</button>
+    </div>
+    <div id="archive-hint">Arraste cards do quadro para arquivar</div>
+    <div id="archive-list"></div>
+  </div>
+</div>
+
+<!-- Image lightbox / fullscreen viewer -->
+<div id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <div id="lb-hint">Clique para ampliar · ↑↓ roda do mouse · ← → navega · Esc fecha</div>
+  <div id="lb-counter"></div>
+  <button class="lb-btn" id="lb-close" onclick="closeLightbox()" title="Fechar (Esc)">&#x2715;</button>
+  <button class="lb-btn" id="lb-prev" onclick="lbNav(-1)" title="Anterior (←)">&#x2039;</button>
+  <button class="lb-btn" id="lb-next" onclick="lbNav(1)" title="Próxima (→)">&#x203A;</button>
+  <div id="lb-stage">
+    <img id="lb-img" src="" alt="" draggable="false">
+  </div>
+  <div id="lb-caption"></div>
+</div>
+
 <script>
+/* ========================================
+   TRANSFER CARDS TO ANOTHER BOARD
+======================================== */
+let _transferTargetBid = null;
+
+function _updateTransferBtn(){
+  const btn = document.getElementById('btn-transfer-sel');
+  if(!btn) return;
+  /* only count cards (not zones) */
+  const cardCount = [...selectedIds].filter(id => curCards().some(c=>c.id===id)).length;
+  if(cardCount > 0){
+    btn.classList.add('has-sel');
+    btn.textContent = `\u2708 Mover (${cardCount})`;
+  } else {
+    btn.classList.remove('has-sel');
+    btn.textContent = '\u2708 Mover';
+  }
+}
+
+function openTransferModal(){
+  const cardIds = [...selectedIds].filter(id => curCards().some(c=>c.id===id));
+  if(!cardIds.length){ showToast('Selecione ao menos um card primeiro'); return; }
+
+  _transferTargetBid = null;
+  const info = document.getElementById('transfer-info');
+  info.textContent = `${cardIds.length} card(s) selecionado(s)`;
+
+  /* populate board list — exclude current board */
+  const list = document.getElementById('transfer-board-list');
+  list.innerHTML = '';
+  const others = boards.filter(b => b.id !== activeBid);
+  if(!others.length){
+    list.innerHTML = '<div style="font-family:\'Caveat\',cursive;font-size:14px;color:var(--ink-faded);padding:6px 0">Nenhum outro quadro disponível.<br>Crie um novo quadro primeiro.</div>';
+  } else {
+    others.forEach(b => {
+      const opt = document.createElement('div');
+      opt.className = 'transfer-board-opt';
+      opt.dataset.bid = b.id;
+      const dot = document.createElement('span');
+      dot.className = 'transfer-board-dot';
+      const name = document.createElement('span');
+      name.textContent = b.name;
+      const count = document.createElement('span');
+      count.style.cssText = 'margin-left:auto;font-size:10px;opacity:.5';
+      count.textContent = (allCards[b.id]||[]).length + ' cards';
+      opt.appendChild(dot); opt.appendChild(name); opt.appendChild(count);
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.transfer-board-opt').forEach(el=>el.classList.remove('selected'));
+        opt.classList.add('selected');
+        _transferTargetBid = b.id;
+      });
+      list.appendChild(opt);
+    });
+    /* auto-select first */
+    list.firstChild?.click();
+  }
+
+  document.getElementById('transfer-modal').classList.add('open');
+}
+
+function closeTransferModal(){
+  document.getElementById('transfer-modal').classList.remove('open');
+  _transferTargetBid = null;
+}
+
+function confirmTransfer(){
+  if(!_transferTargetBid){ showToast('Selecione um quadro destino'); return; }
+  const mode = document.querySelector('input[name="transfer-mode"]:checked')?.value || 'move';
+
+  const cardIds = new Set([...selectedIds].filter(id => curCards().some(c=>c.id===id)));
+  if(!cardIds.size){ closeTransferModal(); return; }
+
+  _pushHistory();
+
+  const srcCards = curCards().filter(c => cardIds.has(c.id));
+  const srcConns = curConns().filter(c => cardIds.has(c.from) && cardIds.has(c.to));
+
+  /* build id map for copy mode */
+  const idMap = {};
+  srcCards.forEach(c => { idMap[c.id] = uid(); });
+
+  if(mode === 'copy'){
+    /* add copies to target board */
+    const destCards = allCards[_transferTargetBid] || [];
+    const destConns = allConns[_transferTargetBid] || [];
+    srcCards.forEach(c => {
+      destCards.push({ ...JSON.parse(JSON.stringify(c)), id: idMap[c.id] });
+    });
+    srcConns.forEach(cn => {
+      destConns.push({ ...cn, from: idMap[cn.from], to: idMap[cn.to] });
+    });
+    allCards[_transferTargetBid] = destCards;
+    allConns[_transferTargetBid] = destConns;
+    showToast(`${srcCards.length} card(s) copiado(s) para "${boards.find(b=>b.id===_transferTargetBid)?.name}"`);
+  } else {
+    /* move: remove from source, add to target */
+    const destCards = allCards[_transferTargetBid] || [];
+    const destConns = allConns[_transferTargetBid] || [];
+    srcCards.forEach(c => {
+      destCards.push({ ...JSON.parse(JSON.stringify(c)), id: idMap[c.id] });
+    });
+    srcConns.forEach(cn => {
+      destConns.push({ ...cn, from: idMap[cn.from], to: idMap[cn.to] });
+    });
+    allCards[_transferTargetBid] = destCards;
+    allConns[_transferTargetBid] = destConns;
+
+    /* remove from source */
+    setCards(curCards().filter(c => !cardIds.has(c.id)));
+    setConns(curConns().filter(cn => !cardIds.has(cn.from) && !cardIds.has(cn.to)));
+    clearSelection();
+    showToast(`${srcCards.length} card(s) movido(s) para "${boards.find(b=>b.id===_transferTargetBid)?.name}"`);
+  }
+
+  save(); closeTransferModal(); renderAll();
+}
+
+/* ========================================
+   ARQUIVO MORTO (archive / cold storage)
+   Per-board hidden storage for cards we
+   don't want to delete. Integrated with
+   undo/redo, save/load and import/export.
+======================================== */
+function toggleArchive(){
+  const dr = document.getElementById('archive-drawer');
+  if(dr.classList.contains('open')) closeArchive(); else openArchive();
+}
+function openArchive(){
+  document.getElementById('archive-drawer').classList.add('open');
+  renderArchive();
+}
+function closeArchive(){
+  document.getElementById('archive-drawer')?.classList.remove('open');
+}
+
+/* point-in-drawer hit test (screen coords) — used for drag-and-drop */
+function _archiveHitTest(clientX, clientY){
+  const dr = document.getElementById('archive-drawer');
+  if(!dr) return false;
+  const inRect = el => {
+    if(!el) return false;
+    const r = el.getBoundingClientRect();
+    return clientX>=r.left && clientX<=r.right && clientY>=r.top && clientY<=r.bottom;
+  };
+  /* the tab is always a valid target; the body only when the drawer is open */
+  return inRect(document.getElementById('archive-tab'))
+      || (dr.classList.contains('open') && inRect(document.getElementById('archive-body')));
+}
+
+/* move one or more cards from the board into the archive */
+function archiveCards(ids){
+  const set = new Set(ids.filter(id => curCards().some(c=>c.id===id)));
+  if(!set.size) return;
+  _pushHistory();
+  const moved = curCards().filter(c => set.has(c.id));
+  setCards(curCards().filter(c => !set.has(c.id)));
+  setConns(curConns().filter(cn => !set.has(cn.from) && !set.has(cn.to)));
+  const arch = curArchive();
+  moved.forEach(c => { c._archivedAt = Date.now(); arch.push(c); });
+  setArchive(arch);
+  clearSelection();
+  save(); renderAll(); openArchive();
+  showToast(moved.length>1 ? `${moved.length} cards arquivados` : 'Card arquivado');
+}
+function archiveCard(id){ archiveCards([id]); }
+
+/* bring a card back from the archive onto the board, centered in view */
+function restoreFromArchive(id){
+  const arch = curArchive();
+  const c = arch.find(x => x.id === id);
+  if(!c) return;
+  _pushHistory();
+  setArchive(arch.filter(x => x.id !== id));
+  const board = document.getElementById('board');
+  const vcx = (board.clientWidth /2 - panX)/zoom;
+  const vcy = (board.clientHeight/2 - panY)/zoom;
+  c.x = vcx - 105 + (Math.random()-.5)*120;
+  c.y = vcy - 70  + (Math.random()-.5)*100;
+  delete c._archivedAt;
+  const cs = curCards(); cs.push(c); setCards(cs);
+  save(); renderAll();
+  showToast('Card restaurado ao quadro');
+}
+
+/* permanently delete a card from the archive */
+function deleteFromArchive(id){
+  const c = curArchive().find(x => x.id === id);
+  if(!c) return;
+  if(!confirm(`Excluir definitivamente "${c.title||'card'}" do arquivo?`)) return;
+  _pushHistory();
+  setArchive(curArchive().filter(x => x.id !== id));
+  save(); renderArchive();
+  showToast('Card excluído do arquivo');
+}
+
+/* render the list of archived cards + update the tab badge */
+function renderArchive(){
+  const list = document.getElementById('archive-list');
+  const badge = document.getElementById('archive-count');
+  if(!list || !badge) return;
+  const arch = curArchive();
+  badge.textContent = arch.length;
+  badge.classList.toggle('empty', arch.length === 0);
+
+  list.innerHTML = '';
+  if(!arch.length){
+    list.innerHTML = '<div class="archive-empty">Vazio.<br>Arraste cards do quadro até a aba para guardá-los aqui sem excluir.</div>';
+    return;
+  }
+  const pinHex = { red:'#cc2200', blue:'#1a4a8a', yellow:'#d4aa00', green:'#2a7a2a' };
+  /* newest first */
+  [...arch].sort((a,b)=>(b._archivedAt||0)-(a._archivedAt||0)).forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'archive-item';
+    row.style.setProperty('--ai-spine', c.stringColor || pinHex[c.pin] || '#cc2200');
+
+    const title = document.createElement('div');
+    title.className = 'archive-item-title';
+    title.textContent = c.title || (c.type==='photo' ? '(foto)' : '(sem título)');
+    row.appendChild(title);
+
+    if(c.tag || c._archivedAt){
+      const meta = document.createElement('div');
+      meta.className = 'archive-item-meta';
+      if(c.tag){
+        const tg = document.createElement('span');
+        tg.className = 'archive-item-tag';
+        tg.textContent = c.tag;
+        meta.appendChild(tg);
+      }
+      if(c._archivedAt){
+        const dt = document.createElement('span');
+        dt.className = 'archive-item-date';
+        dt.textContent = new Date(c._archivedAt).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+        meta.appendChild(dt);
+      }
+      row.appendChild(meta);
+    }
+
+    const acts = document.createElement('div');
+    acts.className = 'archive-item-actions';
+    const rb = document.createElement('button');
+    rb.className = 'ai-btn restore'; rb.textContent = '\u21A9 Restaurar';
+    rb.addEventListener('click', () => restoreFromArchive(c.id));
+    const db = document.createElement('button');
+    db.className = 'ai-btn del'; db.textContent = '\uD83D\uDDD1 Excluir';
+    db.addEventListener('click', () => deleteFromArchive(c.id));
+    acts.appendChild(rb); acts.appendChild(db);
+    row.appendChild(acts);
+
+    list.appendChild(row);
+  });
+}
+
+/* ========================================
+   IMAGE LIGHTBOX (fullscreen photo viewer)
+   - navega entre todas as fotos do quadro
+   - zoom (clique / roda) e pan (arrastar)
+======================================== */
+let _lb = { ids: [], idx: 0, single: null, scale: 1, tx: 0, ty: 0 };
+
+function openLightbox(cardId){
+  /* gather all photo cards (with image) in the current board for navigation */
+  const photos = curCards().filter(c => c.type==='photo' && c.imgUrl);
+  const ids = photos.map(c => c.id);
+  const idx = Math.max(0, ids.indexOf(cardId));
+  _lb = { ids, idx, single: null, scale: 1, tx: 0, ty: 0 };
+  _lbShow();
+  _lbRender();
+}
+
+/* open a standalone src (e.g. the edit-modal preview, possibly unsaved) */
+function openLightboxSrc(src, caption){
+  if(!src) return;
+  _lb = { ids: [], idx: 0, single: { src, caption: caption||'' }, scale: 1, tx: 0, ty: 0 };
+  _lbShow();
+  _lbRender();
+}
+
+function _lbShow(){
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+function _lbCurrent(){
+  if(_lb.single) return _lb.single;
+  const id = _lb.ids[_lb.idx];
+  const c = curCards().find(x => x.id === id);
+  return c ? { src: c.imgUrl, caption: c.caption || c.title || '' } : null;
+}
+
+function _lbRender(){
+  const cur = _lbCurrent();
+  const img = document.getElementById('lb-img');
+  const cap = document.getElementById('lb-caption');
+  const cnt = document.getElementById('lb-counter');
+  const prev = document.getElementById('lb-prev');
+  const next = document.getElementById('lb-next');
+  if(!cur){ closeLightbox(); return; }
+
+  _lb.scale = 1; _lb.tx = 0; _lb.ty = 0;
+  img.classList.remove('zoomed','grabbing');
+  img.style.transform = 'translate(0px,0px) scale(1)';
+  img.src = cur.src;
+  img.alt = cur.caption;
+  cap.textContent = cur.caption;
+
+  const multi = _lb.ids.length > 1;
+  prev.classList.toggle('hidden', !multi);
+  next.classList.toggle('hidden', !multi);
+  cnt.style.display = multi ? '' : 'none';
+  if(multi) cnt.textContent = `${_lb.idx + 1} / ${_lb.ids.length}`;
+}
+
+function lbNav(dir){
+  if(!_lb.ids.length) return;
+  _lb.idx = (_lb.idx + dir + _lb.ids.length) % _lb.ids.length;
+  _lbRender();
+}
+
+function _lbApply(){
+  const img = document.getElementById('lb-img');
+  img.style.transform = `translate(${_lb.tx}px,${_lb.ty}px) scale(${_lb.scale})`;
+  img.classList.toggle('zoomed', _lb.scale > 1.01);
+}
+
+function _lbZoom(delta){
+  const old = _lb.scale;
+  _lb.scale = Math.min(6, Math.max(1, +(old + delta).toFixed(2)));
+  if(_lb.scale === 1){ _lb.tx = 0; _lb.ty = 0; }
+  _lbApply();
+}
+
+/* wire up stage interactions once */
+(function _lbInit(){
+  const stage = document.getElementById('lb-stage');
+  const img = document.getElementById('lb-img');
+  if(!stage || !img) return;
+
+  /* wheel zoom (desktop) */
+  stage.addEventListener('wheel', e => {
+    e.preventDefault();
+    _lbZoom(e.deltaY < 0 ? 0.3 : -0.3);
+  }, { passive:false });
+
+  /* pointer drag to pan when zoomed; clean tap toggles zoom */
+  let down=false, moved=false, sx=0, sy=0, otx=0, oty=0;
+  img.addEventListener('pointerdown', e => {
+    down=true; moved=false; sx=e.clientX; sy=e.clientY; otx=_lb.tx; oty=_lb.ty;
+    img.setPointerCapture?.(e.pointerId);
+    if(_lb.scale>1.01) img.classList.add('grabbing');
+  });
+  img.addEventListener('pointermove', e => {
+    if(!down) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>4 || Math.abs(dy)>4) moved=true;
+    if(_lb.scale>1.01){ _lb.tx=otx+dx; _lb.ty=oty+dy; _lbApply(); }
+  });
+  img.addEventListener('pointerup', () => {
+    down=false; img.classList.remove('grabbing');
+    if(!moved){
+      if(_lb.scale>1.01){ _lb.scale=1; _lb.tx=0; _lb.ty=0; }
+      else { _lb.scale=2.5; }
+      _lbApply();
+    }
+  });
+  img.addEventListener('pointercancel', ()=>{ down=false; img.classList.remove('grabbing'); });
+
+  /* pinch-to-zoom (touch) */
+  let pinchStart=0, pinchScale=1;
+  stage.addEventListener('touchmove', e => {
+    if(e.touches.length===2){
+      e.preventDefault();
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      const dist=Math.hypot(dx,dy);
+      if(!pinchStart){ pinchStart=dist; pinchScale=_lb.scale; return; }
+      _lb.scale=Math.min(6, Math.max(1, +(pinchScale*(dist/pinchStart)).toFixed(2)));
+      if(_lb.scale===1){ _lb.tx=0; _lb.ty=0; }
+      _lbApply();
+    }
+  }, { passive:false });
+  stage.addEventListener('touchend', e => { if(e.touches.length<2) pinchStart=0; });
+})();
+
 /* ========================================
    CONSTANTS
 ======================================== */
@@ -1609,13 +2342,17 @@ let activeBid   = '';
 let allCards    = {};   // {boardId: [...cards]}
 let allConns    = {};   // {boardId: [...connections]}
 let allZones    = {};   // {boardId: [...zones]}
+let allArchives = {};   // {boardId: [...archived cards]}  — "Arquivo Morto"
+let _boardViews = {};   // {boardId: {zoom, panX, panY}}  — saved pan/zoom per board
 
 function curCards() { return allCards[activeBid] || [] }
 function curConns() { return allConns[activeBid] || [] }
 function curZones() { return allZones[activeBid] || [] }
+function curArchive(){ return allArchives[activeBid] || [] }
 function setCards(v){ allCards[activeBid]=v }
 function setConns(v){ allConns[activeBid]=v }
 function setZones(v){ allZones[activeBid]=v }
+function setArchive(v){ allArchives[activeBid]=v }
 
 /* ========================================
    HISTORY - undo / redo
@@ -1632,6 +2369,7 @@ function _snapshot() {
     cards: allCards[activeBid] || [],
     conns: allConns[activeBid] || [],
     zones: allZones[activeBid] || [],
+    archive: allArchives[activeBid] || [],
   }));
 }
 
@@ -1649,6 +2387,7 @@ function _applySnapshot(snap) {
   allCards[activeBid] = JSON.parse(JSON.stringify(snap.cards));
   allConns[activeBid] = JSON.parse(JSON.stringify(snap.conns));
   allZones[activeBid] = JSON.parse(JSON.stringify(snap.zones));
+  allArchives[activeBid] = JSON.parse(JSON.stringify(snap.archive || []));
 }
 
 function undo() {
@@ -1707,6 +2446,8 @@ function save() {
     localStorage.setItem('invb_cards',  JSON.stringify(allCards));
     localStorage.setItem('invb_conns',  JSON.stringify(allConns));
     localStorage.setItem('invb_zones',  JSON.stringify(allZones));
+    localStorage.setItem('invb_archives', JSON.stringify(allArchives));
+    localStorage.setItem('invb_views', JSON.stringify(_boardViews));
   } catch(e) {
     if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
       showToast('⚠ Armazenamento cheio — exporte o quadro para não perder dados');
@@ -1719,6 +2460,8 @@ function load() {
     allCards  = JSON.parse(localStorage.getItem('invb_cards')  || '{}');
     allConns  = JSON.parse(localStorage.getItem('invb_conns')  || '{}');
     allZones  = JSON.parse(localStorage.getItem('invb_zones')  || '{}');
+    allArchives = JSON.parse(localStorage.getItem('invb_archives') || '{}');
+    _boardViews = JSON.parse(localStorage.getItem('invb_views') || '{}');
   } catch(e){}
 }
 
@@ -1738,17 +2481,24 @@ function addBoard(name) {
   allCards[b.id] = [];
   allConns[b.id] = [];
   allZones[b.id] = [];
+  allArchives[b.id] = [];
   _resetHistoryForBoard(b.id);
   save();
   switchBoard(b.id);
 }
 
 function switchBoard(bid) {
+  /* save the view of the board we're leaving */
+  if (activeBid) _boardViews[activeBid] = { zoom, panX, panY };
   activeBid = bid;
-  zoom = 1; panX = 0; panY = 0;
+  /* restore the target board's saved view, or default to center */
+  const v = _boardViews[bid];
+  if (v) { zoom = v.zoom; panX = v.panX; panY = v.panY; }
+  else   { zoom = 1; panX = 0; panY = 0; }
   _resetHistoryForBoard(bid);
   clearSearch();
   exitFocus();
+  closeArchive();
   document.getElementById('tpl-panel')?.classList.remove('open');
   if(typeof _syncHash==='function') _syncHash();
   renderTabs();
@@ -1759,7 +2509,7 @@ function deleteBoard(bid) {
   if (boards.length <= 1) { alert('Não é possível remover o único quadro.'); return; }
   if (!confirm('Remover este quadro e todo seu conteúdo?')) return;
   boards = boards.filter(b => b.id !== bid);
-  delete allCards[bid]; delete allConns[bid]; delete allZones[bid];
+  delete allCards[bid]; delete allConns[bid]; delete allZones[bid]; delete allArchives[bid];
   delete _undoStacks[bid]; delete _redoStacks[bid];
   if (activeBid === bid) activeBid = boards[0].id;
   save(); renderTabs(); renderAll();
@@ -1949,7 +2699,7 @@ function deleteBoardFromProps() {
 
 function resetToWelcome() {
   if (!confirm('Tem certeza? Todos os quadros e dados serao apagados e o painel de Welcome sera exibido.')) return;
-  ['invb_boards','invb_cards','invb_conns','invb_zones','invb_templates','ev_theme','ev_card_font']
+  ['invb_boards','invb_cards','invb_conns','invb_zones','invb_archives','invb_templates','ev_theme','ev_card_font']
     .forEach(k => localStorage.removeItem(k));
   location.reload();
 }
@@ -2360,7 +3110,16 @@ function createCardEl(c) {
   inner.appendChild(badge);
 
   if(c.type==='photo') {
-    if(c.imgUrl){ const img=document.createElement('img');img.className='photo-img';img.src=c.imgUrl;img.alt=c.caption||c.title;img.onerror=()=>img.replaceWith(makePlaceholder(c.title));inner.appendChild(img); }
+    if(c.imgUrl){
+      const img=document.createElement('img');img.className='photo-img';img.src=c.imgUrl;img.alt=c.caption||c.title;img.onerror=()=>img.replaceWith(makePlaceholder(c.title));inner.appendChild(img);
+      const exp=document.createElement('button');
+      exp.className='photo-expand'; exp.title='Ver em tela cheia'; exp.innerHTML='&#x26F6;';
+      exp.addEventListener('click',e=>{ e.stopPropagation(); openLightbox(c.id); });
+      exp.addEventListener('pointerdown',e=>e.stopPropagation());
+      exp.addEventListener('mousedown',e=>e.stopPropagation());
+      exp.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
+      inner.appendChild(exp);
+    }
     else inner.appendChild(makePlaceholder(c.title));
   } else {
     const t=document.createElement('div');
@@ -2414,21 +3173,19 @@ function createCardEl(c) {
   /* tag */
   if(c.tag){ const tg=document.createElement('span');tg.className='card-tag';tg.textContent=c.tag;inner.appendChild(tg); }
 
-  /* actions */
+  /* actions — icon buttons, revealed on selection (edit is via double-click) */
   const acts=document.createElement('div'); acts.className='card-actions';
-  const mkBtn=(label,title,cls,cb)=>{
+  const mkBtn=(icon,title,cls,cb)=>{
     const b=document.createElement('button');
-    b.className='ca-btn'+(cls?' '+cls:''); b.title=title; b.textContent=label;
+    b.className='ca-btn'+(cls?' '+cls:''); b.title=title; b.textContent=icon;
     b.addEventListener('click',e=>{e.stopPropagation();cb(e);});
     return b;
   };
-  const _bFocus = mkBtn('focar','Modo foco','',()=>enterFocus(c.id));        _bFocus.dataset.icon='\u{1F3AF}';   /* 🎯 */
-  const _bFios  = mkBtn('fios','Cortar ligações','',(e)=>openCutPopup(e,c.id)); _bFios.dataset.icon='\u2702';        /* ✂ */
-  const _bEdit  = mkBtn('editar','Editar','',()=>openModal(c.type,c.id));     _bEdit.dataset.icon='\u270E';         /* ✎ */
-  const _bDel   = mkBtn('del','Remover','del',()=>deleteCard(c.id));          _bDel.dataset.icon='\u{1F5D1}';      /* 🗑 */
+  const _bFocus = mkBtn('\u{1F52D}','Modo foco','',()=>enterFocus(c.id));        /* 🔭 luneta */
+  const _bFios  = mkBtn('\u2702\uFE0F','Cortar ligações','',(e)=>openCutPopup(e,c.id)); /* ✂ tesoura */
+  const _bDel   = mkBtn('\u{1F5D1}\uFE0F','Remover','del',()=>deleteCard(c.id));         /* 🗑 lixeira */
   acts.appendChild(_bFocus);
   acts.appendChild(_bFios);
-  acts.appendChild(_bEdit);
   acts.appendChild(_bDel);
   inner.appendChild(acts);
 
@@ -2713,6 +3470,7 @@ function renderAll(){
   });
   applyZoom(); updateStats();
   _renderingAll = false;
+  if(typeof renderArchive==='function') renderArchive();
   /* defer string rendering one frame so offsetWidth/Height are resolved */
   requestAnimationFrame(()=>{ renderStrings(); });
 }
@@ -3043,6 +3801,17 @@ let panX = 0, panY = 0;
 let isPanning = false, panStartX = 0, panStartY = 0, panOriginX = 0, panOriginY = 0;
 
 let _renderingAll = false;
+let _viewSaveTimer = null;
+
+/* keep the active board's saved viewport in sync + persist it (debounced) */
+function _rememberView() {
+  if (!activeBid) return;
+  _boardViews[activeBid] = { zoom, panX, panY };
+  clearTimeout(_viewSaveTimer);
+  _viewSaveTimer = setTimeout(() => {
+    try { localStorage.setItem('invb_views', JSON.stringify(_boardViews)); } catch(e){}
+  }, 400);
+}
 
 function applyZoom() {
   const px = Math.round(panX);
@@ -3055,6 +3824,8 @@ function applyZoom() {
   ind.style.opacity = '1';
   clearTimeout(zoomHideTimer);
   zoomHideTimer = setTimeout(() => ind.style.opacity = '0', 1800);
+  /* remember this board's viewport so it survives board-switches and reloads */
+  _rememberView();
   /* strings live in screen space — redraw on every view change,
      except during renderAll where rAF handles it after layout resolves */
   if (!_renderingAll) renderStrings();
@@ -3181,18 +3952,25 @@ function clearSelection(){
   document.querySelectorAll('.card.selected,.zone.selected').forEach(el=>el.classList.remove('selected'));
   /* also hide any touch-revealed action strips */
   document.querySelectorAll('.card.show-actions').forEach(el=>el.classList.remove('show-actions'));
+  if(typeof _updateTransferBtn==='function') _updateTransferBtn();
 }
 
 function selectId(id){
   selectedIds.add(id);
   const el = document.querySelector(`.card[data-id="${id}"],.zone[data-zid="${id}"]`);
   if(el) el.classList.add('selected');
+  if(typeof _updateTransferBtn==='function') _updateTransferBtn();
 }
 
 /* single-card drag */
 let singleDrag=null, sdOX=0, sdOY=0;
+let _sdMoved=false, _sdShift=false, _sdStartX=0, _sdStartY=0;
 function startSingleDrag(e, c){
-  singleDrag=c; selectId(c.id);
+  /* don't select yet — a held drag should only MOVE the card.
+     selection happens on mouseup only if the pointer didn't move (a click). */
+  singleDrag=c;
+  _sdMoved=false; _sdShift=e.shiftKey;
+  _sdStartX=e.clientX; _sdStartY=e.clientY;
   const br=document.getElementById('board').getBoundingClientRect();
   sdOX=(e.clientX-br.left-panX)/zoom - c.x;
   sdOY=(e.clientY-br.top -panY)/zoom - c.y;
@@ -3245,7 +4023,18 @@ document.addEventListener('mousemove',e=>{
   const mx=(e.clientX-br.left-panX)/zoom;
   const my=(e.clientY-br.top -panY)/zoom;
 
+  /* archive drop-target feedback while dragging a card / group */
+  if(singleDrag || groupDrag){
+    const over = _archiveHitTest(e.clientX, e.clientY);
+    const dr = document.getElementById('archive-drawer');
+    if(dr){
+      dr.classList.toggle('drag-over', over);
+      if(over && !dr.classList.contains('open')) openArchive();
+    }
+  }
+
   if(singleDrag){
+    if(!_sdMoved && (Math.abs(e.clientX-_sdStartX)>4 || Math.abs(e.clientY-_sdStartY)>4)) _sdMoved=true;
     singleDrag.x=mx-sdOX; singleDrag.y=my-sdOY;
     const el=document.querySelector(`.card[data-id="${singleDrag.id}"]`);
     if(el){el.style.left=singleDrag.x+'px';el.style.top=singleDrag.y+'px';}
@@ -3304,14 +4093,43 @@ document.addEventListener('mousemove',e=>{
       if(fullyContained){ selectedIds.add(z.id); document.querySelector(`.zone[data-zid="${z.id}"]`)?.classList.add('selected'); }
       else { selectedIds.delete(z.id); }
     });
+    if(typeof _updateTransferBtn==='function') _updateTransferBtn();
   }
 });
 
 document.addEventListener('mouseup',e=>{
   if(e.button===1){ if(isPanning){ isPanning=false; document.getElementById('board').style.cursor=''; } return; }
+
+  /* dropped a dragged card / group onto the archive drawer? */
+  const dr = document.getElementById('archive-drawer');
+  const droppedOnArchive = (singleDrag || groupDrag) && _archiveHitTest(e.clientX, e.clientY);
+  if(dr) dr.classList.remove('drag-over');
+  if(droppedOnArchive){
+    if(groupDrag){
+      const ids = [...selectedIds].filter(id => curCards().some(c=>c.id===id));
+      groupDrag=false; gdSnap={};
+      archiveCards(ids);
+    } else if(singleDrag){
+      const id = singleDrag.id; singleDrag=null;
+      archiveCard(id);
+    }
+    if(lasso){ document.getElementById('lasso').style.display='none'; lasso=false; }
+    return;
+  }
+
   /* drag-end saves are position-only ? suppress history push */
   _historyPaused = true;
-  if(singleDrag){ save(); singleDrag=null; }
+  if(singleDrag){
+    if(_sdMoved){
+      /* it was a real drag — persist new position, do NOT select */
+      save();
+    } else {
+      /* it was a click (no movement) — select the card now */
+      if(!_sdShift) clearSelection();
+      selectId(singleDrag.id);
+    }
+    singleDrag=null;
+  }
   if(groupDrag){ save(); groupDrag=false; gdSnap={}; }
   if(dragZone){ save(); dragZone=null; }
   if(resizeZone){ save(); resizeZone=null; }
@@ -3391,6 +4209,7 @@ function exportJSON() {
     cards:  allCards,
     conns:  allConns,
     zones:  allZones,
+    archives: allArchives,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -3454,6 +4273,7 @@ function confirmImport() {
         to:   idMap[cn.to]   || cn.to,
       }));
       allZones[newId] = (d.zones?.[oldId] || []).map(z => ({ ...z, id: uid() }));
+      allArchives[newId] = (d.archives?.[oldId] || []).map(c => ({ ...c, id: uid() }));
     });
     activeBid = boards[boards.length - 1].id;
 
@@ -3464,6 +4284,7 @@ function confirmImport() {
     allCards[activeBid] = (d.cards[src.id] || []);
     allConns[activeBid] = (d.conns?.[src.id] || []);
     allZones[activeBid] = (d.zones?.[src.id] || []);
+    allArchives[activeBid] = (d.archives?.[src.id] || []);
 
   } else if (mode === 'merge') {
     /* append cards/zones from first imported board into active board */
@@ -3479,6 +4300,7 @@ function confirmImport() {
       to:   idMap[cn.to]   || cn.to,
     }))]);
     setZones([...curZones(), ...(d.zones?.[src.id] || []).map(z => ({ ...z, id: uid() }))]);
+    setArchive([...curArchive(), ...(d.archives?.[src.id] || []).map(c => ({ ...c, id: uid() }))]);
   }
 
   save(); closeImportModal(); renderTabs(); renderAll();
@@ -3591,6 +4413,13 @@ function closeFab(){
       c.y = cv.y - localOY;
       const el2 = document.querySelector(`.card[data-id="${c.id}"]`);
       if(el2){ el2.style.left = c.x+'px'; el2.style.top = c.y+'px'; }
+      /* archive drop-target feedback (touch) */
+      const overArch = _archiveHitTest(t.clientX, t.clientY);
+      const drT = document.getElementById('archive-drawer');
+      if(drT){
+        drT.classList.toggle('drag-over', overArch);
+        if(overArch && !drT.classList.contains('open')) openArchive();
+      }
       renderStrings();
       e.preventDefault();
       e.stopPropagation();
@@ -3617,6 +4446,16 @@ function closeFab(){
           e.stopPropagation();
         }
       } else {
+        /* dropped onto the archive drawer? */
+        const ct = e.changedTouches && e.changedTouches[0];
+        const drT = document.getElementById('archive-drawer');
+        const overArch = ct && _archiveHitTest(ct.clientX, ct.clientY);
+        if(drT) drT.classList.remove('drag-over');
+        if(overArch){
+          const id = c.id; singleDrag = null; dragArmed = false;
+          archiveCard(id);
+          return;
+        }
         if(singleDrag){ save(); singleDrag = null; }
         dragArmed = false;
       }
@@ -3625,6 +4464,7 @@ function closeFab(){
     el.addEventListener('touchcancel', () => {
       disarmHold();
       el.classList.remove('drag-armed');
+      document.getElementById('archive-drawer')?.classList.remove('drag-over');
       dragArmed = false;
     }, { passive: true });
   }
@@ -3797,6 +4637,15 @@ function closeFab(){
 })();
 
 document.addEventListener('keydown',e=>{
+  /* lightbox takes priority while open */
+  if(document.getElementById('lightbox')?.classList.contains('open')){
+    if(e.key==='Escape'){ e.preventDefault(); closeLightbox(); return; }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); lbNav(-1); return; }
+    if(e.key==='ArrowRight'){ e.preventDefault(); lbNav(1); return; }
+    if(e.key==='+'||e.key==='='){ e.preventDefault(); _lbZoom(0.3); return; }
+    if(e.key==='-'||e.key==='_'){ e.preventDefault(); _lbZoom(-0.3); return; }
+    return;
+  }
   if(e.key==='Escape'){cancelConnect();closeModal();closeZoneModal();closeBoardProps();clearSelection();closeImportModal();exitFocus();clearSearch();document.getElementById('tpl-panel')?.classList.remove('open');closeCutPopup();}
   /* undo / redo — ignore when typing in an input */
   const tag = document.activeElement?.tagName;
@@ -4047,7 +4896,7 @@ load();
 if(!boards.length){
   const b={id:uid(),name:'Principal'};
   boards=[b]; activeBid=b.id;
-  allCards[b.id]=[]; allConns[b.id]=[]; allZones[b.id]=[];
+  allCards[b.id]=[]; allConns[b.id]=[]; allZones[b.id]=[]; allArchives[b.id]=[];
   seed();
 } else {
   /* restore last active board from URL hash if present */
@@ -4055,7 +4904,13 @@ if(!boards.length){
   const found   = boards.find(b=>b.id===hashBid);
   activeBid     = found ? found.id : boards[0].id;
 }
+/* restore the active board's saved pan/zoom on first load (matches board-switch behavior) */
+{
+  const _v = _boardViews[activeBid];
+  if (_v) { zoom = _v.zoom; panX = _v.panX; panY = _v.panY; }
+}
 renderTabs(); loadTheme(); loadCardFont(); renderAll();
+if(typeof _updateTransferBtn==='function') _updateTransferBtn();
 function _syncHash(){ history.replaceState(null,'','#'+activeBid); }
 _syncHash();
 
